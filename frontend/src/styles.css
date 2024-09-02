@@ -2,3 +2,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Disable AutoFill hover highlights */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px #ffffff00 inset !important;
+  -webkit-text-fill-color: #e5e7eb !important;
+  transition: background-color 5000s ease-in-out 0s; /* Prevent autofill background color from flashing */
+}
+
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px #ffffff00 inset !important;
+  -webkit-text-fill-color: #e5e7eb !important;
+}
+
+input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 30px #ffffff00 inset !important;
+  -webkit-text-fill-color: #e5e7eb !important;
+}
