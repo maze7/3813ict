@@ -11,9 +11,19 @@ export class ChannelService {
     return this._channels;
   }
 
+  public currentChannel: string = '';
+
   constructor() { }
 
+  setChannel(id: string): void {
+    this.currentChannel = id;
+  }
+
   addChannel(name: string): void {
-    this.channels.push({ id: this.channels.length.toString(), name, unread: 0});
+    const channelId = this.channels.length.toString();
+    this.channels.push({ id: channelId, name, unread: Math.floor(Math.random() * 2)});
+    if (this.currentChannel === '') {
+      this.currentChannel = channelId;
+    }
   }
 }

@@ -10,10 +10,10 @@ import {GroupService} from "../../services/group.service";
     RouterOutlet,
     LucideAngularModule
   ],
-  templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  templateUrl: './group-nav.component.html',
+  styleUrl: './group-nav.component.css'
 })
-export class NavbarComponent {
+export class GroupNavComponent {
   constructor(public groupService: GroupService, private router: Router) {}
 
   showGroup(id: string): void {
