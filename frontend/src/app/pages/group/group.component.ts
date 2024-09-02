@@ -31,6 +31,7 @@ export class GroupComponent {
   addChannel(): void {
     if (this.newChannelForm.valid) {
       this.channelService.addChannel(this.newChannelForm.get('name')!.value);
+      this.newChannelForm.reset();
       this.newChannelModal?.nativeElement.close();
     }
   }
