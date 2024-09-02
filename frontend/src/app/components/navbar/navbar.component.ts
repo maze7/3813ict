@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {RouterOutlet} from "@angular/router";
+import {Router, RouterOutlet} from "@angular/router";
 import {LucideAngularModule} from "lucide-angular";
 import {GroupService} from "../../services/group.service";
 
@@ -14,6 +14,9 @@ import {GroupService} from "../../services/group.service";
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  constructor(public groupService: GroupService) {
+  constructor(public groupService: GroupService, private router: Router) {}
+
+  showGroup(id: string): void {
+    this.router.navigate([`/group`, id]);
   }
 }

@@ -5,7 +5,7 @@ import {
   AudioWaveform,
   LayoutDashboard,
   LucideAngularModule,
-  MessageCircle,
+  MessageCircle, MessageCirclePlus, Plus,
   ShieldX,
   UsersRound
 } from 'lucide-angular';
@@ -22,7 +22,9 @@ export const appConfig: ApplicationConfig = {
       UsersRound,
       LayoutDashboard,
       AudioLines,
-      AudioWaveform
+      AudioWaveform,
+      MessageCirclePlus,
+      Plus,
     })),
   ]
 };

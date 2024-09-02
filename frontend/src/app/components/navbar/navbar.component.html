@@ -5,32 +5,34 @@
   </div>
   <div class="drawer-side">
     <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-    <div class="menu bg-neutral text-base-content min-h-full w-20 p-2 gap-y-2 justify-between">
+    <div class="menu bg-base-300 text-base-content min-h-full w-20 p-2 gap-y-2 justify-between">
       <!-- Top-aligned content -->
       <div>
-        <a class="text-primary flex justify-center items-center p-1">
-          <i-lucide name="audio-waveform" size="36"></i-lucide>
-        </a>
-        <div class="divider my-0"></div>
+        <div class="p-1">
+          <a class="btn btn-primary text-white flex justify-center items-center p-2 rounded-2xl">
+            <i-lucide name="audio-waveform" size="30"></i-lucide>
+          </a>
+        </div>
+        <div class="divider my-1 mb-4"></div>
         <!-- Groups -->
-        <div class="grid gap-y-4">
+        <div class="grid gap-y-2">
           @for (group of groupService.getGroups(); track group) {
-            <div class="avatar placeholder">
-              <div class="btn btn-ghost bg-base-100  text-neutral-content w-full h-full rounded-full">
+            <div class="avatar placeholder p-1" (click)="showGroup(group.id)">
+              <div class="btn btn-ghost bg-base-100  text-neutral-content w-full h-full rounded-2xl">
                 <span class="text-xl">G1</span>
               </div>
             </div>
           }
           <!-- Add Group Button -->
-          <div class="avatar placeholder">
-            <div class="btn btn-ghost bg-base-100  text-neutral-content w-full h-full rounded-full">
+          <div class="avatar placeholder p-1">
+            <div class="btn btn-ghost bg-base-100  text-neutral-content w-full h-full rounded-2xl">
               <span class="text-xl">+</span>
             </div>
           </div>
         </div>
       </div>
       <!-- Bottom aligned content -->
-      <div class="avatar">
+      <div class="avatar p-2">
         <img
           class="rounded-full cursor-pointer"
           alt="Tailwind CSS Navbar component"
