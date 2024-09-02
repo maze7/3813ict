@@ -22,6 +22,7 @@ export const appConfig: ApplicationConfig = {
       UsersRound,
       LayoutDashboard,
       AudioLines,
+      AudioWaveform
     })),
   ]
 };
