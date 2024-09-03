@@ -23,16 +23,16 @@ export class GroupService {
       name: 'Group 1',
       acronym: 'G1',
       members: [
-        { username: 'Nathan Wilson', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
-        { username: 'Tara Templeman', id: '0' },
+        { username: 'Nathan Wilson', email: 'nathan@nathan.com', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
+        { username: 'Tara Templeman', email: 'tara@tara.com', id: '0' },
       ],
       admins: [
-        { username: 'Callan Acton', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
+        { username: 'Callan Acton', email: 'callan@callan.com', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
+        { username: 'asdf', email: 'asdf@asdf.com', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
       ],
       pendingAdmins: [],
       pendingMembers: [
-        { username: 'Chase Meise', id: '0' },
-        { username: 'Shrek', id: '0', avatar: 'https://www.cnet.com/a/img/resize/4cd1618a335631f7c0b7caa5fdc421b024f20f06/hub/2018/11/30/5ccd3953-6edf-4435-b4d1-615d3d0274b1/shrekretoldstill.jpg?auto=webp&width=1920' },
+        { username: 'Shrek', email: 'shrek@his.swamp', id: '0', avatar: 'https://www.cnet.com/a/img/resize/4cd1618a335631f7c0b7caa5fdc421b024f20f06/hub/2018/11/30/5ccd3953-6edf-4435-b4d1-615d3d0274b1/shrekretoldstill.jpg?auto=webp&width=1920' },
       ],
       channels: [
         { id: '1', name: 'memes' },

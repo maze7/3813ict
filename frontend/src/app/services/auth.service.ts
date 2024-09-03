@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
-import {Observable, tap} from "rxjs";
-import {HttpClient} from "@angular/common/http";
+import { Observable, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
-  private readonly baseUrl: string = 'http://localhost:3000';
+  private readonly baseUrl: string = 'http://localhost:3000/auth'; // Updated base URL to include /auth
   private tokenKey: string = 'jwt';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  register(username: string, password: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, { username, password });
+  register(username: string, email: string, password: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/register`, { username, email, password });
   }
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post<{ token: string }>(`${this.baseUrl}/login`, { username, password }).pipe(
+  login(email: string, password: string): Observable<any> {
+    return this.http.post<{ token: string }>(`${this.baseUrl}/login`, { email, password }).pipe(
       tap((res) => {
         if (res.token) {
           localStorage.setItem(this.tokenKey, res.token);
@@ -26,29 +26,33 @@ export class AuthService {
     );
   }
 
-  logout() {
+  logout(): void {
     localStorage.removeItem(this.tokenKey);
   }
 
-  isLoggedIn() {
+  isLoggedIn(): boolean {
     return localStorage.getItem(this.tokenKey) !== null;
   }
 
-  getToken() {
+  getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
 
-  getUser() {
-    return localStorage.getItem(this.tokenKey)
+  getUser(): any {
+    const token = this.getToken();
+    if (token) {
+      return jwtDecode(token);
+    }
+    return null;
   }
 
-  // TODO: These will need to pull the user's role
   isSuperAdmin(): boolean {
-    return true;
+    const user = this.getUser();
+    return user && user.roles.includes('superAdmin');
   }
 
-  // TODO: These will need to pull the user's role
   isGroupAdmin(): boolean {
-    return true;
+    const user = this.getUser();
+    return user && user.roles.includes('groupAdmin');
   }
 }

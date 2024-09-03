@@ -7,7 +7,7 @@ import {
   LucideAngularModule,
   MessageCircle, MessageCirclePlus, MessageSquare, PhoneCall, Plus, Send, SendHorizontal, Settings, Shield,
   ShieldX, UserCog, UserMinus, UserPlus, UserRoundCheck, UserRoundX,
-  UsersRound, Video, Lock,
+  UsersRound, Video, Lock, AtSign,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -45,6 +45,7 @@ export const appConfig: ApplicationConfig = {
       UserRoundCheck,
       UserRoundX,
       Lock,
+      AtSign,
     })),
   ]
 };

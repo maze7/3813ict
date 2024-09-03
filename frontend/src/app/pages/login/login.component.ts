@@ -25,7 +25,7 @@ export class LoginComponent {
 
   constructor(private auth: AuthService, private router: Router,  private fb: FormBuilder) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
+      email: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
@@ -33,8 +33,8 @@ export class LoginComponent {
   login() {
     if (this.loginForm.valid) {
       this.authError = false; // reset auth error
-      const { username, password } = this.loginForm.value;
-      this.auth.login(username, password).pipe(
+      const { email, password } = this.loginForm.value;
+      this.auth.login(email, password).pipe(
         catchError((error) => {
           if (error.status === 401) {
             this.authError = true;
