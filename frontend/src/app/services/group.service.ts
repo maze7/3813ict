@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Group} from "../models/group.model";
 import {Channel} from "../models/channel.model";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, catchError, map, Observable, of, tap} from "rxjs";
 import {AuthService} from "./auth.service";
 import {HttpClient} from "@angular/common/http";
 
@@ -16,46 +16,56 @@ export class GroupService {
   public currentChannel: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
   public group$ = this.currentGroup.asObservable();
   public channel$ = this.currentChannel.asObservable();
+  public groups: Group[] = [];
+
+  private readonly baseUrl: string = 'http://localhost:3000/group';
 
   // dummy data for now
-  private groups: Group[] = [
-    {
-      id: '1',
-      name: 'Group 1',
-      acronym: 'G1',
-      members: [
-        { username: 'Nathan Wilson', email: 'nathan@nathan.com', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
-        { username: 'Tara Templeman', email: 'tara@tara.com', id: '0' },
-      ],
-      admins: [
-        { username: 'Callan Acton', email: 'callan@callan.com', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
-        { username: 'asdf', email: 'asdf@asdf.com', id: '66d70283e962443778155247', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
-      ],
-      pendingAdmins: [],
-      pendingMembers: [
-        { username: 'Shrek', email: 'shrek@his.swamp', id: '0', avatar: 'https://www.cnet.com/a/img/resize/4cd1618a335631f7c0b7caa5fdc421b024f20f06/hub/2018/11/30/5ccd3953-6edf-4435-b4d1-615d3d0274b1/shrekretoldstill.jpg?auto=webp&width=1920' },
-      ],
-      channels: [
-        { id: '1', name: 'memes' },
-      ]
-    },
-    {
-      id: '2',
-      name: 'Group Two',
-      acronym: 'G2',
-      members: [],
-      admins: [],
-      pendingAdmins: [],
-      pendingMembers: [],
-      channels: []
-    },
-  ];
+  // private groups: Group[] = [
+  //   {
+  //     id: '1',
+  //     name: 'Group 1',
+  //     acronym: 'G1',
+  //     members: [
+  //       { username: 'Nathan Wilson', email: 'nathan@nathan.com', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
+  //       { username: 'Tara Templeman', email: 'tara@tara.com', id: '0' },
+  //     ],
+  //     admins: [
+  //       { username: 'Callan Acton', email: 'callan@callan.com', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
+  //       { username: 'asdf', email: 'asdf@asdf.com', id: '66d70283e962443778155247', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
+  //     ],
+  //     pendingAdmins: [],
+  //     pendingMembers: [
+  //       { username: 'Shrek', email: 'shrek@his.swamp', id: '0', avatar: 'https://www.cnet.com/a/img/resize/4cd1618a335631f7c0b7caa5fdc421b024f20f06/hub/2018/11/30/5ccd3953-6edf-4435-b4d1-615d3d0274b1/shrekretoldstill.jpg?auto=webp&width=1920' },
+  //     ],
+  //     channels: [
+  //       { id: '1', name: 'memes' },
+  //     ]
+  //   },
+  //   {
+  //     id: '2',
+  //     name: 'Group Two',
+  //     acronym: 'G2',
+  //     members: [],
+  //     admins: [],
+  //     pendingAdmins: [],
+  //     pendingMembers: [],
+  //     channels: []
+  //   },
+  // ];
 
   /**
    * Gets a list of all groups that exist within the server
    */
-  listGroups(): Group[] {
-    return this.groups;
+  listGroups(): Observable<Group[]> {
+    return this.http.get<Group[]>(`${this.baseUrl}`).pipe(
+      map((res: any) => {
+        return res as Group[]; // Cast the response to Group[]
+      }),
+      tap((data) => {
+        this.groups = data;
+      })
+    );
   }
 
   /**
@@ -63,7 +73,7 @@ export class GroupService {
    * @param groupId id of group to be navigated to
    */
   setGroup(groupId: string | null): void {
-    this.currentGroup.next(this.groups.find(g => g.id === groupId) ?? null);
+    this.currentGroup.next(this.groups.find(g => g._id === groupId) ?? null);
 
     if (groupId) {
       // update the current channel if the group has channels
@@ -75,14 +85,21 @@ export class GroupService {
 
   /**
    * Creates a group (if the user has the correct permissions)
-   * @param group the Group to be created
+   * @param name
+   * @param acronym
    */
-  createGroup(group: Group): void {
-    // temporarily assign a fake id here (this will be assigned by DB later)
-    group.id = (this.groups.length + 1).toString();
-
-    this.groups.push(group);
-    this.setGroup(group.id);
+  createGroup(name: string, acronym: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}`, { name, acronym }).pipe(
+      tap((res: any) => {
+        this.groups.push(res);
+        console.log(res);
+        this.setGroup(res._id);
+      }),
+      catchError((err) => {
+        console.error(err);
+        return of(null);
+      })
+    );
   }
 
   /**

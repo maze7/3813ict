@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const User = require('user.model');
 
 const channelSchema = new mongoose.Schema({
     name: { type: String, required: true },

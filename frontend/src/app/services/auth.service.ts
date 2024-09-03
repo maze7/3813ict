@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly baseUrl: string = 'http://localhost:3000/auth'; // Updated base URL to include /auth
+  private readonly baseUrl: string = 'http://localhost:3000/auth';
   private tokenKey: string = 'jwt';
 
   constructor(private http: HttpClient) {}

@@ -14,10 +14,14 @@ router.post('/', async (req, res) => {
             acronym,
             owner: req.user._id,
             admins: [req.user._id],
-        });
+        })
 
         await group.save();
-        res.status(201).json(group);
+
+        // populate the reference fields
+        const populated = await GroupModel.findById(group._id).populate('members admins pendingAdmins pendingMembers');
+
+        res.status(201).json(populated);
     } catch (err) {
         res.status(500).json({ message: 'Error creating group', error: err.message });
     }

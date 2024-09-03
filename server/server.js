@@ -18,6 +18,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/auth', require('./src/routes/auth.routes'));
+app.use('/group', require('./src/routes/group.routes'));
 
 // Start Server
 app.listen(process.env.PORT, () => {
