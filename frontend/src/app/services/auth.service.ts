@@ -8,6 +8,7 @@ import {HttpClient} from "@angular/common/http";
 export class AuthService {
 
   private readonly baseUrl: string = 'http://localhost:3000';
+  private tokenKey: string = 'token';
 
   constructor(private http: HttpClient) { }
 
@@ -16,18 +17,20 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, { username, password }).pipe(
-      tap((result) => {
-        localStorage.setItem('token', JSON.stringify(result));
+    return this.http.post<{ token: string }>(`${this.baseUrl}/login`, { username, password }).pipe(
+      tap((res) => {
+        if (res.token) {
+          localStorage.setItem(this.tokenKey, res.token);
+        }
       })
     );
   }
 
   logout() {
-    localStorage.removeItem('token');
+    localStorage.removeItem(this.tokenKey);
   }
 
   isLoggedIn() {
-    return localStorage.getItem('token') !== null;
+    return localStorage.getItem(this.tokenKey) !== null;
   }
 }

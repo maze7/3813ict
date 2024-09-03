@@ -11,11 +11,13 @@ import {
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
+import {provideHttpClient} from "@angular/common/http";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
+    provideHttpClient(),
     importProvidersFrom(LucideAngularModule.pick({
       ShieldX,
       MessageCircle,
