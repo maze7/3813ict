@@ -3,13 +3,14 @@ import {Group} from "../models/group.model";
 import {Channel} from "../models/channel.model";
 import {BehaviorSubject} from "rxjs";
 import {AuthService} from "./auth.service";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
 
-  constructor(private auth: AuthService) { }
+  constructor(private auth: AuthService, private http: HttpClient) { }
 
   public currentGroup: BehaviorSubject<Group | null> = new BehaviorSubject<Group | null>(null);
   public currentChannel: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
