@@ -1,4 +1,4 @@
-<main class="bg-base-300 w-full h-full relative">
+<main class="bg-base-300 w-full h-full">
   <nav class="bg-base-300 w-72 h-full fixed z-10">
     <div class="flex-col bg-base-100 w-full h-full overflow-hidden rounded-l-3xl">
       <div class="px-4">
@@ -30,11 +30,8 @@
     </div>
   </nav>
 
-  <section class="h-full bg-base-200">
-    <!-- header row -->
-    <div class="flex h-24 justify-between">
-
-    </div>
+  <section class="ml-72 flex-1 flex flex-col h-full bg-base-200">
+    <ng-content></ng-content>
   </section>
 </main>
 
