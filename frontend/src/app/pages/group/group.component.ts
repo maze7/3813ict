@@ -2,10 +2,11 @@ import {Component, Input} from '@angular/core';
 import {LucideAngularModule} from "lucide-angular";
 import {ActivatedRoute, RouterOutlet} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
-import {NgClass} from "@angular/common";
+import {AsyncPipe, NgClass} from "@angular/common";
 import {ChannelNavComponent} from "../../components/channel-nav/channel-nav.component";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {GroupService} from "../../services/group.service";
+import {GroupMembersComponent} from "../../components/group-members/group-members.component";
 
 @Component({
   selector: 'app-group',
@@ -16,13 +17,15 @@ import {GroupService} from "../../services/group.service";
     ReactiveFormsModule,
     NgClass,
     ChannelNavComponent,
+    AsyncPipe,
+    GroupMembersComponent,
   ],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css'
 })
 export class GroupComponent {
 
-  constructor(private groupService: GroupService, private route: ActivatedRoute) {
+  constructor(protected groupService: GroupService, private route: ActivatedRoute) {
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(data => {
       const currentGroup = data.get('groupId');
       if (currentGroup) {

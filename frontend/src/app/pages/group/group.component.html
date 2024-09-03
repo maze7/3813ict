@@ -3,14 +3,14 @@
 
   <!-- main content -->
   <section class="flex-1 flex flex-col h-full bg-base-200">
-    <!-- header row -->
-    <div class="h-20 w-full flex-none p-4"></div>
     <!-- split pane -->
     <div class="flex flex-1">
       <!-- chat view -->
       <div class="flex-1 lg:col-span-2 p-4 flex-col items-end">a</div>
       <!-- settings / information -->
-      <div class="hidden lg:block p-4 min-w-96">b</div>
+      <div class="hidden lg:block p-4 min-w-96">
+        <app-group-members></app-group-members>
+      </div>
     </div>
   </section>
 </main>

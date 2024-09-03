@@ -18,14 +18,28 @@ export class GroupService {
     {
       id: '1',
       name: 'G1',
+      members: [
+        { username: 'Nathan Wilson', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
+        { username: 'Tara Templeman', id: '0' },
+      ],
+      admins: [
+        { username: 'Callan Acton', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
+      ],
+      pendingAdmins: [],
     },
     {
       id: '2',
       name: 'G2',
+      members: [],
+      admins: [],
+      pendingAdmins: [],
     },
     {
       id: '3',
       name: 'G3',
+      members: [],
+      admins: [],
+      pendingAdmins: [],
     }
   ];
 

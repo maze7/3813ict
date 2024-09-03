@@ -1,0 +1,57 @@
+<!-- Group Admins -->
+<div class="card">
+  <div class="card-title mb-2 flex justify-between">Admins
+    <div class="btn btn-ghost rounded-full">
+      <lucide-icon name="user-cog"></lucide-icon>
+    </div>
+  </div>
+  @for (admin of (groupService.group$ | async)?.admins; track admin) {
+    <span class="flex items-center gap-x-2 mb-2">
+      @if (admin.avatar) {
+        <div class="avatar online h-12">
+          <img
+            class="rounded-full cursor-pointer"
+            alt="Tailwind CSS Navbar component"
+            src="{{admin.avatar}}" />
+        </div>
+      }
+      @else {
+        <div class="avatar placeholder">
+          <div class="bg-neutral text-neutral-content w-12 rounded-full">
+            <span>SY</span>
+          </div>
+        </div>
+      }
+      <h5>{{ admin.username }}</h5>
+    </span>
+  }
+</div>
+
+<!-- Group Members -->
+<div class="card mt-10">
+  <div class="card-title mb-2 flex justify-between">Members
+    <div class="btn btn-ghost rounded-full">
+      <lucide-icon name="user-cog"></lucide-icon>
+    </div>
+  </div>
+  @for (groupMember of (groupService.group$ | async)?.members; track groupMember) {
+    <span class="flex items-center gap-x-2 mb-2">
+      @if (groupMember.avatar) {
+        <div class="avatar online h-12">
+          <img
+            class="rounded-full cursor-pointer"
+            alt="Tailwind CSS Navbar component"
+            src="{{groupMember.avatar}}" />
+        </div>
+      }
+      @else {
+        <div class="avatar placeholder">
+          <div class="bg-neutral text-neutral-content w-12 rounded-full">
+            <span>TT</span>
+          </div>
+        </div>
+      }
+      <h5>{{ groupMember.username }}</h5>
+    </span>
+  }
+</div>

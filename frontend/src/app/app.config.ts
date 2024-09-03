@@ -2,11 +2,11 @@ import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from
 import {provideRouter, withComponentInputBinding} from '@angular/router';
 import {
   AudioLines,
-  AudioWaveform,
+  AudioWaveform, Bell,
   LayoutDashboard,
   LucideAngularModule,
-  MessageCircle, MessageCirclePlus, Plus,
-  ShieldX,
+  MessageCircle, MessageCirclePlus, Plus, Settings,
+  ShieldX, UserCog, UserMinus, UserPlus,
   UsersRound
 } from 'lucide-angular';
 
@@ -25,6 +25,11 @@ export const appConfig: ApplicationConfig = {
       AudioWaveform,
       MessageCirclePlus,
       Plus,
+      Settings,
+      Bell,
+      UserPlus,
+      UserMinus,
+      UserCog,
     })),
   ]
 };
