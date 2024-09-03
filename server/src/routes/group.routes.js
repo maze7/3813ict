@@ -11,7 +11,9 @@ router.post('/', async (req, res) => {
         const { name, acronym } = req.body;
         const group = new GroupModel({
             name,
-            acronym
+            acronym,
+            owner: req.user._id,
+            admins: [req.user._id],
         });
 
         await group.save();
@@ -24,7 +26,7 @@ router.post('/', async (req, res) => {
 // get all groups
 router.get('/', async (req, res) => {
     try {
-        const groups = await GroupModel.find().populate('members admins pendingAdmins pendingMembers');
+        const groups = await GroupModel.find({}).populate('members admins pendingAdmins pendingMembers');
         res.status(200).json(groups);
     } catch (err) {
         res.status(500).json({ message: 'Error fetching groups', error: err.message });

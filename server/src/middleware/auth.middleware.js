@@ -1,16 +1,27 @@
 const jwt = require('jsonwebtoken');
+const UserModel = require('../models/user.model');
 
-const authMiddleware = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+async function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    if (!token) return res.sendStatus(401);
+    if (token == null) return res.sendStatus(401); // If no token is present, return Unauthorized
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
+    jwt.verify(token, process.env.JWT_SECRET, async (err, user) => {
+        if (err) return res.sendStatus(403); // If token is invalid, return Forbidden
+
+        try {
+            // Fetch the user from the database using the user ID from the token
+            const foundUser = await UserModel.findById(user.id);
+            if (!foundUser) return res.sendStatus(403); // If user is not found, return Not Found
+
+            // Attach the found user to the request object
+            req.user = foundUser;
+            next(); // Proceed to the next middleware or route handler
+        } catch (error) {
+            return res.status(500).json({ message: 'Error fetching user', error: error.message });
+        }
     });
 }
 
-module.exports = authMiddleware;
+module.exports = authenticateToken;

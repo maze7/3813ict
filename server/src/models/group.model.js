@@ -8,6 +8,7 @@ const channelSchema = new mongoose.Schema({
 const groupSchema = new mongoose.Schema({
     name: { type: String, required: true },
     acronym: { type: String, required: true },
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     admins: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     pendingMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
