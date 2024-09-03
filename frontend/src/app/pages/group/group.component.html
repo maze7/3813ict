@@ -10,7 +10,18 @@
         <!-- chat header -->
         <span class="flex justify-between p-4 flex-none">
           <h1 class="card-title text-2xl">{{ (groupService.group$ | async)?.name }}</h1>
-          <span class="flex"></span>
+          <span class="flex gap-x-4">
+            <button class="btn btn-neutral rounded-full">
+              <lucide-angular name="video"></lucide-angular>
+            </button>
+            <button class="btn btn-neutral rounded-full">
+              <lucide-angular name="phone-call"></lucide-angular>
+            </button>
+            <!-- @if (isSuperAdmin || (isGroupAdmin && isGroupOwner(groupService.group$ | async)) {} -->
+            <button class="btn btn-neutral rounded-full">
+              <lucide-angular name="settings"></lucide-angular>
+            </button>
+          </span>
         </span>
         <app-chat class="flex-1 overflow-auto"></app-chat>
       </div>
