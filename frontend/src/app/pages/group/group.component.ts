@@ -7,6 +7,7 @@ import {ChannelNavComponent} from "../../components/channel-nav/channel-nav.comp
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {GroupService} from "../../services/group.service";
 import {GroupMembersComponent} from "../../components/group-members/group-members.component";
+import {ChatComponent} from "../chat/chat.component";
 
 @Component({
   selector: 'app-group',
@@ -19,6 +20,7 @@ import {GroupMembersComponent} from "../../components/group-members/group-member
     ChannelNavComponent,
     AsyncPipe,
     GroupMembersComponent,
+    ChatComponent,
   ],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css'

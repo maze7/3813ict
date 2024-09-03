@@ -17,7 +17,8 @@ export class GroupService {
   private groups: Group[] = [
     {
       id: '1',
-      name: 'G1',
+      name: 'Group 1',
+      acronym: 'G1',
       members: [
         { username: 'Nathan Wilson', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
         { username: 'Tara Templeman', id: '0' },
@@ -29,14 +30,16 @@ export class GroupService {
     },
     {
       id: '2',
-      name: 'G2',
+      name: 'Group Two',
+      acronym: 'G2',
       members: [],
       admins: [],
       pendingAdmins: [],
     },
     {
       id: '3',
-      name: 'G3',
+      name: 'Group Three',
+      acronym: 'G3',
       members: [],
       admins: [],
       pendingAdmins: [],
