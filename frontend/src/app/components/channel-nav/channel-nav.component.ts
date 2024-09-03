@@ -28,7 +28,7 @@ export class ChannelNavComponent {
 
   addChannel(): void {
     if (this.newChannelForm.valid) {
-      this.groupService.createChannel(this.newChannelForm.get('name')!.value);
+      this.groupService.createChannel(this.newChannelForm.get('name')!.value).subscribe();
       this.newChannelForm.reset();
       this.newChannelModal?.nativeElement.close();
     }

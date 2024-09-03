@@ -20,40 +20,6 @@ export class GroupService {
 
   private readonly baseUrl: string = 'http://localhost:3000/group';
 
-  // dummy data for now
-  // private groups: Group[] = [
-  //   {
-  //     id: '1',
-  //     name: 'Group 1',
-  //     acronym: 'G1',
-  //     members: [
-  //       { username: 'Nathan Wilson', email: 'nathan@nathan.com', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
-  //       { username: 'Tara Templeman', email: 'tara@tara.com', id: '0' },
-  //     ],
-  //     admins: [
-  //       { username: 'Callan Acton', email: 'callan@callan.com', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
-  //       { username: 'asdf', email: 'asdf@asdf.com', id: '66d70283e962443778155247', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
-  //     ],
-  //     pendingAdmins: [],
-  //     pendingMembers: [
-  //       { username: 'Shrek', email: 'shrek@his.swamp', id: '0', avatar: 'https://www.cnet.com/a/img/resize/4cd1618a335631f7c0b7caa5fdc421b024f20f06/hub/2018/11/30/5ccd3953-6edf-4435-b4d1-615d3d0274b1/shrekretoldstill.jpg?auto=webp&width=1920' },
-  //     ],
-  //     channels: [
-  //       { id: '1', name: 'memes' },
-  //     ]
-  //   },
-  //   {
-  //     id: '2',
-  //     name: 'Group Two',
-  //     acronym: 'G2',
-  //     members: [],
-  //     admins: [],
-  //     pendingAdmins: [],
-  //     pendingMembers: [],
-  //     channels: []
-  //   },
-  // ];
-
   /**
    * Gets a list of all groups that exist within the server
    */
@@ -104,18 +70,21 @@ export class GroupService {
 
   /**
    * Creates a new channel within the current group
-   * @param channel
+   * @param name
    */
-  createChannel(name: string): void {
+  createChannel(name: string): Observable<any> {
     // this is placeholder while there is no API to call
     const group = this.currentGroup.value;
 
     // if there is a currently selected group, add the channel & update behaviour subject
     if (group) {
-      const id = (group.channels.length + 1).toString(); // this will be a MongoDB document ID
-      group.channels.push({ id, name });
-      this.currentGroup.next(group);
+      return this.http.post<any>(`${this.baseUrl}/channel`, { groupId: group._id, name}).pipe(tap((data) => {
+        this.listGroups();
+        this.currentGroup.next(data);
+      }));
     }
+
+    return of(null);
   }
 
   /**
@@ -123,7 +92,7 @@ export class GroupService {
    * @param channelId id of channel to navigate to
    */
   setChannel(channelId: string | null): void {
-    const channel = this.currentGroup.value?.channels.find(c => c.id === channelId);
+    const channel = this.currentGroup.value?.channels.find(c => c._id === channelId);
     if (channel) {
       this.currentChannel.next(channel);
     }

@@ -1,4 +1,4 @@
 export interface Channel {
-  id: string;
+  _id: string;
   name: string;
 }

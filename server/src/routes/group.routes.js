@@ -77,4 +77,21 @@ router.post('/request-accesss/:id', async (req, res) => {
     }
 });
 
+// create a channel within a group
+router.post('/channel', async (req, res) => {
+    try {
+        const { groupId, name } = req.body;
+
+        // add the channel to the document
+        await GroupModel.updateOne({ _id: groupId }, { $push: { channels: { name }}});
+
+        // get the updated group and return
+        const group = await GroupModel.findById(groupId).populate('members admins pendingAdmins pendingMembers');
+
+        res.status(200).json(group);
+    } catch (err) {
+        res.status(500).json({ message: 'Error creating channel.', error: err.message });
+    }
+})
+
 module.exports = router;
