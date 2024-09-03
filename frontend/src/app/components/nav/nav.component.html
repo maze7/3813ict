@@ -35,9 +35,11 @@
       </div>
       <!-- bottom-aligned content -->
       <div class="flex-col items-center">
-        <div class="btn btn-ghost mb-2 w-full">
-          <lucide-icon name="shield"></lucide-icon>
-        </div>
+        @if (auth.isSuperAdmin()) {
+          <div class="btn btn-ghost mb-2 w-full">
+            <lucide-icon name="shield"></lucide-icon>
+          </div>
+        }
         <div class="avatar online p-2" (click)="logout()">
           <!-- user avatar -->
           <img
