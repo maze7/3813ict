@@ -1,14 +1,15 @@
 <main class="flex h-full">
-  <app-channel-nav></app-channel-nav>
 
-  <!-- main content -->
-  <section class="flex-1 flex flex-col h-full bg-base-300">
-    <!-- split pane -->
-    <div class="flex flex-1">
-      <!-- chat view -->
-      <div class="flex-1 lg:col-span-2 flex flex-col h-full bg-base-200 rounded-r-3xl overflow-hidden">
-        <!-- chat header -->
-        <span class="flex justify-between p-4 flex-none">
+  @if (groupService.hasAccessToCurrentGroup()) {
+    <app-channel-nav></app-channel-nav>
+    <!-- main content -->
+    <section class="flex-1 flex flex-col h-full bg-base-300">
+      <!-- split pane -->
+      <div class="flex flex-1">
+        <!-- chat view -->
+        <div class="flex-1 lg:col-span-2 flex flex-col h-full bg-base-200 rounded-r-3xl overflow-hidden">
+          <!-- chat header -->
+          <span class="flex justify-between p-4 flex-none">
           <span class="flex gap-x-4">
             <h1 class="card-title text-2xl">{{ (groupService.group$ | async)?.name }}</h1>
             <span class="flex px-2 py-1 gap-x-1 rounded-2xl bg-neutral items-center text-secondary">
@@ -29,12 +30,22 @@
             </button>
           </span>
         </span>
-        <app-chat class="flex-1 overflow-auto"></app-chat>
+          <app-chat class="flex-1 overflow-auto"></app-chat>
+        </div>
+        <!-- settings / information -->
+        <div class="hidden lg:block p-4 min-w-96 flex-none bg-base-300">
+          <app-group-members></app-group-members>
+        </div>
       </div>
-      <!-- settings / information -->
-      <div class="hidden lg:block p-4 min-w-96 flex-none bg-base-300">
-        <app-group-members></app-group-members>
+    </section>
+  }
+  @else {
+    <div class="flex w-full h-full justify-center items-center">
+      <div class="flex flex-col gap-y-4">
+        <h1 class="card-title"><lucide-angular name="lock"></lucide-angular>Oh no!</h1>
+        <div>You do not have access to this group!</div>
+        <button class="btn btn-primary">Request access</button>
       </div>
     </div>
-  </section>
+  }
 </main>

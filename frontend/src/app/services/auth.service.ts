@@ -8,7 +8,7 @@ import {HttpClient} from "@angular/common/http";
 export class AuthService {
 
   private readonly baseUrl: string = 'http://localhost:3000';
-  private tokenKey: string = 'token';
+  private tokenKey: string = 'jwt';
 
   constructor(private http: HttpClient) { }
 
@@ -36,6 +36,10 @@ export class AuthService {
 
   getToken() {
     return localStorage.getItem(this.tokenKey);
+  }
+
+  getUser() {
+    return localStorage.getItem(this.tokenKey)
   }
 
   // TODO: These will need to pull the user's role

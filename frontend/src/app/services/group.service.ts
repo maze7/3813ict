@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import {Group} from "../models/group.model";
 import {Channel} from "../models/channel.model";
 import {BehaviorSubject} from "rxjs";
+import {AuthService} from "./auth.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
 
-  constructor() { }
+  constructor(private auth: AuthService) { }
 
   public currentGroup: BehaviorSubject<Group | null> = new BehaviorSubject<Group | null>(null);
   public currentChannel: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
@@ -108,5 +109,13 @@ export class GroupService {
     if (channel) {
       this.currentChannel.next(channel);
     }
+  }
+
+  hasAccessToCurrentGroup(): boolean {
+    const group = this.currentGroup.value;
+    const user = this.auth.getUser();
+
+    return true;
+    //return group?.members.find(u => u.id === user?.id) || group?.admins.find(u => u.id === user?.id);
   }
 }
