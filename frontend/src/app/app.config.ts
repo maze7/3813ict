@@ -7,15 +7,20 @@ import {
   LucideAngularModule,
   MessageCircle, MessageCirclePlus, MessageSquare, PhoneCall, Plus, Send, SendHorizontal, Settings, Shield,
   ShieldX, UserCog, UserMinus, UserPlus, UserRoundCheck, UserRoundX,
-  UsersRound, Video
+  UsersRound, Video, Lock,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
+import {provideHttpClient, withInterceptors} from "@angular/common/http";
+import {authInterceptor} from "./interceptors/auth.interceptor";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
+    provideHttpClient(
+      withInterceptors([authInterceptor])
+    ),
     importProvidersFrom(LucideAngularModule.pick({
       ShieldX,
       MessageCircle,
@@ -39,6 +44,7 @@ export const appConfig: ApplicationConfig = {
       MessageSquare,
       UserRoundCheck,
       UserRoundX,
+      Lock,
     })),
   ]
 };

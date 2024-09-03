@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GroupNavComponent } from './group-nav.component';
+import { NavComponent } from './nav.component';
 
 describe('NavbarComponent', () => {
-  let component: GroupNavComponent;
-  let fixture: ComponentFixture<GroupNavComponent>;
+  let component: NavComponent;
+  let fixture: ComponentFixture<NavComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GroupNavComponent]
+      imports: [NavComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(GroupNavComponent);
+    fixture = TestBed.createComponent(NavComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

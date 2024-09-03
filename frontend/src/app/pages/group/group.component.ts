@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {LucideAngularModule} from "lucide-angular";
 import {ActivatedRoute, RouterOutlet} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
@@ -25,14 +25,18 @@ import {ChatComponent} from "../chat/chat.component";
   templateUrl: './group.component.html',
   styleUrl: './group.component.css'
 })
-export class GroupComponent {
+export class GroupComponent implements OnInit {
 
-  constructor(protected groupService: GroupService, private route: ActivatedRoute) {
-    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(data => {
-      const currentGroup = data.get('groupId');
-      if (currentGroup) {
-        this.groupService.setGroup(currentGroup);
+  constructor(protected groupService: GroupService) {}
+
+  ngOnInit() {
+    // Check if there's already a selected group
+    if (!this.groupService.currentGroup.value) {
+      // If no group is selected, set the first one as default
+      const defaultGroup = this.groupService.listGroups()[0];
+      if (defaultGroup) {
+        this.groupService.setGroup(defaultGroup.id!);
       }
-    });
+    }
   }
 }

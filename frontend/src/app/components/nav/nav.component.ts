@@ -5,6 +5,7 @@ import {GroupService} from "../../services/group.service";
 import {AsyncPipe, NgClass} from "@angular/common";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Group} from "../../models/group.model";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-navbar',
@@ -17,15 +18,15 @@ import {Group} from "../../models/group.model";
     FormsModule,
     ReactiveFormsModule
   ],
-  templateUrl: './group-nav.component.html',
-  styleUrl: './group-nav.component.css'
+  templateUrl: './nav.component.html',
+  styleUrl: './nav.component.css'
 })
-export class GroupNavComponent {
+export class NavComponent {
 
   @ViewChild('newGroupModal', { static: true }) newGroupModal?: ElementRef<HTMLDialogElement>;
   newGroupForm: FormGroup;
 
-  constructor(private fb: FormBuilder, public groupService: GroupService, private router: Router) {
+  constructor(public auth: AuthService, private fb: FormBuilder, public groupService: GroupService, private router: Router) {
     this.newGroupForm = this.fb.group({
       name: ['', Validators.required],
       acronym: ['', Validators.required],
@@ -52,6 +53,11 @@ export class GroupNavComponent {
   }
 
   showGroup(id: string): void {
-    this.router.navigate([`/group`, id]);
+    this.groupService.setGroup(id);
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/login']);
   }
 }

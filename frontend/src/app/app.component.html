@@ -1,1 +1,6 @@
-<app-navbar></app-navbar>
+@if(auth.isLoggedIn()) {
+  <app-navbar></app-navbar>
+}
+@else {
+  <router-outlet></router-outlet>
+}
