@@ -27,6 +27,10 @@ export class GroupService {
         { username: 'Callan Acton', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
       ],
       pendingAdmins: [],
+      pendingMembers: [
+        { username: 'Chase Meise', id: '0' },
+        { username: 'Shrek', id: '0', avatar: 'https://www.cnet.com/a/img/resize/4cd1618a335631f7c0b7caa5fdc421b024f20f06/hub/2018/11/30/5ccd3953-6edf-4435-b4d1-615d3d0274b1/shrekretoldstill.jpg?auto=webp&width=1920' },
+      ],
     },
     {
       id: '2',
@@ -35,6 +39,7 @@ export class GroupService {
       members: [],
       admins: [],
       pendingAdmins: [],
+      pendingMembers: [],
     },
     {
       id: '3',
@@ -43,6 +48,7 @@ export class GroupService {
       members: [],
       admins: [],
       pendingAdmins: [],
+      pendingMembers: [],
     }
   ];
 

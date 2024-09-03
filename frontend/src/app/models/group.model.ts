@@ -8,4 +8,5 @@ export interface Group {
   members: User[];
   admins: User[];
   pendingAdmins: User[];
+  pendingMembers: User[];
 }

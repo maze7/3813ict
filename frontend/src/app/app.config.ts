@@ -5,8 +5,8 @@ import {
   AudioWaveform, Bell, Forward,
   LayoutDashboard,
   LucideAngularModule,
-  MessageCircle, MessageCirclePlus, PhoneCall, Plus, Send, SendHorizontal, Settings, Shield,
-  ShieldX, UserCog, UserMinus, UserPlus,
+  MessageCircle, MessageCirclePlus, MessageSquare, PhoneCall, Plus, Send, SendHorizontal, Settings, Shield,
+  ShieldX, UserCog, UserMinus, UserPlus, UserRoundCheck, UserRoundX,
   UsersRound, Video
 } from 'lucide-angular';
 
@@ -36,6 +36,9 @@ export const appConfig: ApplicationConfig = {
       Shield,
       Video,
       PhoneCall,
+      MessageSquare,
+      UserRoundCheck,
+      UserRoundX,
     })),
   ]
 };
