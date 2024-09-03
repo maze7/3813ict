@@ -9,7 +9,7 @@
           </div>
         </span>
       <div class="mt-4 flex flex-col gap-y-1">
-        @for (channel of (groupService.group$ | async)?.channels; track channel) {
+        @for (channel of (groupService.group$ | async)?.channels; track channel.id) {
           <div class="btn flex justify-between w-full"
                (click)="groupService.setChannel(channel.id)"
                [ngClass]="{

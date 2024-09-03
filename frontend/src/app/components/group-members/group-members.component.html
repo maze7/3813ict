@@ -5,7 +5,7 @@
       <lucide-icon name="user-cog"></lucide-icon>
     </div>
   </div>
-  @for (admin of (groupService.group$ | async)?.admins; track admin) {
+  @for (admin of (groupService.group$ | async)?.admins; track admin._id) {
     <span class="flex items-center gap-x-2 mb-2">
       @if (admin.avatar) {
         <div class="avatar online h-12 w-12">
@@ -34,7 +34,7 @@
       <lucide-icon name="user-cog"></lucide-icon>
     </div>
   </div>
-  @for (groupMember of (groupService.group$ | async)?.members; track groupMember) {
+  @for (groupMember of (groupService.group$ | async)?.members; track groupMember._id) {
     <span class="flex items-center gap-x-2 mb-2">
       @if (groupMember.avatar) {
         <div class="avatar online h-12 w-12">
@@ -56,11 +56,12 @@
   }
 </div>
 
-<!-- Pending Group Members -->
-<div class="card mt-10">
-  <div class="card-title flex justify-between mb-3">Pending Members</div>
-  @for (groupMember of (groupService.group$ | async)?.pendingMembers; track groupMember) {
-    <span class="flex items-center justify-between">
+@if (auth.isSuperAdmin() || groupService.isGroupAdmin()) {
+  <!-- Pending Group Members -->
+  <div class="card mt-10">
+    <div class="card-title flex justify-between mb-3">Pending Members</div>
+    @for (groupMember of (groupService.group$ | async)?.pendingMembers; track groupMember._id) {
+      <span class="flex items-center justify-between">
       <span class="flex items-center gap-x-2 mb-2">
         @if (groupMember.avatar) {
           <div class="avatar online h-12 w-12">
@@ -84,5 +85,6 @@
         <button class="btn btn-sm btn-success text-neutral-100"><lucide-angular name="user-round-check" size="22"></lucide-angular></button>
       </span>
     </span>
-  }
-</div>
+    }
+  </div>
+}

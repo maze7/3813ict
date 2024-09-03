@@ -12,7 +12,7 @@ async function authenticateToken(req, res, next) {
 
         try {
             // Fetch the user from the database using the user ID from the token
-            const foundUser = await UserModel.findById(user.id);
+            const foundUser = await UserModel.findById(user._id);
             if (!foundUser) return res.sendStatus(403); // If user is not found, return Not Found
 
             // Attach the found user to the request object

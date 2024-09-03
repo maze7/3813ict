@@ -136,7 +136,9 @@ export class GroupService {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
 
-    return user.roles.includes('superAdmin') || group?.members.find(u => u.id == user.id) || group?.admins.find(u => u.id == user.id);
+    const isMember = (group?.members.find(u => u._id == user._id) || group?.admins.find(u => u._id == user._id)) ?? false;
+
+    return user.roles.includes('superAdmin') || isMember;
   }
 
   /**
@@ -146,7 +148,7 @@ export class GroupService {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
 
-    return group?.pendingMembers.includes(user.id) ?? false;
+    return group?.pendingMembers.includes(user._id) ?? false;
   }
 
   /**
@@ -156,6 +158,13 @@ export class GroupService {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
 
-    group?.pendingMembers.push(user.id);
+    group?.pendingMembers.push(user._id);
+  }
+
+  isGroupAdmin(): boolean {
+    const group = this.currentGroup.value;
+    const user = this.auth.getUser();
+
+    return group?.admins.includes(user._id) ?? false;
   }
 }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {AsyncPipe} from "@angular/common";
 import {LucideAngularModule} from "lucide-angular";
 import {GroupService} from "../../services/group.service";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-group-members',
@@ -14,5 +15,5 @@ import {GroupService} from "../../services/group.service";
   styleUrl: './group-members.component.css'
 })
 export class GroupMembersComponent {
-  constructor(protected groupService: GroupService) {}
+  constructor(protected groupService: GroupService, protected auth: AuthService) {}
 }
