@@ -1,6 +1,9 @@
 const express = require('express');
 const GroupModel = require('../models/group.model');
 const router = express.Router();
+const isAuthenticated = require('../middleware/auth.middleware');
+
+router.use(isAuthenticated);
 
 // TODO: Add isGroupAdmin or isSuperAdmin middleware
 router.post('/', async (req, res) => {
