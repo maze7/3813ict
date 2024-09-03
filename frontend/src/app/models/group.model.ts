@@ -1,7 +1,7 @@
 import {User} from "./user.model";
 
 export interface Group {
-  id: string;
+  id?: string;
   name: string;
   acronym: string;
   img?: string;

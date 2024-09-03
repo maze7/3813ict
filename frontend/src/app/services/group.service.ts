@@ -41,22 +41,32 @@ export class GroupService {
       pendingAdmins: [],
       pendingMembers: [],
     },
-    {
-      id: '3',
-      name: 'Group Three',
-      acronym: 'G3',
-      members: [],
-      admins: [],
-      pendingAdmins: [],
-      pendingMembers: [],
-    }
   ];
 
+  /**
+   * Gets a list of all groups that exist within the server
+   */
   getGroups(): Group[] {
     return this.groups;
   }
 
+  /**
+   * Navigates to the designated group
+   * @param groupId id of group to be navigated to
+   */
   setGroup(groupId: string | null): void {
     this.currentGroup.next(this.groups.find(g => g.id === groupId) ?? null);
+  }
+
+  /**
+   * Creates a group (if the user has the correct permissions)
+   * @param group the Group to be created
+   */
+  createGroup(group: Group): void {
+    // temporarily assign a fake id here (this will be assigned by DB later)
+    group.id = (this.groups.length + 1).toString();
+
+    this.groups.push(group);
+    this.setGroup(group.id);
   }
 }
