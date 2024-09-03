@@ -7,11 +7,11 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   // allow user to continue navigating to page if authenticated
-  if (auth.isLoggedIn()) {
-    return true;
-  } else {
+  if (!auth.isLoggedIn()) {
     // otherwise, redirect to login
     router.navigate(['/login']);
     return false;
   }
+
+  return true;
 };

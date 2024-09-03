@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {Router, RouterOutlet} from "@angular/router";
+import {Router, RouterLink, RouterOutlet} from "@angular/router";
 import {LucideAngularModule} from 'lucide-angular';
 import {NgClass} from "@angular/common";
 import {AuthService} from "../../services/auth.service";
@@ -13,7 +13,8 @@ import {catchError, of} from "rxjs";
     RouterOutlet,
     LucideAngularModule,
     NgClass,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -31,6 +32,7 @@ export class LoginComponent {
 
   login() {
     if (this.loginForm.valid) {
+      this.authError = false; // reset auth error
       const { username, password } = this.loginForm.value;
       this.auth.login(username, password).pipe(
         catchError((error) => {
@@ -42,7 +44,8 @@ export class LoginComponent {
           throw error;
         })
       ).subscribe(res => {
-        if (res && res.token && !this.authError) {
+        if (!this.authError) {
+          console.log('success');
           this.router.navigate(['/']);
         }
       });

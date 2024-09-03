@@ -10,9 +10,8 @@ export class GroupService {
 
   constructor() { }
 
-  private currentGroup: BehaviorSubject<Group | null> = new BehaviorSubject<Group | null>(null);
-  private currentChannel: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
-
+  public currentGroup: BehaviorSubject<Group | null> = new BehaviorSubject<Group | null>(null);
+  public currentChannel: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
   public group$ = this.currentGroup.asObservable();
   public channel$ = this.currentChannel.asObservable();
 

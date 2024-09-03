@@ -14,9 +14,9 @@ export const routes: Routes = [
     component: RegisterComponent,
   },
   {
-    path: ':groupId',
+    path: '',
     component: GroupComponent,
     canActivate: [authGuard],
   },
-  { path: '', redirectTo: '/login', pathMatch: 'full' }
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
