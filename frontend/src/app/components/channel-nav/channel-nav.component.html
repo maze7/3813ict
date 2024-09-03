@@ -9,19 +9,16 @@
           </div>
         </span>
       <div class="mt-4 flex flex-col gap-y-1">
-        @for (channel of channelService.channels; track channel) {
+        @for (channel of (groupService.group$ | async)?.channels; track channel) {
           <div class="btn flex justify-between w-full"
-               (click)="channelService.setChannel(channel.id)"
+               (click)="groupService.setChannel(channel.id)"
                [ngClass]="{
-                    'btn-neutral': channelService.currentChannel === channel.id,
-                    'btn-ghost': channelService.currentChannel !== channel.id,
+                    'btn-neutral': (groupService.channel$ | async)?.id === channel.id,
+                    'btn-ghost': (groupService.channel$ | async)?.id !== channel.id,
                 }">
             <div>
               <span>#</span><span class="ml-3">{{ channel.name }}</span>
             </div>
-            @if (channel.unread > 0) {
-              <div class="badge badge-accent">+{{ channel.unread }}</div>
-            }
           </div>
         }
       </div>

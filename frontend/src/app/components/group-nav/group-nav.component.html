@@ -15,8 +15,8 @@
         </div>
         <!-- Groups -->
         <div class="relative grid gap-y-2 mt-5">
-          @for (group of groupService.getGroups(); track group) {
-            <div class="avatar placeholder p-1" (click)="showGroup(group.id)">
+          @for (group of groupService.listGroups(); track group) {
+            <div class="avatar placeholder p-1" (click)="showGroup(group.id!)">
               <div class="btn btn-ghost bg-base-100  text-neutral-content w-full h-full rounded-2xl"
                 [ngClass]="{'ring-primary ring-2': ((groupService.group$ | async)?.id == group.id) }">
                 <span class="text-xl">{{group.acronym.slice(0, 2)}}</span>

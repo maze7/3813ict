@@ -1,4 +1,5 @@
 import {User} from "./user.model";
+import {Channel} from "./channel.model";
 
 export interface Group {
   id?: string;
@@ -9,4 +10,5 @@ export interface Group {
   admins: User[];
   pendingAdmins: User[];
   pendingMembers: User[];
+  channels: Channel[];
 }

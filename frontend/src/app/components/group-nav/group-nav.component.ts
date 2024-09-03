@@ -1,11 +1,9 @@
-import {Component, ElementRef, inject, Input, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
+import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Router, RouterOutlet} from "@angular/router";
 import {LucideAngularModule} from "lucide-angular";
 import {GroupService} from "../../services/group.service";
-import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {AsyncPipe, NgClass} from "@angular/common";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {ChannelService} from "../../services/channel.service";
 import {Group} from "../../models/group.model";
 
 @Component({
@@ -37,13 +35,14 @@ export class GroupNavComponent {
   addGroup(): void {
     if (this.newGroupForm.valid) {
       const group: Group = {
-        id: this.groupService.getGroups().length.toString(),
+        id: this.groupService.listGroups().length.toString(),
         name: this.newGroupForm.get('name')!.value,
         acronym: this.newGroupForm.get('acronym')!.value,
         members: [],
         admins: [],
         pendingAdmins: [],
         pendingMembers: [],
+        channels: [],
       };
 
       this.groupService.createGroup(group);
