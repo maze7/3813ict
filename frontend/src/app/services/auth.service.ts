@@ -37,4 +37,14 @@ export class AuthService {
   getToken() {
     return localStorage.getItem(this.tokenKey);
   }
+
+  // TODO: These will need to pull the user's role
+  isSuperAdmin(): boolean {
+    return true;
+  }
+
+  // TODO: These will need to pull the user's role
+  isGroupAdmin(): boolean {
+    return true;
+  }
 }
