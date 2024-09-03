@@ -79,7 +79,15 @@ export class GroupService {
     // if there is a currently selected group, add the channel & update behaviour subject
     if (group) {
       return this.http.post<any>(`${this.baseUrl}/channel`, { groupId: group._id, name}).pipe(tap((data) => {
-        this.listGroups();
+        // Find the index of the group in this.groups array
+        const index = this.groups.findIndex(g => g._id === data._id);
+
+        // If group is found, replace it with the updated data
+        if (index !== -1) {
+          this.groups[index] = data;
+        }
+
+        // update the current group behaviour subject
         this.currentGroup.next(data);
       }));
     }
