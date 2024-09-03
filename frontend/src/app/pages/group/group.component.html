@@ -1,6 +1,6 @@
 <main class="flex h-full">
 
-  @if (groupService.hasAccessToCurrentGroup()) {
+  @if (groupService.hasAccess()) {
     <app-channel-nav></app-channel-nav>
     <!-- main content -->
     <section class="flex-1 flex flex-col h-full bg-base-300">
@@ -39,7 +39,7 @@
       </div>
     </section>
   }
-  @else if (groupService.hasRequestedAccessToCurrentGroup()) {
+  @else if (groupService.hasRequestedAccess()) {
     <div class="flex w-full h-full justify-center items-center">
       <div class="flex flex-col gap-y-4">
         <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="clock" size="30"></lucide-angular>Request pending.</h1>
@@ -52,7 +52,7 @@
       <div class="flex flex-col gap-y-4">
         <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="lock" size="30"></lucide-angular>Uh oh!</h1>
         <div class="text-neutral-content text-lg">You do not have access to this group.</div>
-        <button class="btn btn-primary" (click)="groupService.requestToJoinGroup(groupService.currentGroup.value?.id!)">Request access</button>
+        <button class="btn btn-primary" (click)="groupService.requestAccess()">Request access</button>
       </div>
     </div>
   }

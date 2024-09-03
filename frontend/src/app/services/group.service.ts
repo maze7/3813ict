@@ -111,22 +111,30 @@ export class GroupService {
     }
   }
 
-  hasAccessToCurrentGroup(): boolean {
+  /**
+   * Utility method to determine if a user has access to the current group based on their role and group membership
+   */
+  hasAccess(): boolean {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
 
     return user.roles.includes('superAdmin') || group?.members.find(u => u.id == user.id) || group?.admins.find(u => u.id == user.id);
-    //return group?.members.find(u => u.id === user?.id) || group?.admins.find(u => u.id === user?.id);
   }
 
-  hasRequestedAccessToCurrentGroup(): boolean {
+  /**
+   * Utility method to determine if a user has requested to join a group
+   */
+  hasRequestedAccess(): boolean {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
 
     return group?.pendingMembers.includes(user.id) ?? false;
   }
 
-  requestToJoinGroup(groupId: string): void {
+  /**
+   * Utility method to request access to a group
+   */
+  requestAccess(): void {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
 
