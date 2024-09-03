@@ -28,7 +28,7 @@ export class GroupService {
       ],
       admins: [
         { username: 'Callan Acton', email: 'callan@callan.com', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
-        { username: 'asdf', email: 'asdf@asdf.com', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
+        { username: 'asdf', email: 'asdf@asdf.com', id: '66d70283e962443778155247', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
       ],
       pendingAdmins: [],
       pendingMembers: [
@@ -114,8 +114,8 @@ export class GroupService {
   hasAccessToCurrentGroup(): boolean {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
-
-    return true;
+    console.log(user);
+    return user.roles.includes('superAdmin') || group?.members.find(u => u.id == user.id) || group?.admins.find(u => u.id == user.id);
     //return group?.members.find(u => u.id === user?.id) || group?.admins.find(u => u.id === user?.id);
   }
 }

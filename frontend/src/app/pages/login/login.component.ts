@@ -45,7 +45,6 @@ export class LoginComponent {
         })
       ).subscribe(res => {
         if (!this.authError) {
-          console.log('success');
           this.router.navigate(['/']);
         }
       });
