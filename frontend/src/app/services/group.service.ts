@@ -64,9 +64,11 @@ export class GroupService {
   setGroup(groupId: string | null): void {
     this.currentGroup.next(this.groups.find(g => g.id === groupId) ?? null);
 
-    // update the current channel if the group has channels
-    if (this.currentGroup.value!.channels.length > 0) {
-      this.currentChannel.next(this.currentGroup.value!.channels[0]);
+    if (groupId) {
+      // update the current channel if the group has channels
+      if (this.currentGroup.value!.channels.length > 0) {
+        this.currentChannel.next(this.currentGroup.value!.channels[0]);
+      }
     }
   }
 
