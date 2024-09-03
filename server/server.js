@@ -2,12 +2,15 @@ require('dotenv').config();
 
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 const bcrypt = require('bcryptjs');
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // Temporary in-memory user database (before I setup mongo)
+const users = [];
 
 // Register route
 app.post('/register', async (req, res) => {
