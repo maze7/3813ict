@@ -13,7 +13,7 @@
             <h1 class="card-title text-2xl">{{ (groupService.group$ | async)?.name }}</h1>
             <span class="flex px-2 py-1 gap-x-1 rounded-2xl bg-neutral items-center text-secondary">
               <lucide-icon name="message-square" size="20"></lucide-icon>
-              <p class="text-neutral-300">Channel Name</p>
+              <p class="text-neutral-300">{{ groupService.currentChannel.value?.name }}</p>
             </span>
           </span>
           <span class="flex gap-x-4">
