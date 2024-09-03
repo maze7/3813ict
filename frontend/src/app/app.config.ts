@@ -5,7 +5,7 @@ import {
   AudioWaveform, Bell,
   LayoutDashboard,
   LucideAngularModule,
-  MessageCircle, MessageCirclePlus, Plus, Settings,
+  MessageCircle, MessageCirclePlus, Plus, Settings, Shield,
   ShieldX, UserCog, UserMinus, UserPlus,
   UsersRound
 } from 'lucide-angular';
@@ -30,6 +30,7 @@ export const appConfig: ApplicationConfig = {
       UserPlus,
       UserMinus,
       UserCog,
+      Shield,
     })),
   ]
 };
