@@ -114,8 +114,22 @@ export class GroupService {
   hasAccessToCurrentGroup(): boolean {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
-    console.log(user);
+
     return user.roles.includes('superAdmin') || group?.members.find(u => u.id == user.id) || group?.admins.find(u => u.id == user.id);
     //return group?.members.find(u => u.id === user?.id) || group?.admins.find(u => u.id === user?.id);
+  }
+
+  hasRequestedAccessToCurrentGroup(): boolean {
+    const group = this.currentGroup.value;
+    const user = this.auth.getUser();
+
+    return group?.pendingMembers.includes(user.id) ?? false;
+  }
+
+  requestToJoinGroup(groupId: string): void {
+    const group = this.currentGroup.value;
+    const user = this.auth.getUser();
+
+    group?.pendingMembers.push(user.id);
   }
 }
