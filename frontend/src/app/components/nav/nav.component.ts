@@ -18,15 +18,15 @@ import {AuthService} from "../../services/auth.service";
     FormsModule,
     ReactiveFormsModule
   ],
-  templateUrl: './group-nav.component.html',
-  styleUrl: './group-nav.component.css'
+  templateUrl: './nav.component.html',
+  styleUrl: './nav.component.css'
 })
-export class GroupNavComponent {
+export class NavComponent {
 
   @ViewChild('newGroupModal', { static: true }) newGroupModal?: ElementRef<HTMLDialogElement>;
   newGroupForm: FormGroup;
 
-  constructor(private auth: AuthService, private fb: FormBuilder, public groupService: GroupService, private router: Router) {
+  constructor(public auth: AuthService, private fb: FormBuilder, public groupService: GroupService, private router: Router) {
     this.newGroupForm = this.fb.group({
       name: ['', Validators.required],
       acronym: ['', Validators.required],

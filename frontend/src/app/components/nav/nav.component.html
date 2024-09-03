@@ -23,12 +23,14 @@
               </div>
             </div>
           }
-          <!-- Add Group Button -->
-          <button class="avatar placeholder p-1" (click)="newGroupModal.showModal()">
-            <div class="btn btn-ghost bg-base-100  text-neutral-content w-full h-full rounded-2xl">
-              <span class="text-xl">+</span>
-            </div>
-          </button>
+          @if (auth.isSuperAdmin() || auth.isGroupAdmin()) {
+            <!-- Add Group Button -->
+            <button class="avatar placeholder p-1" (click)="newGroupModal.showModal()">
+              <div class="btn btn-ghost bg-base-100  text-neutral-content w-full h-full rounded-2xl">
+                <span class="text-xl">+</span>
+              </div>
+            </button>
+          }
         </div>
       </div>
       <!-- bottom-aligned content -->

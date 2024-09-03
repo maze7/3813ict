@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {RouterOutlet} from "@angular/router";
-import {GroupNavComponent} from "./components/group-nav/group-nav.component";
+import {NavComponent} from "./components/nav/nav.component";
 import {AuthService} from "./services/auth.service";
 
 @Component({
@@ -8,7 +8,7 @@ import {AuthService} from "./services/auth.service";
   standalone: true,
   imports: [
     RouterOutlet,
-    GroupNavComponent,
+    NavComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
