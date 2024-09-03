@@ -1,39 +1,33 @@
-<main class="bg-base-300 w-full h-full">
-  <nav class="bg-base-300 w-72 h-full fixed z-10">
-    <div class="flex-col bg-base-100 w-full h-full overflow-hidden rounded-l-3xl">
-      <div class="px-4">
-        <!-- Channel List -->
-        <span class="flex justify-between items-end mt-2">
+<nav class="bg-base-300 w-72 h-full z-10">
+  <div class="flex-col bg-base-100 w-full h-full overflow-hidden rounded-l-3xl">
+    <div class="px-4">
+      <!-- Channel List -->
+      <span class="flex justify-between items-end mt-2">
           <h3 class="mt-4 card-title">Channels</h3>
           <div class="btn-sm btn-ghost rounded-lg p-0.5" (click)="newChannelModal.showModal()">
             <lucide-icon name="plus"></lucide-icon>
           </div>
         </span>
-        <div class="mt-4 flex flex-col gap-y-1">
-          @for (channel of channelService.channels; track channel) {
-            <div class="btn flex justify-between w-full"
-                 (click)="channelService.setChannel(channel.id)"
-                 [ngClass]="{
+      <div class="mt-4 flex flex-col gap-y-1">
+        @for (channel of channelService.channels; track channel) {
+          <div class="btn flex justify-between w-full"
+               (click)="channelService.setChannel(channel.id)"
+               [ngClass]="{
                     'btn-neutral': channelService.currentChannel === channel.id,
                     'btn-ghost': channelService.currentChannel !== channel.id,
                 }">
-              <div>
-                <span>#</span><span class="ml-3">{{ channel.name }}</span>
-              </div>
-              @if (channel.unread > 0) {
-                <div class="badge badge-secondary">+{{ channel.unread }}</div>
-              }
+            <div>
+              <span>#</span><span class="ml-3">{{ channel.name }}</span>
             </div>
-          }
-        </div>
+            @if (channel.unread > 0) {
+              <div class="badge badge-secondary">+{{ channel.unread }}</div>
+            }
+          </div>
+        }
       </div>
     </div>
-  </nav>
-
-  <section class="ml-72 flex-1 flex flex-col h-full bg-base-200">
-    <ng-content></ng-content>
-  </section>
-</main>
+  </div>
+</nav>
 
 
 <dialog #newChannelModal id="newChannelModal" class="modal modal-bottom sm:modal-middle">
