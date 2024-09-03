@@ -28,7 +28,7 @@ export const routes: Routes = [
     component: ProfileComponent,
   },
   {
-    path: 'group/:id',
+    path: 'group/:groupId',
     component: GroupComponent,
   }
 ];

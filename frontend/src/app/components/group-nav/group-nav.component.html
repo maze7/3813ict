@@ -5,21 +5,22 @@
   </div>
   <div class="drawer-side">
     <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-    <div class="menu bg-base-300 text-base-content min-h-full w-20 p-2 gap-y-2 justify-between">
+    <div class="menu bg-base-300 text-base-content min-h-full w-20 gap-y-2 justify-between">
       <!-- Top-aligned content -->
       <div>
         <div class="p-1">
-          <a class="btn btn-primary text-white flex justify-center items-center p-2 rounded-2xl">
+          <a class="btn btn-primary text-white flex justify-center items-center p-2 rounded-2xl h-14">
             <i-lucide name="audio-waveform" size="30"></i-lucide>
           </a>
         </div>
-        <div class="divider my-1 mb-4"></div>
+        <div class="absolute w-full left-0 divider my-0"></div>
         <!-- Groups -->
-        <div class="grid gap-y-2">
+        <div class="relative grid gap-y-2 mt-5">
           @for (group of groupService.getGroups(); track group) {
             <div class="avatar placeholder p-1" (click)="showGroup(group.id)">
-              <div class="btn btn-ghost bg-base-100  text-neutral-content w-full h-full rounded-2xl">
-                <span class="text-xl">G1</span>
+              <div class="btn btn-ghost bg-base-100  text-neutral-content w-full h-full rounded-2xl"
+                [ngClass]="{'ring-primary ring-2': ((groupService.group$ | async)?.id == group.id) }">
+                <span class="text-xl">{{group.name}}</span>
               </div>
             </div>
           }
