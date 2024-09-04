@@ -11,6 +11,7 @@ import {ChatComponent} from "../chat/chat.component";
 import {takeUntil} from "rxjs";
 import {AuthService} from "../../services/auth.service";
 import {GroupSettingsComponent} from "../../components/group-settings/group-settings.component";
+import {NewGroupModalComponent} from "../../components/new-group-modal/new-group-modal.component";
 
 @Component({
   selector: 'app-group',
@@ -25,6 +26,7 @@ import {GroupSettingsComponent} from "../../components/group-settings/group-sett
     PeopleComponent,
     ChatComponent,
     GroupSettingsComponent,
+    NewGroupModalComponent,
   ],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css'

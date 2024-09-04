@@ -63,7 +63,7 @@
         <div class="flex flex-col gap-y-4">
           <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>Create a group</h1>
           <div class="text-neutral-content text-lg">Click below to start your first community.</div>
-          <button class="btn btn-primary" (click)="groupService.requestAccess()">Create Group</button>
+          <button class="btn btn-primary" (click)="newGroupModal.open()">Create Group</button>
         </div>
       </div>
     }
@@ -83,3 +83,5 @@
     <app-group-settings (closed)="showGroupSettings = false"></app-group-settings>
   </div>
 }
+
+<app-new-group-modal #newGroupModal></app-new-group-modal>

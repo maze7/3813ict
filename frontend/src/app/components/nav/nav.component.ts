@@ -7,6 +7,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {Group} from "../../models/group.model";
 import {AuthService} from "../../services/auth.service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {NewGroupModalComponent} from "../new-group-modal/new-group-modal.component";
 
 @Component({
   selector: 'app-navbar',
@@ -17,35 +18,17 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
     NgClass,
     AsyncPipe,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NewGroupModalComponent
   ],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })
 export class NavComponent {
 
-  private destroyRef = inject(DestroyRef);
+  @ViewChild(NewGroupModalComponent) newGroupModal?: NewGroupModalComponent;
 
-  @ViewChild('newGroupModal', { static: true }) newGroupModal?: ElementRef<HTMLDialogElement>;
-  newGroupForm: FormGroup;
-
-  constructor(public auth: AuthService, private fb: FormBuilder, public groupService: GroupService, private router: Router) {
-    this.newGroupForm = this.fb.group({
-      name: ['', Validators.required],
-      acronym: ['', Validators.required],
-    });
-  }
-
-  addGroup(): void {
-    if (this.newGroupForm.valid) {
-      const name = this.newGroupForm.get('name')!.value;
-      const acronym = this.newGroupForm.get('acronym')!.value;
-
-      this.groupService.createGroup(name, acronym).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-      this.newGroupForm.reset();
-      this.newGroupModal?.nativeElement.close();
-    }
-  }
+  constructor(public auth: AuthService, public groupService: GroupService, private router: Router) {}
 
   showGroup(id: string): void {
     this.groupService.setGroup(id);
