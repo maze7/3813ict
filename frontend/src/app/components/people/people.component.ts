@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import {Component, DestroyRef, inject} from '@angular/core';
 import {AsyncPipe} from "@angular/common";
 import {LucideAngularModule} from "lucide-angular";
 import {GroupService} from "../../services/group.service";
 import {AuthService} from "../../services/auth.service";
+import {User} from "../../models/user.model";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-people',
@@ -15,5 +17,12 @@ import {AuthService} from "../../services/auth.service";
   styleUrl: './people.component.css'
 })
 export class PeopleComponent {
+
+  private destroyRef = inject(DestroyRef);
+
   constructor(protected groupService: GroupService, protected auth: AuthService) {}
+
+  kick(user: User) {
+    this.groupService.kickChannelUser(user).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  }
 }

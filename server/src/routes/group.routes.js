@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// get all groups
+// get all groups (list)
 router.get('/', async (req, res) => {
     try {
         const groups = await GroupModel.find({}).populate({
@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// READ a single group by ID
+// get a single group by ID
 router.get('/:id', async (req, res) => {
     try {
         const group = await GroupModel.findById(req.params.id).populate({
@@ -61,7 +61,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// DELETE a group by ID
+// delete a group by ID
 router.delete('/:id', async (req, res) => {
     try {
         const group = await GroupModel.findByIdAndDelete(req.params.id);
@@ -109,6 +109,23 @@ router.post('/channel', async (req, res) => {
         res.status(200).json(group);
     } catch (err) {
         res.status(500).json({ message: 'Error creating channel.', error: err.message });
+    }
+})
+
+// kick a user from a group channel
+router.post('/channel-kick', async (req, res) => {
+    try {
+        const { groupId, channelId, userId } = req.body;
+
+        console.log(groupId, channelId, userId);
+
+        await GroupModel.updateOne({ _id: groupId, 'channels._id': channelId }, {
+            $pull: { 'channels.$.members': userId }
+        });
+
+        res.status(200).json({ message: 'User kicked from the channel.' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error kicking user from channel.', error: err.message });
     }
 })
 

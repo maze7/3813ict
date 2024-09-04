@@ -166,12 +166,20 @@ export class GroupService {
     return channel.members.findIndex(u => u._id === user._id) >= 0;
   }
 
-  kickChannelUser(user: User): void {
-    const channel = this.currentChannel.value;
+  kickChannelUser(user: User): Observable<any> {
+    const channel = this.currentChannel.value!;
+    const group = this.currentGroup.value!;
 
-    if (channel) {
-      this.moveUser(user, channel.members, undefined);
-    }
+    return this.http.post<any>(`${this.baseUrl}/channel-kick`, {
+      userId: user._id,
+      channelId: channel._id,
+      groupId: group._id,
+    }).pipe(
+      tap((res: any) => {
+        // remove the channel user locally
+        this.moveUser(user, channel?.members, undefined);
+      })
+    );
   }
 
   demoteGroupAdmin(user: User): void {
@@ -196,6 +204,8 @@ export class GroupService {
     if (group) {
       this.moveUser(user, group.admins, undefined);
       this.moveUser(user, group.members, undefined);
+      this.moveUser(user, group.pendingAdmins, undefined);
+      this.moveUser(user, group.pendingMembers, undefined);
     }
   }
 

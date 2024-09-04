@@ -28,7 +28,7 @@
       </div>
       @if (groupService.isGroupAdmin()) {
         <div class="flex gap-x-1.5">
-          <div class="btn btn-sm btn-neutral text-neutral-100 tooltip flex items-center justify-center px-2.5" data-tip="Kick user" (click)="groupService.kickChannelUser(user)">
+          <div class="btn btn-sm btn-neutral text-neutral-100 tooltip flex items-center justify-center px-2.5" data-tip="Kick user" (click)="kick(user)">
             <lucide-icon name="user-round-minus" size="20"></lucide-icon>
           </div>
           <div class="btn btn-sm btn-error text-neutral-100 tooltip flex items-center justify-center px-2.5" data-tip="Ban user" (click)="groupService.banGroupUser(user)">
