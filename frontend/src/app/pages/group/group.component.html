@@ -1,43 +1,21 @@
 <main class="flex h-full bg-base-300">
-
-  @if (groupService.hasAccess()) {
-    <app-channel-nav></app-channel-nav>
-    <!-- main content -->
-    <section class="flex-1 flex flex-col h-full bg-base-300">
-      <!-- split pane -->
-      <div class="flex flex-1">
-        <!-- chat view -->
-        <div class="flex-1 lg:col-span-2 flex flex-col h-full bg-base-200 rounded-r-3xl overflow-hidden">
-          <!-- chat header -->
-          <span class="flex justify-between p-4 flex-none">
+  @if (groupService.currentGroup.value) {
+    @if (groupService.hasAccess()) {
+      <app-channel-nav></app-channel-nav>
+      <!-- main content -->
+      <section class="flex-1 flex flex-col h-full bg-base-300">
+        <!-- split pane -->
+        <div class="flex flex-1">
+          <!-- chat view -->
+          <div class="flex-1 lg:col-span-2 flex flex-col h-full bg-base-200 rounded-r-3xl overflow-hidden">
+            <!-- chat header -->
+            <span class="flex justify-between p-4 flex-none">
           <span class="flex gap-x-4">
-            <h1 class="card-title text-2xl">{{ (groupService.group$ | async)?.name }}</h1>
-            <span class="flex px-2 py-1 gap-x-1 rounded-2xl bg-neutral items-center text-secondary">
-              <lucide-icon name="message-square" size="20"></lucide-icon>
-              <p class="text-neutral-300">{{ groupService.currentChannel.value?.name }}</p>
-            </span>
+            <h1 class="card-title text-2xl capitalize">
+              {{ (groupService.group$ | async)?.name }} <span class="text-accent">/</span> {{ groupService.currentChannel.value?.name }}
+            </h1>
           </span>
           <span class="flex gap-x-4">
-            <div class="avatar-group -space-x-6 rtl:space-x-reverse">
-              @if (groupService.currentChannel.value) {
-                @for (user of groupService.currentChannel.value!.members.slice(0, 3); track user._id) {
-                  <div class="tooltip tooltip-bottom" [attr.data-tip]="user.username">
-                    <div class="avatar" [attr.data-tip]="user.username">
-                      <div class="w-12">
-                        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                      </div>
-                    </div>
-                  </div>
-                }
-                @if (groupService.currentChannel.value!.members.length > 3) {
-                  <div class="avatar placeholder">
-                  <div class="bg-neutral text-neutral-content w-12">
-                    <span>+{{ groupService.currentChannel.value!.members.length - 3 }}</span>
-                  </div>
-                </div>
-                }
-              }
-            </div>
             <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Video Call">
               <lucide-angular name="video"></lucide-angular>
             </button>
@@ -51,31 +29,52 @@
             }
           </span>
         </span>
-          <app-chat class="flex-1 overflow-auto"></app-chat>
+            <app-chat class="flex-1 overflow-auto"></app-chat>
+          </div>
+          <!-- settings / information -->
+          <div class="hidden lg:block p-4 min-w-96 flex-none bg-base-300">
+            <app-people></app-people>
+          </div>
         </div>
-        <!-- settings / information -->
-        <div class="hidden lg:block p-4 min-w-96 flex-none bg-base-300">
-          <app-people></app-people>
+      </section>
+    }
+    @else if (groupService.hasRequestedAccess()) {
+      <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
+        <div class="flex flex-col gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="clock" size="30"></lucide-angular>Request pending.</h1>
+          <div class="text-neutral-content text-lg">You have requested to join this group.</div>
         </div>
       </div>
-    </section>
-  }
-  @else if (groupService.hasRequestedAccess()) {
-    <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
-      <div class="flex flex-col gap-y-4">
-        <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="clock" size="30"></lucide-angular>Request pending.</h1>
-        <div class="text-neutral-content text-lg">You have requested to join this group.</div>
+    }
+    @else {
+      <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
+        <div class="flex flex-col gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="lock" size="30"></lucide-angular>Uh oh!</h1>
+          <div class="text-neutral-content text-lg">You do not have access to this group.</div>
+          <button class="btn btn-primary" (click)="groupService.requestAccess()">Request access</button>
+        </div>
       </div>
-    </div>
+    }
   }
   @else {
-    <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
-      <div class="flex flex-col gap-y-4">
-        <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="lock" size="30"></lucide-angular>Uh oh!</h1>
-        <div class="text-neutral-content text-lg">You do not have access to this group.</div>
-        <button class="btn btn-primary" (click)="groupService.requestAccess()">Request access</button>
+    <!-- No Groups View -->
+    @if (auth.isSuperAdmin() || auth.isGroupAdmin()) {
+      <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
+        <div class="flex flex-col gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>Create a group</h1>
+          <div class="text-neutral-content text-lg">Click below to start your first community.</div>
+          <button class="btn btn-primary" (click)="groupService.requestAccess()">Create Group</button>
+        </div>
       </div>
-    </div>
+    }
+    @else {
+      <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
+        <div class="flex flex-col gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>No groups found.</h1>
+          <div class="text-neutral-content text-lg">An admin will need to create a group before you can start chatting.</div>
+        </div>
+      </div>
+    }
   }
 </main>
 

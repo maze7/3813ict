@@ -3,7 +3,7 @@
     <div class="flex-col bg-base-100 w-full h-full overflow-visible rounded-l-3xl">
       <div class="px-4">
         <!-- Channel List -->
-        <span class="flex justify-between items-end mt-2">
+        <span class="flex justify-between items-end">
           <h3 class="mt-4 card-title">Group Settings</h3>
         </span>
         <div class="mt-4 flex flex-col gap-y-1">
@@ -117,7 +117,7 @@
                       <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Make admin" (click)="makeAdmin(user)">
                         <lucide-icon name="shield-plus" size="22"></lucide-icon>
                       </div>
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick ser" (click)="kickUser(user)">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="kickUser(user)">
                         <lucide-icon name="user-round-minus" size="22"></lucide-icon>
                       </div>
                       <div class="btn btn-sm btn-error text-neutral-100 tooltip py-1 px-2" data-tip="Ban user" (click)="banUser(user)">

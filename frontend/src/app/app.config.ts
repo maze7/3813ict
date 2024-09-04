@@ -83,6 +83,7 @@ export const appConfig: ApplicationConfig = {
       CircleSlash,
       Ban,
       Undo,
+      UserRoundPlus,
       UserRoundMinus,
       HandCoins,
       LockOpen,
