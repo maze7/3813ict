@@ -33,7 +33,7 @@
         <!-- Admins -->
         <h1 class="card-title text-2xl pl-3 mb-3">Admins</h1>
         <div class="overflow-x-auto overflow-auto">
-          <table class="table">
+          <table class="table table-fixed">
             <!-- head -->
             <thead>
             <tr>
@@ -84,7 +84,7 @@
         <!-- Members -->
         <h1 class="mt-10 card-title text-2xl pl-3 mb-3">Members</h1>
         <div class="overflow-x-auto">
-          <table class="table">
+          <table class="table table-fixed">
             <!-- head -->
             <thead>
             <tr>
@@ -136,7 +136,7 @@
         @if (groupService.currentGroup.value && groupService.currentGroup.value!.pendingMembers.length) {
           <h1 class="mt-10 card-title text-2xl pl-3 mb-3">Group Join Requests</h1>
           <div class="overflow-x-auto">
-            <table class="table">
+            <table class="table table-fixed">
               <!-- head -->
               <thead>
               <tr>
@@ -186,7 +186,7 @@
         @if (groupService.currentGroup.value && groupService.currentGroup.value!.banned.length) {
           <h1 class="mt-10 card-title text-2xl pl-3 mb-3">Banned</h1>
           <div class="overflow-x-auto">
-            <table class="table">
+            <table class="table table-fixed">
               <!-- head -->
               <thead>
               <tr>
@@ -226,7 +226,12 @@
             </table>
           </div>
         }
+        <span class="mt-10 flex justify-start">
+          <button class="btn btn-primary max-w-md" (click)="addUserModal.open()">Add Member</button>
+        </span>
       }
     </div>
   </section>
 </div>
+
+<app-add-user-modal #addUserModal [users]="users"></app-add-user-modal>

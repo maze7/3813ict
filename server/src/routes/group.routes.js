@@ -19,10 +19,9 @@ router.post('/', async (req, res) => {
         await group.save();
 
         // populate the reference fields
-        const populated = await GroupModel.findById(group._id).populate({
-            path: 'members admins pendingAdmins pendingMembers channels.members',
-            select: '-password',
-        });
+        const populated = await GroupModel.findById(group._id).populate(
+            'members admins pendingAdmins pendingMembers channels.members',
+        );
 
         res.status(201).json(populated);
     } catch (err) {
@@ -33,10 +32,9 @@ router.post('/', async (req, res) => {
 // get all groups (list)
 router.get('/', async (req, res) => {
     try {
-        const groups = await GroupModel.find({}).populate({
-            path: 'members admins pendingAdmins pendingMembers channels.members',
-            select: '-password',
-        });
+        const groups = await GroupModel.find({}).populate(
+            'members admins pendingAdmins pendingMembers channels.members',
+        );
 
         res.status(200).json(groups);
     } catch (err) {
@@ -47,10 +45,9 @@ router.get('/', async (req, res) => {
 // get a single group by ID
 router.get('/:id', async (req, res) => {
     try {
-        const group = await GroupModel.findById(req.params.id).populate({
-            path: 'members admins pendingAdmins pendingMembers channels.members',
-            select: '-password',
-        });
+        const group = await GroupModel.findById(req.params.id).populate(
+            'members admins pendingAdmins pendingMembers channels.members',
+        );
 
         if (!group) {
             return res.status(404).json({ message: 'Group not found' });
@@ -83,10 +80,9 @@ router.post('/channel', async (req, res) => {
         await GroupModel.updateOne({ _id: groupId }, { $push: { channels: { name, members: [req.user._id] }}});
 
         // get the updated group and return
-        const group = await GroupModel.findById(groupId).populate({
-            path: 'members admins pendingAdmins pendingMembers channels.members',
-            select: '-password',
-        });
+        const group = await GroupModel.findById(groupId).populate(
+            'members admins pendingAdmins pendingMembers channels.members',
+        );
 
         res.status(200).json(group);
     } catch (err) {
@@ -114,10 +110,9 @@ router.post('/add-user/:id', async (req, res) => {
         }
 
         // get the updated group
-        const group = await GroupModel.findById(req.params.id).populate({
-            path: 'members admins pendingAdmins pendingMembers channels.members',
-            select: '-password',
-        });
+        const group = await GroupModel.findById(req.params.id).populate(
+            'members admins pendingAdmins pendingMembers channels.members',
+        );
 
         res.status(200).json(group);
     } catch (err) {
@@ -128,10 +123,9 @@ router.post('/add-user/:id', async (req, res) => {
 // request to join a group
 router.post('/join/:id', async (req, res) => {
     try {
-        const group = await GroupModel.findById(req.params.id).populate({
-            path: 'members admins pendingAdmins pendingMembers channels.members',
-            select: '-password',
-        });
+        const group = await GroupModel.findById(req.params.id).populate(
+            'members admins pendingAdmins pendingMembers channels.members',
+        );
 
         if (!group) {
             return res.status(404).json({ message: 'Group not found' });
@@ -196,10 +190,9 @@ router.post('/kick', async (req, res) => {
         await GroupModel.updateOne(query, update);
 
         // get updated group to return to client
-        const group = await GroupModel.findById(groupId).populate({
-            path: 'members admins pendingAdmins pendingMembers channels.members',
-            select: '-password',
-        });
+        const group = await GroupModel.findById(groupId).populate(
+            'members admins pendingAdmins pendingMembers channels.members',
+        );
 
         res.status(200).json(group);
     } catch (err) {

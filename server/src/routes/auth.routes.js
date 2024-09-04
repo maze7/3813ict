@@ -11,7 +11,7 @@ router.post('/register', async (req, res) => {
         const { username, email, password } = req.body;
 
         // Check if the username or email is already in use
-        const existingUser = await UserModel.findOne({ $or: [{ username: email }, { email }] });
+        const existingUser = await UserModel.findOne({ $or: [{ username: email }, { email }] }).select('+password');
         if (existingUser) {
             return res.status(400).json({ message: 'Username or email already in use.' });
         }
@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
         const { username, password } = req.body;
 
         // Find the user by username
-        const user = await UserModel.findOne({ username });
+        const user = await UserModel.findOne({ username }).select('+password');
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }

@@ -40,4 +40,4 @@
   }
 </div>
 
-<app-add-user-modal [users]="getUsers()" #addUserModal></app-add-user-modal>
+<app-add-user-modal [users]="getUsers()" [channel]="groupService.currentChannel.value ?? undefined" #addUserModal></app-add-user-modal>
