@@ -15,17 +15,17 @@
         </div>
         <!-- Groups -->
         <div class="relative grid gap-y-2 mt-5">
-          @for (group of groupService.listGroups(); track group) {
-            <div class="avatar placeholder p-1" (click)="showGroup(group.id!)">
+          @for (group of groupService.groups; track group._id) {
+            <div class="avatar placeholder p-1" (click)="showGroup(group._id!)">
               <div class="btn btn-ghost bg-base-100  text-neutral-content w-full h-full rounded-2xl"
-                [ngClass]="{'ring-primary ring-2': ((groupService.group$ | async)?.id == group.id) }">
-                <span class="text-xl">{{group.acronym.slice(0, 2)}}</span>
+                [ngClass]="{'ring-primary ring-2': ((groupService.group$ | async)?._id == group._id) }">
+                <span class="text-md">{{group.acronym.slice(0, 2)}}</span>
               </div>
             </div>
           }
           @if (auth.isSuperAdmin() || auth.isGroupAdmin()) {
             <!-- Add Group Button -->
-            <button class="avatar placeholder p-1" (click)="newGroupModal.showModal()">
+            <button class="avatar placeholder p-1" (click)="newGroupModal.open()">
               <div class="btn btn-ghost bg-base-100  text-neutral-content w-full h-full rounded-2xl">
                 <span class="text-xl">+</span>
               </div>
@@ -35,9 +35,11 @@
       </div>
       <!-- bottom-aligned content -->
       <div class="flex-col items-center">
-        <div class="btn btn-ghost mb-2 w-full">
-          <lucide-icon name="shield"></lucide-icon>
-        </div>
+        @if (auth.isSuperAdmin()) {
+          <div class="btn btn-ghost mb-2 w-full">
+            <lucide-icon name="shield"></lucide-icon>
+          </div>
+        }
         <div class="avatar online p-2" (click)="logout()">
           <!-- user avatar -->
           <img
@@ -50,36 +52,4 @@
   </div>
 </div>
 
-<!-- Modal for creating a new group via the "add group button -->
-<dialog #newGroupModal id="newGroupModal" class="modal modal-bottom sm:modal-middle">
-  <div class="modal-box">
-    <h3 class="text-lg font-bold">Create Group</h3>
-    <form [formGroup]="newGroupForm" class="mt-4">
-      <input
-        class="input input-bordered w-full"
-        type="text"
-        placeholder="Group Name"
-        formControlName="name"
-        [ngClass]="{
-          'input-error': newGroupForm.get('name')?.invalid && newGroupForm.get('name')?.touched
-        }"
-      />
-      <input
-        class="input input-bordered w-full mt-4"
-        type="text"
-        placeholder="Group Acronym"
-        formControlName="acronym"
-        [ngClass]="{
-          'input-error': newGroupForm.get('acronym')?.invalid && newGroupForm.get('acronym')?.touched
-        }"
-      />
-    </form>
-    <div class="modal-action">
-      <form method="dialog">
-        <!-- if there is a button in form, it will close the modal -->
-        <button class="btn btn-neutral">Cancel</button>
-      </form>
-      <button class="btn btn-primary" (click)="addGroup()">Create</button>
-    </div>
-  </div>
-</dialog>
+<app-new-group-modal #newGroupModal></app-new-group-modal>

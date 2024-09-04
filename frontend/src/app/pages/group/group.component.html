@@ -1,51 +1,92 @@
-<main class="flex h-full">
-
-  @if (groupService.hasAccessToCurrentGroup()) {
-    <app-channel-nav></app-channel-nav>
-    <!-- main content -->
-    <section class="flex-1 flex flex-col h-full bg-base-300">
-      <!-- split pane -->
-      <div class="flex flex-1">
-        <!-- chat view -->
-        <div class="flex-1 lg:col-span-2 flex flex-col h-full bg-base-200 rounded-r-3xl overflow-hidden">
-          <!-- chat header -->
-          <span class="flex justify-between p-4 flex-none">
+<main class="flex h-full bg-base-300">
+  @if (groupService.currentGroup.value) {
+    @if (groupService.hasAccess()) {
+      <app-channel-nav></app-channel-nav>
+      <!-- main content -->
+      <section class="flex-1 flex flex-col h-full bg-base-300">
+        <!-- split pane -->
+        <div class="flex flex-1">
+          <!-- chat view -->
+          <div class="flex-1 lg:col-span-2 flex flex-col h-full bg-base-200 rounded-r-3xl overflow-hidden">
+            <!-- chat header -->
+            <span class="flex justify-between p-4 flex-none">
           <span class="flex gap-x-4">
-            <h1 class="card-title text-2xl">{{ (groupService.group$ | async)?.name }}</h1>
-            <span class="flex px-2 py-1 gap-x-1 rounded-2xl bg-neutral items-center text-secondary">
-              <lucide-icon name="message-square" size="20"></lucide-icon>
-              <p class="text-neutral-300">{{ groupService.currentChannel.value?.name }}</p>
-            </span>
+            <h1 class="card-title text-2xl capitalize">
+              {{ (groupService.group$ | async)?.name }}
+              @if ((groupService.channel$ | async)) {
+                <span class="text-neutral">/</span> {{ groupService.currentChannel.value?.name }}
+              }
+            </h1>
           </span>
           <span class="flex gap-x-4">
-            <button class="btn btn-neutral rounded-full">
+            @if ((groupService.channel$ | async)) {
+              <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Video Call">
               <lucide-angular name="video"></lucide-angular>
-            </button>
-            <button class="btn btn-neutral rounded-full">
-              <lucide-angular name="phone-call"></lucide-angular>
-            </button>
-            <!-- @if (isSuperAdmin || (isGroupAdmin && isGroupOwner(groupService.group$ | async)) {} -->
-            <button class="btn btn-neutral rounded-full">
-              <lucide-angular name="settings"></lucide-angular>
-            </button>
+              </button>
+                <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Voice Call">
+                <lucide-angular name="phone-call"></lucide-angular>
+              </button>
+            }
+            @if ( groupService.isGroupAdmin()) {
+              <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Settings" (click)="showGroupSettings = true">
+                <lucide-angular name="settings"></lucide-angular>
+              </button>
+            }
           </span>
         </span>
-          <app-chat class="flex-1 overflow-auto"></app-chat>
+            <app-chat class="flex-1 overflow-auto"></app-chat>
+          </div>
+          <!-- settings / information -->
+          <div class="hidden lg:block p-4 min-w-96 flex-none bg-base-300">
+            <app-people></app-people>
+          </div>
         </div>
-        <!-- settings / information -->
-        <div class="hidden lg:block p-4 min-w-96 flex-none bg-base-300">
-          <app-group-members></app-group-members>
+      </section>
+    }
+    @else if (groupService.hasRequestedAccess()) {
+      <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
+        <div class="flex flex-col gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="clock" size="30"></lucide-angular>Request pending.</h1>
+          <div class="text-neutral-content text-lg">You have requested to join this group.</div>
         </div>
       </div>
-    </section>
+    }
+    @else {
+      <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
+        <div class="flex flex-col gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="lock" size="30"></lucide-angular>Uh oh!</h1>
+          <div class="text-neutral-content text-lg">You do not have access to this group.</div>
+          <button class="btn btn-primary" (click)="groupService.requestAccess()">Request access</button>
+        </div>
+      </div>
+    }
   }
   @else {
-    <div class="flex w-full h-full justify-center items-center">
-      <div class="flex flex-col gap-y-4">
-        <h1 class="card-title"><lucide-angular name="lock"></lucide-angular>Oh no!</h1>
-        <div>You do not have access to this group!</div>
-        <button class="btn btn-primary">Request access</button>
+    <!-- No Groups View -->
+    @if (groupService.isGroupAdmin()) {
+      <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
+        <div class="flex flex-col gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>Create a group</h1>
+          <div class="text-neutral-content text-lg">Click below to start your first community.</div>
+          <button class="btn btn-primary" (click)="newGroupModal.open()">Create Group</button>
+        </div>
       </div>
-    </div>
+    }
+    @else {
+      <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
+        <div class="flex flex-col gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>No channels.</h1>
+          <div class="text-neutral-content text-lg">An admin will need to create a channel before you can start chatting.</div>
+        </div>
+      </div>
+    }
   }
 </main>
+
+@if (showGroupSettings) {
+  <div class="z-50 fixed left-20 top-0 right-0 bottom-0 bg-base-100 rounded-l-3xl">
+    <app-group-settings (closed)="showGroupSettings = false"></app-group-settings>
+  </div>
+}
+
+<app-new-group-modal #newGroupModal></app-new-group-modal>

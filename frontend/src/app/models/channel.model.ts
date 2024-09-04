@@ -1,4 +1,7 @@
+import {User} from "./user.model";
+
 export interface Channel {
-  id: string;
+  _id: string;
   name: string;
+  members: User[];
 }

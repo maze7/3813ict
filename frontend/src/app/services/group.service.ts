@@ -1,60 +1,38 @@
 import { Injectable } from '@angular/core';
 import {Group} from "../models/group.model";
 import {Channel} from "../models/channel.model";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, catchError, map, Observable, of, tap} from "rxjs";
 import {AuthService} from "./auth.service";
+import {HttpClient} from "@angular/common/http";
+import {User} from "../models/user.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
 
-  constructor(private auth: AuthService) { }
+  constructor(private auth: AuthService, private http: HttpClient) { }
 
   public currentGroup: BehaviorSubject<Group | null> = new BehaviorSubject<Group | null>(null);
   public currentChannel: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
   public group$ = this.currentGroup.asObservable();
   public channel$ = this.currentChannel.asObservable();
+  public groups: Group[] = [];
 
-  // dummy data for now
-  private groups: Group[] = [
-    {
-      id: '1',
-      name: 'Group 1',
-      acronym: 'G1',
-      members: [
-        { username: 'Nathan Wilson', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
-        { username: 'Tara Templeman', id: '0' },
-      ],
-      admins: [
-        { username: 'Callan Acton', id: '0', avatar: 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp' },
-      ],
-      pendingAdmins: [],
-      pendingMembers: [
-        { username: 'Chase Meise', id: '0' },
-        { username: 'Shrek', id: '0', avatar: 'https://www.cnet.com/a/img/resize/4cd1618a335631f7c0b7caa5fdc421b024f20f06/hub/2018/11/30/5ccd3953-6edf-4435-b4d1-615d3d0274b1/shrekretoldstill.jpg?auto=webp&width=1920' },
-      ],
-      channels: [
-        { id: '1', name: 'memes' },
-      ]
-    },
-    {
-      id: '2',
-      name: 'Group Two',
-      acronym: 'G2',
-      members: [],
-      admins: [],
-      pendingAdmins: [],
-      pendingMembers: [],
-      channels: []
-    },
-  ];
+  private readonly baseUrl: string = 'http://localhost:3000/group';
 
   /**
    * Gets a list of all groups that exist within the server
    */
-  listGroups(): Group[] {
-    return this.groups;
+  listGroups(): Observable<Group[]> {
+    return this.http.get<Group[]>(`${this.baseUrl}`).pipe(
+      map((res: any) => {
+        return res as Group[]; // Cast the response to Group[]
+      }),
+      tap((data) => {
+        this.groups = data;
+      })
+    );
   }
 
   /**
@@ -62,42 +40,62 @@ export class GroupService {
    * @param groupId id of group to be navigated to
    */
   setGroup(groupId: string | null): void {
-    this.currentGroup.next(this.groups.find(g => g.id === groupId) ?? null);
+    this.currentGroup.next(this.groups.find(g => g._id === groupId) ?? null);
 
     if (groupId) {
-      // update the current channel if the group has channels
-      if (this.currentGroup.value!.channels.length > 0) {
-        this.currentChannel.next(this.currentGroup.value!.channels[0]);
+      this.currentChannel.next(null);
+      for (const channel of this.currentGroup.value!.channels) {
+        if (this.canAccessChannel(channel)) {
+          this.currentChannel.next(channel);
+        }
       }
     }
   }
 
   /**
    * Creates a group (if the user has the correct permissions)
-   * @param group the Group to be created
+   * @param name
+   * @param acronym
    */
-  createGroup(group: Group): void {
-    // temporarily assign a fake id here (this will be assigned by DB later)
-    group.id = (this.groups.length + 1).toString();
-
-    this.groups.push(group);
-    this.setGroup(group.id);
+  createGroup(name: string, acronym: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}`, { name, acronym }).pipe(
+      tap((res: any) => {
+        this.groups.push(res);
+        console.log(res);
+        this.setGroup(res._id);
+      }),
+      catchError((err) => {
+        console.error(err);
+        return of(null);
+      })
+    );
   }
 
   /**
    * Creates a new channel within the current group
-   * @param channel
+   * @param name
    */
-  createChannel(name: string): void {
+  createChannel(name: string): Observable<any> {
     // this is placeholder while there is no API to call
     const group = this.currentGroup.value;
 
     // if there is a currently selected group, add the channel & update behaviour subject
     if (group) {
-      const id = (group.channels.length + 1).toString(); // this will be a MongoDB document ID
-      group.channels.push({ id, name });
-      this.currentGroup.next(group);
+      return this.http.post<any>(`${this.baseUrl}/channel`, { groupId: group._id, name}).pipe(tap((data) => {
+        // Find the index of the group in this.groups array
+        const index = this.groups.findIndex(g => g._id === data._id);
+
+        // If group is found, replace it with the updated data
+        if (index !== -1) {
+          this.groups[index] = data;
+        }
+
+        // update the current group behaviour subject
+        this.currentGroup.next(data);
+      }));
     }
+
+    return of(null);
   }
 
   /**
@@ -105,17 +103,152 @@ export class GroupService {
    * @param channelId id of channel to navigate to
    */
   setChannel(channelId: string | null): void {
-    const channel = this.currentGroup.value?.channels.find(c => c.id === channelId);
+    const channel = this.currentGroup.value?.channels.find(c => c._id === channelId);
     if (channel) {
       this.currentChannel.next(channel);
     }
   }
 
-  hasAccessToCurrentGroup(): boolean {
+  /**
+   * Utility method to determine if a user has access to the current group based on their role and group membership
+   */
+  hasAccess(): boolean {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
 
-    return true;
-    //return group?.members.find(u => u.id === user?.id) || group?.admins.find(u => u.id === user?.id);
+    const isMember = (group?.members.find(u => u._id == user._id) || group?.admins.find(u => u._id == user._id)) ?? false;
+
+    return user.roles.includes('superAdmin') || isMember;
+  }
+
+  /**
+   * Utility method to determine if a user has requested to join a group
+   */
+  hasRequestedAccess(): boolean {
+    const group = this.currentGroup.value;
+    const user = this.auth.getUser();
+
+    return group?.pendingMembers.includes(user._id) ?? false;
+  }
+
+  /**
+   * Utility method to request access to a group
+   */
+  requestAccess(): void {
+    const group = this.currentGroup.value;
+    const user = this.auth.getUser();
+
+    group?.pendingMembers.push(user._id);
+  }
+
+  /**
+   * Returns true or false as to whether the current user is an admin for the current group
+   */
+  isGroupAdmin(): boolean {
+    const group = this.currentGroup.value;
+    const user = this.auth.getUser();
+
+    return this.auth.isSuperAdmin() || (group?.admins.includes(user._id) ?? false);
+  }
+
+  /**
+   * Returns true or false whether the authenticated user can access the given channel
+   * @param channel
+   */
+  canAccessChannel(channel: Channel): boolean {
+    const user = this.auth.getUser();
+
+    // Super admins and Group admins can see all channels
+    if (this.isGroupAdmin()) {
+      return true;
+    }
+
+    return channel.members.findIndex(u => u._id === user._id) >= 0;
+  }
+
+  kickChannelUser(user: User): void {
+    const channel = this.currentChannel.value;
+
+    if (channel) {
+      this.moveUser(user, channel.members, undefined);
+    }
+  }
+
+  demoteGroupAdmin(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.admins, group.members);
+    }
+  }
+
+  makeGroupAdmin(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.members, group.admins);
+    }
+  }
+
+  kickGroupUser(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.admins, undefined);
+      this.moveUser(user, group.members, undefined);
+    }
+  }
+
+  banGroupUser(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.admins, group.banned);
+    }
+  }
+
+  unbanGroupUser(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.banned, undefined);
+    }
+  }
+
+  acceptPendingGroupMember(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.pendingMembers, group.members);
+    }
+  }
+
+  rejectPendingGroupMember(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.pendingMembers, undefined);
+    }
+  }
+
+  /**
+   * Used to move users into different roles within the group
+   * @param user
+   * @param arr1
+   * @param arr2
+   */
+  moveUser(user: User, arr1: User[], arr2?: User[]) {
+    // Find the index of the user in arr1
+    const userIndex = arr1.findIndex(u => u._id === user._id);
+
+    // If the user is found in arr1, remove the user from arr1 and add to arr2
+    if (userIndex !== -1) {
+      arr1.splice(userIndex, 1); // Remove user from arr1
+
+      // if a destination was provided, add the user to the new array
+      if (arr2) {
+        arr2.push(user);
+      }
+    }
   }
 }

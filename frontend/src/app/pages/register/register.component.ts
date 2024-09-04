@@ -41,6 +41,7 @@ export class RegisterComponent {
   constructor(private auth: AuthService, private router: Router,  private fb: FormBuilder) {
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
+      email: ['', Validators.email],
       password: ['', Validators.required],
       password2: ['', Validators.required]
     }, { validator: inputMatchValidator('password', 'password2') });
@@ -48,9 +49,9 @@ export class RegisterComponent {
 
   register(): void {
     if (this.registerForm.valid) {
-      const { username, password, password2 } = this.registerForm.value;
+      const { username, email, password, password2 } = this.registerForm.value;
 
-      this.auth.register(username, password).pipe(
+      this.auth.register(username, email, password).pipe(
         catchError((error) => {
           throw error;
         })

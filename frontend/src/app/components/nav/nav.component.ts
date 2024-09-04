@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, DestroyRef, ElementRef, inject, ViewChild} from '@angular/core';
 import {Router, RouterOutlet} from "@angular/router";
 import {LucideAngularModule} from "lucide-angular";
 import {GroupService} from "../../services/group.service";
@@ -6,6 +6,8 @@ import {AsyncPipe, NgClass} from "@angular/common";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Group} from "../../models/group.model";
 import {AuthService} from "../../services/auth.service";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {NewGroupModalComponent} from "../new-group-modal/new-group-modal.component";
 
 @Component({
   selector: 'app-navbar',
@@ -16,41 +18,17 @@ import {AuthService} from "../../services/auth.service";
     NgClass,
     AsyncPipe,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NewGroupModalComponent
   ],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })
 export class NavComponent {
 
-  @ViewChild('newGroupModal', { static: true }) newGroupModal?: ElementRef<HTMLDialogElement>;
-  newGroupForm: FormGroup;
+  @ViewChild(NewGroupModalComponent) newGroupModal?: NewGroupModalComponent;
 
-  constructor(public auth: AuthService, private fb: FormBuilder, public groupService: GroupService, private router: Router) {
-    this.newGroupForm = this.fb.group({
-      name: ['', Validators.required],
-      acronym: ['', Validators.required],
-    });
-  }
-
-  addGroup(): void {
-    if (this.newGroupForm.valid) {
-      const group: Group = {
-        id: this.groupService.listGroups().length.toString(),
-        name: this.newGroupForm.get('name')!.value,
-        acronym: this.newGroupForm.get('acronym')!.value,
-        members: [],
-        admins: [],
-        pendingAdmins: [],
-        pendingMembers: [],
-        channels: [],
-      };
-
-      this.groupService.createGroup(group);
-      this.newGroupForm.reset();
-      this.newGroupModal?.nativeElement.close();
-    }
-  }
+  constructor(public auth: AuthService, public groupService: GroupService, private router: Router) {}
 
   showGroup(id: string): void {
     this.groupService.setGroup(id);

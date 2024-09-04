@@ -3,50 +3,34 @@
     <div class="px-4">
       <!-- Channel List -->
       <span class="flex justify-between items-end mt-2">
-          <h3 class="mt-4 card-title">Channels</h3>
-          <div class="btn-sm btn-ghost rounded-lg p-0.5" (click)="newChannelModal.showModal()">
+          <h3 class="mt-4 card-title">
+            <lucide-icon class="text-primary" name="rss"></lucide-icon>Channels</h3>
+          <div class="btn btn-sm btn-neutral rounded-lg p-0.5" (click)="newChannelModal.open()">
             <lucide-icon name="plus"></lucide-icon>
           </div>
         </span>
       <div class="mt-4 flex flex-col gap-y-1">
-        @for (channel of (groupService.group$ | async)?.channels; track channel) {
-          <div class="btn flex justify-between w-full"
-               (click)="groupService.setChannel(channel.id)"
+        @for (channel of (groupService.group$ | async)?.channels; track channel._id) {
+          <button class="btn flex justify-between items-center w-full disabled:text-gray-500" [disabled]="!groupService.canAccessChannel(channel)"
+               (click)="groupService.setChannel(channel._id)"
                [ngClass]="{
-                    'btn-neutral': (groupService.channel$ | async)?.id === channel.id,
-                    'btn-ghost': (groupService.channel$ | async)?.id !== channel.id,
+                    'btn-neutral': (groupService.channel$ | async)?._id === channel._id,
+                    'btn-ghost': (groupService.channel$ | async)?._id !== channel._id,
                 }">
-            <div>
-              <span>#</span><span class="ml-3">{{ channel.name }}</span>
+            <div class="flex items-center">
+              @if (!groupService.canAccessChannel(channel)) {
+                <lucide-icon name="lock" size="16"></lucide-icon>
+              }
+              @else {
+                #
+              }
+              <span class="ml-3">{{ channel.name }}</span>
             </div>
-          </div>
+          </button>
         }
       </div>
     </div>
   </div>
 </nav>
 
-
-<dialog #newChannelModal id="newChannelModal" class="modal modal-bottom sm:modal-middle">
-  <div class="modal-box">
-    <h3 class="text-lg font-bold">Create Channel</h3>
-    <form [formGroup]="newChannelForm" class="mt-4">
-      <input
-        class="input input-bordered w-full"
-        type="text"
-        placeholder="Channel Name"
-        formControlName="name"
-        [ngClass]="{
-          'input-error': newChannelForm.get('name')?.invalid && newChannelForm.get('name')?.touched
-        }"
-      />
-    </form>
-    <div class="modal-action">
-      <form method="dialog">
-        <!-- if there is a button in form, it will close the modal -->
-        <button class="btn btn-neutral">Cancel</button>
-      </form>
-      <button class="btn btn-primary" (click)="addChannel()">Create</button>
-    </div>
-  </div>
-</dialog>
+<app-new-channel-modal #newChannelModal></app-new-channel-modal>
