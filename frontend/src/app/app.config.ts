@@ -33,7 +33,18 @@ import {
   ShieldPlus,
   ShieldOff,
   ShieldBan,
-  CircleSlash, Ban, Undo, UserRoundPlus, UserRoundMinus, HandCoins, LockOpen,
+  CircleSlash,
+  Ban,
+  Undo,
+  UserRoundPlus,
+  UserRoundMinus,
+  HandCoins,
+  LockOpen,
+  Rss,
+  GlobeLock,
+  Globe,
+  Antenna,
+  MessageCircleDashed,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -87,6 +98,11 @@ export const appConfig: ApplicationConfig = {
       UserRoundMinus,
       HandCoins,
       LockOpen,
+      Rss,
+      Globe,
+      GlobeLock,
+      Antenna,
+      MessageCircleDashed,
     })),
   ]
 };

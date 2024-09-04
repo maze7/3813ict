@@ -48,14 +48,14 @@
   <div class="h-full flex flex-col items-center">
     @if (auth.isSuperAdmin() || auth.isGroupAdmin()) {
       <div class="flex flex-col gap-y-4 mx-auto my-auto max-w-xs">
-        <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>Create a channel</h1>
+        <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="rss" size="30"></lucide-angular>Create a channel</h1>
         <div class="text-neutral-content text-lg">Click below to start your first channel.</div>
         <button class="btn btn-primary" (click)="newChannelModal.open()">Create Channel</button>
       </div>
     }
     @else {
       <div class="flex flex-col gap-y-4">
-        <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>No groups found.</h1>
+        <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="rss" size="30"></lucide-angular>No groups found.</h1>
         <div class="text-neutral-content text-lg">An admin will need to create a group before you can start chatting.</div>
       </div>
     }
