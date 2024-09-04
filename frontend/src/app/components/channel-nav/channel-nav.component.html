@@ -4,7 +4,7 @@
       <!-- Channel List -->
       <span class="flex justify-between items-end mt-2">
           <h3 class="mt-4 card-title">Channels</h3>
-          <div class="btn-sm btn-ghost rounded-lg p-0.5" (click)="newChannelModal.showModal()">
+          <div class="btn-sm btn-ghost rounded-lg p-0.5" (click)="newChannelModal.open()">
             <lucide-icon name="plus"></lucide-icon>
           </div>
         </span>
@@ -26,27 +26,4 @@
   </div>
 </nav>
 
-
-<dialog #newChannelModal id="newChannelModal" class="modal modal-bottom sm:modal-middle">
-  <div class="modal-box">
-    <h3 class="text-lg font-bold">Create Channel</h3>
-    <form [formGroup]="newChannelForm" class="mt-4">
-      <input
-        class="input input-bordered w-full"
-        type="text"
-        placeholder="Channel Name"
-        formControlName="name"
-        [ngClass]="{
-          'input-error': newChannelForm.get('name')?.invalid && newChannelForm.get('name')?.touched
-        }"
-      />
-    </form>
-    <div class="modal-action">
-      <form method="dialog">
-        <!-- if there is a button in form, it will close the modal -->
-        <button class="btn btn-neutral">Cancel</button>
-      </form>
-      <button class="btn btn-primary" (click)="addChannel()">Create</button>
-    </div>
-  </div>
-</dialog>
+<app-new-channel-modal #newChannelModal></app-new-channel-modal>
