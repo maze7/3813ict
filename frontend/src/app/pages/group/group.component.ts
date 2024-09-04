@@ -1,14 +1,16 @@
-import {Component, DestroyRef, inject, Input, OnInit} from '@angular/core';
+import {Component, DestroyRef, ElementRef, inject, Input, OnInit, ViewChild} from '@angular/core';
 import {LucideAngularModule} from "lucide-angular";
 import {ActivatedRoute, RouterOutlet} from "@angular/router";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AsyncPipe, NgClass} from "@angular/common";
 import {ChannelNavComponent} from "../../components/channel-nav/channel-nav.component";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {GroupService} from "../../services/group.service";
-import {GroupMembersComponent} from "../../components/group-members/group-members.component";
+import {PeopleComponent} from "../../components/people/people.component";
 import {ChatComponent} from "../chat/chat.component";
 import {takeUntil} from "rxjs";
+import {AuthService} from "../../services/auth.service";
+import {GroupSettingsComponent} from "../../components/group-settings/group-settings.component";
 
 @Component({
   selector: 'app-group',
@@ -20,17 +22,26 @@ import {takeUntil} from "rxjs";
     NgClass,
     ChannelNavComponent,
     AsyncPipe,
-    GroupMembersComponent,
+    PeopleComponent,
     ChatComponent,
+    GroupSettingsComponent,
   ],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css'
 })
 export class GroupComponent implements OnInit {
 
-  private destroyRef = inject(DestroyRef);
+  @ViewChild('channelModal', { static: true }) channelModal?: ElementRef<HTMLDialogElement>;
+  channelForm: FormGroup;
 
-  constructor(protected groupService: GroupService) {}
+  private destroyRef = inject(DestroyRef);
+  protected showGroupSettings: boolean = false;
+
+  constructor(protected auth: AuthService, protected groupService: GroupService, private fb: FormBuilder) {
+    this.channelForm = this.fb.group({
+      name: ['', Validators.required],
+    });
+  }
 
   ngOnInit() {
     // request groups

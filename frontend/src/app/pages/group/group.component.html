@@ -18,23 +18,44 @@
             </span>
           </span>
           <span class="flex gap-x-4">
-            <button class="btn btn-neutral rounded-full">
+            <div class="avatar-group -space-x-6 rtl:space-x-reverse">
+              @if (groupService.currentChannel.value) {
+                @for (user of groupService.currentChannel.value!.members.slice(0, 3); track user._id) {
+                  <div class="tooltip tooltip-bottom" [attr.data-tip]="user.username">
+                    <div class="avatar" [attr.data-tip]="user.username">
+                      <div class="w-12">
+                        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                      </div>
+                    </div>
+                  </div>
+                }
+                @if (groupService.currentChannel.value!.members.length > 3) {
+                  <div class="avatar placeholder">
+                  <div class="bg-neutral text-neutral-content w-12">
+                    <span>+{{ groupService.currentChannel.value!.members.length - 3 }}</span>
+                  </div>
+                </div>
+                }
+              }
+            </div>
+            <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Video Call">
               <lucide-angular name="video"></lucide-angular>
             </button>
-            <button class="btn btn-neutral rounded-full">
+            <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Voice Call">
               <lucide-angular name="phone-call"></lucide-angular>
             </button>
-            <!-- @if (isSuperAdmin || (isGroupAdmin && isGroupOwner(groupService.group$ | async)) {} -->
-            <button class="btn btn-neutral rounded-full">
-              <lucide-angular name="settings"></lucide-angular>
-            </button>
+            @if (auth.isSuperAdmin() || groupService.isGroupAdmin()) {
+              <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Settings" (click)="showGroupSettings = true">
+                <lucide-angular name="settings"></lucide-angular>
+              </button>
+            }
           </span>
         </span>
           <app-chat class="flex-1 overflow-auto"></app-chat>
         </div>
         <!-- settings / information -->
         <div class="hidden lg:block p-4 min-w-96 flex-none bg-base-300">
-          <app-group-members></app-group-members>
+          <app-people></app-people>
         </div>
       </div>
     </section>
@@ -57,3 +78,9 @@
     </div>
   }
 </main>
+
+@if (showGroupSettings) {
+  <div class="z-50 fixed left-20 top-0 right-0 bottom-0 bg-base-100 rounded-l-3xl">
+    <app-group-settings (closed)="showGroupSettings = false"></app-group-settings>
+  </div>
+}

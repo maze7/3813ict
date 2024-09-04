@@ -10,5 +10,6 @@ export interface Group {
   admins: User[];
   pendingAdmins: User[];
   pendingMembers: User[];
+  banned: User[];
   channels: Channel[];
 }

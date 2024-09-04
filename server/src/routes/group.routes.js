@@ -19,7 +19,10 @@ router.post('/', async (req, res) => {
         await group.save();
 
         // populate the reference fields
-        const populated = await GroupModel.findById(group._id).populate('members admins pendingAdmins pendingMembers');
+        const populated = await GroupModel.findById(group._id).populate({
+            path: 'members admins pendingAdmins pendingMembers channels.members',
+            select: '-password',
+        });
 
         res.status(201).json(populated);
     } catch (err) {
@@ -30,7 +33,11 @@ router.post('/', async (req, res) => {
 // get all groups
 router.get('/', async (req, res) => {
     try {
-        const groups = await GroupModel.find({}).populate('members admins pendingAdmins pendingMembers');
+        const groups = await GroupModel.find({}).populate({
+            path: 'members admins pendingAdmins pendingMembers channels.members',
+            select: '-password',
+        });
+
         res.status(200).json(groups);
     } catch (err) {
         res.status(500).json({ message: 'Error fetching groups', error: err.message });
@@ -40,7 +47,11 @@ router.get('/', async (req, res) => {
 // READ a single group by ID
 router.get('/:id', async (req, res) => {
     try {
-        const group = await GroupModel.findById(req.params.id).populate('members admins pendingAdmins pendingMembers');
+        const group = await GroupModel.findById(req.params.id).populate({
+            path: 'members admins pendingAdmins pendingMembers channels.members',
+            select: '-password',
+        });
+
         if (!group) {
             return res.status(404).json({ message: 'Group not found' });
         }
@@ -66,7 +77,11 @@ router.delete('/:id', async (req, res) => {
 // request access to a group
 router.post('/request-accesss/:id', async (req, res) => {
     try {
-        const group = await GroupModel.findById(req.params.id).populate('members', 'pendingMembers');
+        const group = await GroupModel.findById(req.params.id).populate({
+            path: 'members admins pendingAdmins pendingMembers channels.members',
+            select: '-password',
+        });
+
         if (!group) {
             return res.status(404).json({ message: 'Group not found' });
         }
@@ -83,10 +98,13 @@ router.post('/channel', async (req, res) => {
         const { groupId, name } = req.body;
 
         // add the channel to the document
-        await GroupModel.updateOne({ _id: groupId }, { $push: { channels: { name }}});
+        await GroupModel.updateOne({ _id: groupId }, { $push: { channels: { name, members: [req.user._id] }}});
 
         // get the updated group and return
-        const group = await GroupModel.findById(groupId).populate('members admins pendingAdmins pendingMembers');
+        const group = await GroupModel.findById(groupId).populate({
+            path: 'members admins pendingAdmins pendingMembers channels.members',
+            select: '-password',
+        });
 
         res.status(200).json(group);
     } catch (err) {

@@ -5,15 +5,15 @@ import {GroupService} from "../../services/group.service";
 import {AuthService} from "../../services/auth.service";
 
 @Component({
-  selector: 'app-group-members',
+  selector: 'app-people',
   standalone: true,
   imports: [
     AsyncPipe,
     LucideAngularModule
   ],
-  templateUrl: './group-members.component.html',
-  styleUrl: './group-members.component.css'
+  templateUrl: './people.component.html',
+  styleUrl: './people.component.css'
 })
-export class GroupMembersComponent {
+export class PeopleComponent {
   constructor(protected groupService: GroupService, protected auth: AuthService) {}
 }

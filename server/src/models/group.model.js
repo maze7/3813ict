@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const channelSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
 const groupSchema = new mongoose.Schema({
@@ -12,6 +13,7 @@ const groupSchema = new mongoose.Schema({
     admins: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     pendingMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     pendingAdmins: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    banned: [{type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     channels: [channelSchema],
 });
 

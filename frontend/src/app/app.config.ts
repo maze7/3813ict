@@ -2,18 +2,45 @@ import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from
 import {provideRouter, withComponentInputBinding} from '@angular/router';
 import {
   AudioLines,
-  AudioWaveform, Bell, Forward,
+  AudioWaveform,
+  Bell,
+  Forward,
   LayoutDashboard,
   LucideAngularModule,
-  MessageCircle, MessageCirclePlus, MessageSquare, PhoneCall, Plus, Send, SendHorizontal, Settings, Shield,
-  ShieldX, UserCog, UserMinus, UserPlus, UserRoundCheck, UserRoundX,
-  UsersRound, Video, Lock, AtSign, Clock,
+  MessageCircle,
+  MessageCirclePlus,
+  MessageSquare,
+  PhoneCall,
+  Plus,
+  Send,
+  SendHorizontal,
+  Settings,
+  Shield,
+  ShieldX,
+  UserCog,
+  UserMinus,
+  UserPlus,
+  UserRoundCheck,
+  UserRoundX,
+  UsersRound,
+  Video,
+  Lock,
+  AtSign,
+  Clock,
+  UserRoundCog,
+  CircleX,
+  ShieldMinus,
+  ShieldPlus,
+  ShieldOff,
+  ShieldBan,
+  CircleSlash, Ban, Undo, UserRoundPlus, UserRoundMinus, HandCoins, LockOpen,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
 import {provideHttpClient, withInterceptors} from "@angular/common/http";
 import {authInterceptor} from "./interceptors/auth.interceptor";
 
+let ShiledPlus;
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
@@ -42,11 +69,23 @@ export const appConfig: ApplicationConfig = {
       Video,
       PhoneCall,
       MessageSquare,
+      UserRoundCog,
       UserRoundCheck,
       UserRoundX,
+      CircleX,
       Lock,
       AtSign,
       Clock,
+      ShieldMinus,
+      ShieldPlus,
+      ShieldOff,
+      ShieldBan,
+      CircleSlash,
+      Ban,
+      Undo,
+      UserRoundMinus,
+      HandCoins,
+      LockOpen,
     })),
   ]
 };
