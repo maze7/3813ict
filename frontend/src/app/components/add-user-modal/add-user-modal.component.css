@@ -1,0 +1,12 @@
+/* Custom styles for ng-select to match DaisyUI */
+::ng-deep ng-select .ng-select-container {
+  @apply select select-bordered w-full;
+}
+
+::ng-deep ng-select .ng-dropdown-panel {
+  @apply bg-base-100 shadow-lg rounded-box;
+}
+
+::ng-deep ng-select .ng-option {
+  @apply p-2 hover:bg-base-200;
+}

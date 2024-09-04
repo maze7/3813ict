@@ -1,0 +1,20 @@
+<dialog #addUserModal id="newChannelModal" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Add User</h3>
+    <form [formGroup]="addUserForm" class="mt-4">
+      <select formControlName="userId" class="select select-bordered w-full">
+        <option value="" disabled selected>Select a user</option>
+        @for (user of users; track user._id) {
+          <option [value]="user._id">{{ user.username }}</option>
+        }
+      </select>
+    </form>
+    <div class="modal-action">
+      <form method="dialog">
+        <!-- if there is a button in form, it will close the modal -->
+        <button class="btn btn-ghost">Cancel</button>
+      </form>
+      <button class="btn btn-primary" (click)="add()">Add</button>
+    </div>
+  </div>
+</dialog>

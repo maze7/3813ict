@@ -18,6 +18,7 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "@ng-select/ng-select": "^13.7.0",
     "cors": "^2.8.5",
     "jwt-decode": "^4.0.0",
     "lucide-angular": "^0.438.0",

@@ -94,6 +94,37 @@ router.post('/channel', async (req, res) => {
     }
 });
 
+// TODO: add isGroupOwner Guard
+router.post('/add-user/:id', async (req, res) => {
+    try {
+        const { channelId, userId } = req.body;
+
+        // If channelId is provided, update the specific channel's members
+        if (channelId) {
+            await GroupModel.updateOne(
+                { _id: req.params.id, 'channels._id': channelId },
+                { $addToSet: {
+                    'channels.$.members': userId,
+                    members: userId,
+                }}
+            );
+        } else {
+            // If no channelId, add the user to the group members array only
+            await GroupModel.findByIdAndUpdate(req.params.id, { $addToSet: { members: userId } });
+        }
+
+        // get the updated group
+        const group = await GroupModel.findById(req.params.id).populate({
+            path: 'members admins pendingAdmins pendingMembers channels.members',
+            select: '-password',
+        });
+
+        res.status(200).json(group);
+    } catch (err) {
+        res.status(500).json({ message: 'Error adding user to group.' });
+    }
+})
+
 // request to join a group
 router.post('/join/:id', async (req, res) => {
     try {

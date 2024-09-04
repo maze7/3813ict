@@ -207,4 +207,30 @@ export class GroupService {
       })
     )
   }
+
+  /**
+   * Add a user to a group or a specific channel within the group.
+   * @param groupId The ID of the group
+   * @param userId The ID of the user to be added
+   * @param channelId Optional: The ID of the channel (if user is being added to a specific channel)
+   * @returns An observable of the updated group data
+   */
+  addUser(groupId: string, userId: string, channelId?: string): Observable<Group> {
+    const url = `${this.baseUrl}/add-user/${groupId}`;
+
+    // Define the payload to send with the request
+    const payload = { userId, channelId };
+
+    return this.http.post<Group>(url, payload).pipe(
+      tap((updatedGroup) => {
+        this.currentGroup.next(updatedGroup);
+
+        // Update the current channel if the user was added to a specific channel
+        if (channelId) {
+          const channel = updatedGroup.channels.find((c: Channel) => c._id === channelId);
+          this.currentChannel.next(channel || null);
+        }
+      })
+    );
+  }
 }
