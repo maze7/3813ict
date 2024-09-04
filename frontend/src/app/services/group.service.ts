@@ -4,6 +4,7 @@ import {Channel} from "../models/channel.model";
 import {BehaviorSubject, catchError, map, Observable, of, tap} from "rxjs";
 import {AuthService} from "./auth.service";
 import {HttpClient} from "@angular/common/http";
+import {User} from "../models/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -140,6 +141,9 @@ export class GroupService {
     group?.pendingMembers.push(user._id);
   }
 
+  /**
+   * Returns true or false as to whether the current user is an admin for the current group
+   */
   isGroupAdmin(): boolean {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
@@ -147,7 +151,11 @@ export class GroupService {
     return this.auth.isSuperAdmin() || (group?.admins.includes(user._id) ?? false);
   }
 
-  canAccessChannel(channel: Channel) {
+  /**
+   * Returns true or false whether the authenticated user can access the given channel
+   * @param channel
+   */
+  canAccessChannel(channel: Channel): boolean {
     const user = this.auth.getUser();
 
     // Super admins and Group admins can see all channels
@@ -156,5 +164,91 @@ export class GroupService {
     }
 
     return channel.members.findIndex(u => u._id === user._id) >= 0;
+  }
+
+  kickChannelUser(user: User): void {
+    const channel = this.currentChannel.value;
+
+    if (channel) {
+      this.moveUser(user, channel.members, undefined);
+    }
+  }
+
+  demoteGroupAdmin(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.admins, group.members);
+    }
+  }
+
+  makeGroupAdmin(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.members, group.admins);
+    }
+  }
+
+  kickGroupUser(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.admins, undefined);
+      this.moveUser(user, group.members, undefined);
+    }
+  }
+
+  banGroupUser(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.admins, group.banned);
+    }
+  }
+
+  unbanGroupUser(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.banned, undefined);
+    }
+  }
+
+  acceptPendingGroupMember(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.pendingMembers, group.members);
+    }
+  }
+
+  rejectPendingGroupMember(user: User): void {
+    const group = this.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.pendingMembers, undefined);
+    }
+  }
+
+  /**
+   * Used to move users into different roles within the group
+   * @param user
+   * @param arr1
+   * @param arr2
+   */
+  moveUser(user: User, arr1: User[], arr2?: User[]) {
+    // Find the index of the user in arr1
+    const userIndex = arr1.findIndex(u => u._id === user._id);
+
+    // If the user is found in arr1, remove the user from arr1 and add to arr2
+    if (userIndex !== -1) {
+      arr1.splice(userIndex, 1); // Remove user from arr1
+
+      // if a destination was provided, add the user to the new array
+      if (arr2) {
+        arr2.push(user);
+      }
+    }
   }
 }

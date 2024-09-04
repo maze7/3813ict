@@ -21,120 +21,18 @@
       </div>
     </div>
   </nav>
-  <section class="flex-1 flex flex-col h-full bg-base-200 p-4">
-    <span class="flex justify-end">
+  <section class="flex flex-1 h-full bg-base-200 p-4">
+    <div class="flex-1 flex flex-col mx-auto max-w-5xl">
+      <span class="flex justify-end">
       <button class="btn btn-ghost rounded-full tooltip tooltip-left" (click)="closed.emit()" data-tip="Close Settings">
         <lucide-angular name="circle-x"></lucide-angular>
       </button>
     </span>
-    <!-- Group Members -->
-    @if (currentTab === tabs[1]) {
-      <!-- Admins -->
-      <h1 class="card-title text-2xl pl-3 mb-3">Admins</h1>
-      <div class="overflow-x-auto overflow-auto">
-        <table class="table">
-          <!-- head -->
-          <thead>
-          <tr>
-            <th>User</th>
-            <th>Email</th>
-            <th>Global Roles</th>
-            <th>Manage</th>
-          </tr>
-          </thead>
-          <tbody>
-            @for (user of groupService.currentGroup.value?.admins; track user._id) {
-              <tr>
-                <td>
-                  <div class="flex items-center gap-3">
-                    <div class="avatar">
-                      <div class="mask mask-squircle h-12 w-12">
-                        <img
-                          src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                          alt="Avatar Tailwind CSS Component" />
-                      </div>
-                    </div>
-                    <div>
-                      <div class="font-bold">{{ user.username }}</div>
-                    </div>
-                  </div>
-                </td>
-                <td>{{ user.email }}</td>
-                <td class="capitalize">{{ user.roles.join(', ') }}</td>
-                <th>
-                  <span class="flex gap-x-2">
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Demote admin" (click)="demoteAdmin(user)">
-                        <lucide-icon name="shield-minus" size="22"></lucide-icon>
-                      </div>
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="kickUser(user)">
-                        <lucide-icon name="user-round-minus" size="22"></lucide-icon>
-                      </div>
-                      <div class="btn btn-sm btn-error text-neutral-100 tooltip py-1 px-2" data-tip="Ban user" (click)="banUser(user)">
-                        <lucide-icon name="ban" size="22"></lucide-icon>
-                      </div>
-                    </span>
-                </th>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Members -->
-      <h1 class="mt-10 card-title text-2xl pl-3 mb-3">Members</h1>
-      <div class="overflow-x-auto">
-        <table class="table">
-          <!-- head -->
-          <thead>
-          <tr>
-            <th>User</th>
-            <th>Email</th>
-            <th>Global Roles</th>
-            <th>Manage</th>
-          </tr>
-          </thead>
-          <tbody>
-            @for (user of groupService.currentGroup.value?.members; track user._id) {
-              <tr>
-                <td>
-                  <div class="flex items-center gap-3">
-                    <div class="avatar">
-                      <div class="mask mask-squircle h-12 w-12">
-                        <img
-                          src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                          alt="Avatar Tailwind CSS Component" />
-                      </div>
-                    </div>
-                    <div>
-                      <div class="font-bold">{{ user.username }}</div>
-                    </div>
-                  </div>
-                </td>
-                <td>{{ user.email }}</td>
-                <td class="capitalize">{{ user.roles.join(', ') }}</td>
-                <th>
-                  <span class="flex gap-x-2">
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Make admin" (click)="makeAdmin(user)">
-                        <lucide-icon name="shield-plus" size="22"></lucide-icon>
-                      </div>
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="kickUser(user)">
-                        <lucide-icon name="user-round-minus" size="22"></lucide-icon>
-                      </div>
-                      <div class="btn btn-sm btn-error text-neutral-100 tooltip py-1 px-2" data-tip="Ban user" (click)="banUser(user)">
-                        <lucide-icon name="ban" size="22"></lucide-icon>
-                      </div>
-                    </span>
-                </th>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Pending Members -->
-      @if (groupService.currentGroup.value && groupService.currentGroup.value!.pendingMembers.length) {
-        <h1 class="mt-10 card-title text-2xl pl-3 mb-3">Group Join Requests</h1>
-        <div class="overflow-x-auto">
+      <!-- Group Members -->
+      @if (currentTab === tabs[1]) {
+        <!-- Admins -->
+        <h1 class="card-title text-2xl pl-3 mb-3">Admins</h1>
+        <div class="overflow-x-auto overflow-auto">
           <table class="table">
             <!-- head -->
             <thead>
@@ -146,7 +44,7 @@
             </tr>
             </thead>
             <tbody>
-              @for (user of groupService.currentGroup.value?.pendingMembers; track user._id) {
+              @for (user of groupService.currentGroup.value?.admins; track user._id) {
                 <tr>
                   <td>
                     <div class="flex items-center gap-3">
@@ -165,66 +63,170 @@
                   <td>{{ user.email }}</td>
                   <td class="capitalize">{{ user.roles.join(', ') }}</td>
                   <th>
+                  <span class="flex gap-x-2">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Demote admin" (click)="groupService.demoteGroupAdmin(user)">
+                        <lucide-icon name="shield-minus" size="22"></lucide-icon>
+                      </div>
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="groupService.kickGroupUser(user)">
+                        <lucide-icon name="user-round-minus" size="22"></lucide-icon>
+                      </div>
+                      <div class="btn btn-sm btn-error text-neutral-100 tooltip py-1 px-2" data-tip="Ban user" (click)="groupService.banGroupUser(user)">
+                        <lucide-icon name="ban" size="22"></lucide-icon>
+                      </div>
+                    </span>
+                  </th>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Members -->
+        <h1 class="mt-10 card-title text-2xl pl-3 mb-3">Members</h1>
+        <div class="overflow-x-auto">
+          <table class="table">
+            <!-- head -->
+            <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Global Roles</th>
+              <th>Manage</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (user of groupService.currentGroup.value?.members; track user._id) {
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="avatar">
+                        <div class="mask mask-squircle h-12 w-12">
+                          <img
+                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                            alt="Avatar Tailwind CSS Component" />
+                        </div>
+                      </div>
+                      <div>
+                        <div class="font-bold">{{ user.username }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ user.email }}</td>
+                  <td class="capitalize">{{ user.roles.join(', ') }}</td>
+                  <th>
+                  <span class="flex gap-x-2">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Make admin" (click)="groupService.makeGroupAdmin(user)">
+                        <lucide-icon name="shield-plus" size="22"></lucide-icon>
+                      </div>
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="groupService.kickGroupUser(user)">
+                        <lucide-icon name="user-round-minus" size="22"></lucide-icon>
+                      </div>
+                      <div class="btn btn-sm btn-error text-neutral-100 tooltip py-1 px-2" data-tip="Ban user" (click)="groupService.banGroupUser(user)">
+                        <lucide-icon name="ban" size="22"></lucide-icon>
+                      </div>
+                    </span>
+                  </th>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pending Members -->
+        @if (groupService.currentGroup.value && groupService.currentGroup.value!.pendingMembers.length) {
+          <h1 class="mt-10 card-title text-2xl pl-3 mb-3">Group Join Requests</h1>
+          <div class="overflow-x-auto">
+            <table class="table">
+              <!-- head -->
+              <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Global Roles</th>
+                <th>Manage</th>
+              </tr>
+              </thead>
+              <tbody>
+                @for (user of groupService.currentGroup.value?.pendingMembers; track user._id) {
+                  <tr>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="avatar">
+                          <div class="mask mask-squircle h-12 w-12">
+                            <img
+                              src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                              alt="Avatar Tailwind CSS Component" />
+                          </div>
+                        </div>
+                        <div>
+                          <div class="font-bold">{{ user.username }}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td class="capitalize">{{ user.roles.join(', ') }}</td>
+                    <th>
                     <span class="flex gap-x-2">
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Decline" (click)="acceptPending(user)">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Decline" (click)="groupService.acceptPendingGroupMember(user)">
                         <lucide-icon name="user-round-x" size="22"></lucide-icon>
                       </div>
-                      <div class="btn btn-sm btn-success text-neutral-100 tooltip py-1 px-2" data-tip="Accept" (click)="rejectPending(user)">
+                      <div class="btn btn-sm btn-success text-neutral-100 tooltip py-1 px-2" data-tip="Accept" (click)="groupService.rejectPendingGroupMember(user)">
                         <lucide-icon name="user-round-check" size="22"></lucide-icon>
                       </div>
                     </span>
-                  </th>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      }
+                    </th>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
 
-      <!-- Banned Members -->
-      @if (groupService.currentGroup.value && groupService.currentGroup.value!.banned.length) {
-        <h1 class="mt-10 card-title text-2xl pl-3 mb-3">Banned</h1>
-        <div class="overflow-x-auto">
-          <table class="table">
-            <!-- head -->
-            <thead>
-            <tr>
-              <th>User</th>
-              <th>Email</th>
-              <th>Global Roles</th>
-              <th>Manage</th>
-            </tr>
-            </thead>
-            <tbody>
-              @for (user of groupService.currentGroup.value?.banned; track user._id) {
-                <tr>
-                  <td>
-                    <div class="flex items-center gap-3">
-                      <div class="avatar">
-                        <div class="mask mask-squircle h-12 w-12">
-                          <img
-                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                            alt="Avatar Tailwind CSS Component" />
+        <!-- Banned Members -->
+        @if (groupService.currentGroup.value && groupService.currentGroup.value!.banned.length) {
+          <h1 class="mt-10 card-title text-2xl pl-3 mb-3">Banned</h1>
+          <div class="overflow-x-auto">
+            <table class="table">
+              <!-- head -->
+              <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Global Roles</th>
+                <th>Manage</th>
+              </tr>
+              </thead>
+              <tbody>
+                @for (user of groupService.currentGroup.value?.banned; track user._id) {
+                  <tr>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="avatar">
+                          <div class="mask mask-squircle h-12 w-12">
+                            <img
+                              src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                              alt="Avatar Tailwind CSS Component" />
+                          </div>
+                        </div>
+                        <div>
+                          <div class="font-bold">{{ user.username }}</div>
                         </div>
                       </div>
-                      <div>
-                        <div class="font-bold">{{ user.username }}</div>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td class="capitalize">{{ user.roles.join(', ') }}</td>
+                    <th>
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Unban user" (click)="groupService.unbanGroupUser(user)">
+                        <lucide-icon name="lock-open" size="22"></lucide-icon>
                       </div>
-                    </div>
-                  </td>
-                  <td>{{ user.email }}</td>
-                  <td class="capitalize">{{ user.roles.join(', ') }}</td>
-                  <th>
-                    <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Unban user" (click)="unbanUser(user)">
-                      <lucide-icon name="lock-open" size="22"></lucide-icon>
-                    </div>
-                  </th>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
+                    </th>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
       }
-    }
+    </div>
   </section>
 </div>

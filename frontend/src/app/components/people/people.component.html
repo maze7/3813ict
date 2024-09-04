@@ -7,15 +7,15 @@
       </div>
     }
   </div>
-  @for (channelMember of (groupService.channel$ | async)?.members; track channelMember._id) {
+  @for (user of (groupService.channel$ | async)?.members; track user._id) {
     <span class="flex items-center justify-between mb-2">
       <div class="flex items-center gap-x-2">
-        @if (channelMember.avatar) {
+        @if (user.avatar) {
           <div class="avatar online h-12 w-12">
             <img
               class="rounded-full cursor-pointer"
               alt="Tailwind CSS Navbar component"
-              src="{{channelMember.avatar}}"/>
+              src="{{user.avatar}}"/>
           </div>
         } @else {
           <div class="avatar online placeholder h-12 w-12">
@@ -24,11 +24,18 @@
             </div>
           </div>
         }
-        <h5>{{ channelMember.username }}</h5>
+        <h5>{{ user.username }}</h5>
       </div>
-      <div class="btn btn-ghost rounded-full">
-        <lucide-icon name="user-round-plus"></lucide-icon>
-      </div>
+      @if (groupService.isGroupAdmin()) {
+        <div class="flex gap-x-1.5">
+          <div class="btn btn-sm btn-neutral text-neutral-100 tooltip flex items-center justify-center px-2.5" data-tip="Kick user" (click)="groupService.kickChannelUser(user)">
+            <lucide-icon name="user-round-minus" size="20"></lucide-icon>
+          </div>
+          <div class="btn btn-sm btn-error text-neutral-100 tooltip flex items-center justify-center px-2.5" data-tip="Ban user" (click)="groupService.banGroupUser(user)">
+            <lucide-icon name="ban" size="20"></lucide-icon>
+          </div>
+        </div>
+      }
     </span>
   }
 </div>
