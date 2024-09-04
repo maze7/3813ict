@@ -214,9 +214,9 @@
                       </div>
                     </td>
                     <td>{{ user.email }}</td>
-                    <td class="capitalize">{{ user.roles.join(', ') }}</td>
+                    <td class="capitalize">{{ user.roles?.join(', ') }}</td>
                     <th>
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Unban user">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Unban user" (click)="kick(user, false)">
                         <lucide-icon name="lock-open" size="22"></lucide-icon>
                       </div>
                     </th>

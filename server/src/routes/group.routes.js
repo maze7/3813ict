@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
 
         // populate the reference fields
         const populated = await GroupModel.findById(group._id).populate(
-            'members admins pendingAdmins pendingMembers channels.members',
+            'members admins banned pendingAdmins pendingMembers channels.members',
         );
 
         res.status(201).json(populated);
@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const groups = await GroupModel.find({}).populate(
-            'members admins pendingAdmins pendingMembers channels.members',
+            'members admins banned pendingAdmins pendingMembers channels.members',
         );
 
         res.status(200).json(groups);
@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const group = await GroupModel.findById(req.params.id).populate(
-            'members admins pendingAdmins pendingMembers channels.members',
+            'members admins banned pendingAdmins pendingMembers channels.members',
         );
 
         if (!group) {
@@ -81,7 +81,7 @@ router.post('/channel', async (req, res) => {
 
         // get the updated group and return
         const group = await GroupModel.findById(groupId).populate(
-            'members admins pendingAdmins pendingMembers channels.members',
+            'members admins banned pendingAdmins pendingMembers channels.members',
         );
 
         res.status(200).json(group);
@@ -111,7 +111,7 @@ router.post('/add-user/:id', async (req, res) => {
 
         // get the updated group
         const group = await GroupModel.findById(req.params.id).populate(
-            'members admins pendingAdmins pendingMembers channels.members',
+            'members admins banned pendingAdmins pendingMembers channels.members',
         );
 
         res.status(200).json(group);
@@ -124,7 +124,7 @@ router.post('/add-user/:id', async (req, res) => {
 router.post('/join/:id', async (req, res) => {
     try {
         const group = await GroupModel.findById(req.params.id).populate(
-            'members admins pendingAdmins pendingMembers channels.members',
+            'members admins banned pendingAdmins pendingMembers channels.members',
         );
 
         if (!group) {
@@ -176,11 +176,13 @@ router.post('/kick', async (req, res) => {
                 'members': userId,
                 'pendingAdmins': userId,
                 'pendingMembers': userId,
+                'banned': userId,
             }
         };
 
         if (ban) {
             update.$push = { banned: userId };
+            update.$pull['banned'] = undefined;
         } else if (channelId) {
             query['channels._id'] = channelId;
             update.$pull = { 'channels.$.members': userId }
@@ -191,11 +193,12 @@ router.post('/kick', async (req, res) => {
 
         // get updated group to return to client
         const group = await GroupModel.findById(groupId).populate(
-            'members admins pendingAdmins pendingMembers channels.members',
+            'members admins banned pendingAdmins pendingMembers channels.members',
         );
 
         res.status(200).json(group);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: 'Error kicking user from group.', error: err.message });
     }
 })
