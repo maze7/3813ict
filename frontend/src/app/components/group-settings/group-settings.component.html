@@ -64,13 +64,13 @@
                   <td class="capitalize">{{ user.roles.join(', ') }}</td>
                   <th>
                   <span class="flex gap-x-2">
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Demote admin" (click)="groupService.demoteGroupAdmin(user)">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Demote admin">
                         <lucide-icon name="shield-minus" size="22"></lucide-icon>
                       </div>
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="groupService.kickGroupUser(user)">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="kick(user, false)">
                         <lucide-icon name="user-round-minus" size="22"></lucide-icon>
                       </div>
-                      <div class="btn btn-sm btn-error text-neutral-100 tooltip py-1 px-2" data-tip="Ban user" (click)="groupService.banGroupUser(user)">
+                      <div class="btn btn-sm btn-error text-neutral-100 tooltip py-1 px-2" data-tip="Ban user" (click)="kick(user, true)">
                         <lucide-icon name="ban" size="22"></lucide-icon>
                       </div>
                     </span>
@@ -115,13 +115,13 @@
                   <td class="capitalize">{{ user.roles.join(', ') }}</td>
                   <th>
                   <span class="flex gap-x-2">
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Make admin" (click)="groupService.makeGroupAdmin(user)">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Make admin">
                         <lucide-icon name="shield-plus" size="22"></lucide-icon>
                       </div>
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="groupService.kickGroupUser(user)">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="kick(user, false)">
                         <lucide-icon name="user-round-minus" size="22"></lucide-icon>
                       </div>
-                      <div class="btn btn-sm btn-error text-neutral-100 tooltip py-1 px-2" data-tip="Ban user" (click)="groupService.banGroupUser(user)">
+                      <div class="btn btn-sm btn-error text-neutral-100 tooltip py-1 px-2" data-tip="Ban user" (click)="kick(user, true)">
                         <lucide-icon name="ban" size="22"></lucide-icon>
                       </div>
                     </span>
@@ -167,10 +167,10 @@
                     <td class="capitalize">{{ user.roles.join(', ') }}</td>
                     <th>
                     <span class="flex gap-x-2">
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Decline" (click)="groupService.acceptPendingGroupMember(user)">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Decline" (click)="accept(user, false)">
                         <lucide-icon name="user-round-x" size="22"></lucide-icon>
                       </div>
-                      <div class="btn btn-sm btn-success text-neutral-100 tooltip py-1 px-2" data-tip="Accept" (click)="groupService.rejectPendingGroupMember(user)">
+                      <div class="btn btn-sm btn-success text-neutral-100 tooltip py-1 px-2" data-tip="Accept" (click)="accept(user, true)">
                         <lucide-icon name="user-round-check" size="22"></lucide-icon>
                       </div>
                     </span>
@@ -216,7 +216,7 @@
                     <td>{{ user.email }}</td>
                     <td class="capitalize">{{ user.roles.join(', ') }}</td>
                     <th>
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Unban user" (click)="groupService.unbanGroupUser(user)">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Unban user">
                         <lucide-icon name="lock-open" size="22"></lucide-icon>
                       </div>
                     </th>

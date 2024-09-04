@@ -120,6 +120,23 @@ router.post('/join/:id', async (req, res) => {
     }
 });
 
+// accept or decline a user's join request
+router.post('/:id/accept', async (req, res) => {
+    try {
+        const { userId, decision } = req.body;
+        const query = { _id: req.params.id };
+        const update = { $pull: { pendingMembers: userId }};
+
+        if (decision) {
+            update.$addToSet = { members: userId };
+        }
+
+        await GroupModel.updateOne(query, update);
+        return res.status(200).json({ status: decision });
+    } catch (err) {
+        res.status(500).json({ message: 'Error requesting to join group.', error: err.message });
+    }
+});
 
 // kick a user from a group
 router.post('/kick', async (req, res) => {
@@ -129,7 +146,7 @@ router.post('/kick', async (req, res) => {
         const query = { _id: groupId };
         const update = {
             $pull: {
-                'channels.members': userId,
+                'channels.$[].members': userId,
                 'admins': userId,
                 'members': userId,
                 'pendingAdmins': userId,

@@ -190,4 +190,21 @@ export class GroupService {
       })
     );
   }
+
+  /**
+   * Accept or Decline a user's request to join a group
+   * @param user user to be added / declined
+   * @param group group the user wishes to join
+   * @param decision accept or decline status
+   */
+  accept(user: User, group: Group, decision: boolean): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/${group._id}/accept`, { userId: user._id, decision }).pipe(
+      tap((res) => {
+        group.pendingMembers = group.pendingMembers.filter(u => u._id !== user._id);
+        if (res.status) {
+          group.members.push(user);
+        }
+      })
+    )
+  }
 }
