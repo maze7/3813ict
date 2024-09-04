@@ -1,7 +1,7 @@
 <!-- Group Admins -->
 <div class="card">
   <div class="card-title mb-2 flex justify-between">People
-    @if (auth.isSuperAdmin() || groupService.isGroupAdmin()) {
+    @if (groupService.isGroupAdmin()) {
       <div class="btn btn-ghost rounded-full">
         <lucide-icon name="user-round-plus"></lucide-icon>
       </div>

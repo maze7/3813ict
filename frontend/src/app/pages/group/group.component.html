@@ -27,7 +27,7 @@
                 <lucide-angular name="phone-call"></lucide-angular>
               </button>
             }
-            @if (auth.isSuperAdmin() || groupService.isGroupAdmin()) {
+            @if ( groupService.isGroupAdmin()) {
               <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Settings" (click)="showGroupSettings = true">
                 <lucide-angular name="settings"></lucide-angular>
               </button>
@@ -63,7 +63,7 @@
   }
   @else {
     <!-- No Groups View -->
-    @if (auth.isSuperAdmin() || auth.isGroupAdmin()) {
+    @if (groupService.isGroupAdmin()) {
       <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
         <div class="flex flex-col gap-y-4">
           <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>Create a group</h1>

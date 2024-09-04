@@ -144,14 +144,14 @@ export class GroupService {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
 
-    return group?.admins.includes(user._id) ?? false;
+    return this.auth.isSuperAdmin() || (group?.admins.includes(user._id) ?? false);
   }
 
   canAccessChannel(channel: Channel) {
     const user = this.auth.getUser();
 
     // Super admins and Group admins can see all channels
-    if (this.auth.isSuperAdmin() || this.isGroupAdmin()) {
+    if (this.isGroupAdmin()) {
       return true;
     }
 
