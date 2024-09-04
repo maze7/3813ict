@@ -40,7 +40,13 @@
             <lucide-icon name="shield"></lucide-icon>
           </div>
         }
-        <div class="avatar online p-2" (click)="logout()">
+        <div class="btn btn-ghost mb-2 w-full">
+          <lucide-icon name="settings"></lucide-icon>
+        </div>
+        <div class="btn btn-ghost mb-2 w-full">
+          <lucide-icon name="log-out" (click)="logout()"></lucide-icon>
+        </div>
+        <div class="avatar online p-2">
           <!-- user avatar -->
           <img
             class="ring ring-offset-2 ring-primary ring-offset-base-100 rounded-full cursor-pointer"

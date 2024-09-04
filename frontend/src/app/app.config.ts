@@ -44,14 +44,13 @@ import {
   GlobeLock,
   Globe,
   Antenna,
-  MessageCircleDashed,
+  MessageCircleDashed, LogOut,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
 import {provideHttpClient, withInterceptors} from "@angular/common/http";
 import {authInterceptor} from "./interceptors/auth.interceptor";
 
-let ShiledPlus;
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
@@ -103,6 +102,7 @@ export const appConfig: ApplicationConfig = {
       GlobeLock,
       Antenna,
       MessageCircleDashed,
+      LogOut,
     })),
   ]
 };
