@@ -58,4 +58,8 @@ export class GroupComponent implements OnInit {
       }
     });
   }
+
+  join(): void {
+    this.groupService.join().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  }
 }

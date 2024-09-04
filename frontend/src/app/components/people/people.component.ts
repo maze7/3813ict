@@ -22,7 +22,8 @@ export class PeopleComponent {
 
   constructor(protected groupService: GroupService, protected auth: AuthService) {}
 
-  kick(user: User) {
-    this.groupService.kickChannelUser(user).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  kick(user: User, ban: boolean) {
+    const channel = this.groupService.currentChannel.value!;
+    this.groupService.kick(user, channel, ban).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 }

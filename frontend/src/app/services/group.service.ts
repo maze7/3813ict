@@ -11,7 +11,8 @@ import {User} from "../models/user.model";
 })
 export class GroupService {
 
-  constructor(private auth: AuthService, private http: HttpClient) { }
+  constructor(private auth: AuthService, private http: HttpClient) {
+  }
 
   public currentGroup: BehaviorSubject<Group | null> = new BehaviorSubject<Group | null>(null);
   public currentChannel: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
@@ -58,7 +59,7 @@ export class GroupService {
    * @param acronym
    */
   createGroup(name: string, acronym: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, { name, acronym }).pipe(
+    return this.http.post(`${this.baseUrl}`, {name, acronym}).pipe(
       tap((res: any) => {
         this.groups.push(res);
         console.log(res);
@@ -81,7 +82,7 @@ export class GroupService {
 
     // if there is a currently selected group, add the channel & update behaviour subject
     if (group) {
-      return this.http.post<any>(`${this.baseUrl}/channel`, { groupId: group._id, name}).pipe(tap((data) => {
+      return this.http.post<any>(`${this.baseUrl}/channel`, {groupId: group._id, name}).pipe(tap((data) => {
         // Find the index of the group in this.groups array
         const index = this.groups.findIndex(g => g._id === data._id);
 
@@ -125,20 +126,23 @@ export class GroupService {
    * Utility method to determine if a user has requested to join a group
    */
   hasRequestedAccess(): boolean {
-    const group = this.currentGroup.value;
-    const user = this.auth.getUser();
-
-    return group?.pendingMembers.includes(user._id) ?? false;
+    return this.currentGroup.value?.pendingMembers.findIndex(u => u._id === this.auth.getUser()._id) !== -1;
   }
 
   /**
    * Utility method to request access to a group
    */
-  requestAccess(): void {
-    const group = this.currentGroup.value;
+  join(): Observable<any> {
+    const group = this.currentGroup.value!;
     const user = this.auth.getUser();
 
-    group?.pendingMembers.push(user._id);
+    return this.http.post<any>(`${this.baseUrl}/join/${group._id}`, {}).pipe(
+      tap((res: any) => {
+        if (res.status) {
+          group.pendingMembers.push(user);
+        }
+      })
+    );
   }
 
   /**
@@ -166,99 +170,24 @@ export class GroupService {
     return channel.members.findIndex(u => u._id === user._id) >= 0;
   }
 
-  kickChannelUser(user: User): Observable<any> {
-    const channel = this.currentChannel.value!;
+  /**
+   * Kicks a user from a Group or Channel. Optionally bans them from the Group
+   * @param user user to be kicked / banned
+   * @param channel if provided, user will only be kicked from the specified channel (unless banned)
+   * @param ban if true, user will be banned from server
+   */
+  kick(user: User, channel?: Channel, ban: boolean = false): Observable<any> {
     const group = this.currentGroup.value!;
 
-    return this.http.post<any>(`${this.baseUrl}/channel-kick`, {
+    return this.http.post<any>(`${this.baseUrl}/kick`, {
       userId: user._id,
-      channelId: channel._id,
       groupId: group._id,
+      channelId: channel?._id,
     }).pipe(
       tap((res: any) => {
-        // remove the channel user locally
-        this.moveUser(user, channel?.members, undefined);
+        this.currentGroup.next(res);
+        this.currentChannel.next(res.channels.find((c: Channel) => c._id === channel?._id));
       })
     );
-  }
-
-  demoteGroupAdmin(user: User): void {
-    const group = this.currentGroup.value;
-
-    if (group) {
-      this.moveUser(user, group.admins, group.members);
-    }
-  }
-
-  makeGroupAdmin(user: User): void {
-    const group = this.currentGroup.value;
-
-    if (group) {
-      this.moveUser(user, group.members, group.admins);
-    }
-  }
-
-  kickGroupUser(user: User): void {
-    const group = this.currentGroup.value;
-
-    if (group) {
-      this.moveUser(user, group.admins, undefined);
-      this.moveUser(user, group.members, undefined);
-      this.moveUser(user, group.pendingAdmins, undefined);
-      this.moveUser(user, group.pendingMembers, undefined);
-    }
-  }
-
-  banGroupUser(user: User): void {
-    const group = this.currentGroup.value;
-
-    if (group) {
-      this.moveUser(user, group.admins, group.banned);
-    }
-  }
-
-  unbanGroupUser(user: User): void {
-    const group = this.currentGroup.value;
-
-    if (group) {
-      this.moveUser(user, group.banned, undefined);
-    }
-  }
-
-  acceptPendingGroupMember(user: User): void {
-    const group = this.currentGroup.value;
-
-    if (group) {
-      this.moveUser(user, group.pendingMembers, group.members);
-    }
-  }
-
-  rejectPendingGroupMember(user: User): void {
-    const group = this.currentGroup.value;
-
-    if (group) {
-      this.moveUser(user, group.pendingMembers, undefined);
-    }
-  }
-
-  /**
-   * Used to move users into different roles within the group
-   * @param user
-   * @param arr1
-   * @param arr2
-   */
-  moveUser(user: User, arr1: User[], arr2?: User[]) {
-    // Find the index of the user in arr1
-    const userIndex = arr1.findIndex(u => u._id === user._id);
-
-    // If the user is found in arr1, remove the user from arr1 and add to arr2
-    if (userIndex !== -1) {
-      arr1.splice(userIndex, 1); // Remove user from arr1
-
-      // if a destination was provided, add the user to the new array
-      if (arr2) {
-        arr2.push(user);
-      }
-    }
   }
 }

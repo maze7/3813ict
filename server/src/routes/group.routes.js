@@ -74,24 +74,6 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-// request access to a group
-router.post('/request-accesss/:id', async (req, res) => {
-    try {
-        const group = await GroupModel.findById(req.params.id).populate({
-            path: 'members admins pendingAdmins pendingMembers channels.members',
-            select: '-password',
-        });
-
-        if (!group) {
-            return res.status(404).json({ message: 'Group not found' });
-        }
-
-        res.status(200);
-    } catch (err) {
-        res.status(500).json({ message: 'Error requesting to join group.', error: err.message });
-    }
-});
-
 // create a channel within a group
 router.post('/channel', async (req, res) => {
     try {
@@ -110,22 +92,70 @@ router.post('/channel', async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: 'Error creating channel.', error: err.message });
     }
-})
+});
 
-// kick a user from a group channel
-router.post('/channel-kick', async (req, res) => {
+// request to join a group
+router.post('/join/:id', async (req, res) => {
     try {
-        const { groupId, channelId, userId } = req.body;
-
-        console.log(groupId, channelId, userId);
-
-        await GroupModel.updateOne({ _id: groupId, 'channels._id': channelId }, {
-            $pull: { 'channels.$.members': userId }
+        const group = await GroupModel.findById(req.params.id).populate({
+            path: 'members admins pendingAdmins pendingMembers channels.members',
+            select: '-password',
         });
 
-        res.status(200).json({ message: 'User kicked from the channel.' });
+        if (!group) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+
+        // if the user isn't already in the pending members, add them
+        if (group.pendingMembers.findIndex(u => u._id === req.user._id) === -1) {
+            group.pendingMembers.push(req.user._id);
+            await group.save();
+            res.status(200).json({ status: true });
+        } else {
+            // if the user was already pending, we succeed the request but mark status to false
+            res.status(200).json({ status: false });
+        }
     } catch (err) {
-        res.status(500).json({ message: 'Error kicking user from channel.', error: err.message });
+        res.status(500).json({ message: 'Error requesting to join group.', error: err.message });
+    }
+});
+
+
+// kick a user from a group
+router.post('/kick', async (req, res) => {
+    try {
+        const { groupId, channelId, userId, ban } = req.body;
+
+        const query = { _id: groupId };
+        const update = {
+            $pull: {
+                'channels.members': userId,
+                'admins': userId,
+                'members': userId,
+                'pendingAdmins': userId,
+                'pendingMembers': userId,
+            }
+        };
+
+        if (ban) {
+            update.$push = { banned: userId };
+        } else if (channelId) {
+            query['channels._id'] = channelId;
+            update.$pull = { 'channels.$.members': userId }
+        }
+
+        // perform the DB update
+        await GroupModel.updateOne(query, update);
+
+        // get updated group to return to client
+        const group = await GroupModel.findById(groupId).populate({
+            path: 'members admins pendingAdmins pendingMembers channels.members',
+            select: '-password',
+        });
+
+        res.status(200).json(group);
+    } catch (err) {
+        res.status(500).json({ message: 'Error kicking user from group.', error: err.message });
     }
 })
 
