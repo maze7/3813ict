@@ -42,11 +42,11 @@ export class GroupService {
     this.currentGroup.next(this.groups.find(g => g._id === groupId) ?? null);
 
     if (groupId) {
-      // update the current channel if the group has channels
-      if (this.currentGroup.value!.channels.length > 0) {
-        this.currentChannel.next(this.currentGroup.value!.channels[0]);
-      } else {
-        this.currentChannel.next(null);
+      this.currentChannel.next(null);
+      for (const channel of this.currentGroup.value!.channels) {
+        if (this.canAccessChannel(channel)) {
+          this.currentChannel.next(channel);
+        }
       }
     }
   }
@@ -145,5 +145,16 @@ export class GroupService {
     const user = this.auth.getUser();
 
     return group?.admins.includes(user._id) ?? false;
+  }
+
+  canAccessChannel(channel: Channel) {
+    const user = this.auth.getUser();
+
+    // Super admins and Group admins can see all channels
+    if (this.auth.isSuperAdmin() || this.isGroupAdmin()) {
+      return true;
+    }
+
+    return channel.members.findIndex(u => u._id === user._id) >= 0;
   }
 }

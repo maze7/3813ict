@@ -11,16 +11,22 @@
         </span>
       <div class="mt-4 flex flex-col gap-y-1">
         @for (channel of (groupService.group$ | async)?.channels; track channel._id) {
-          <div class="btn flex justify-between w-full"
+          <button class="btn flex justify-between items-center w-full disabled:text-gray-500" [disabled]="!groupService.canAccessChannel(channel)"
                (click)="groupService.setChannel(channel._id)"
                [ngClass]="{
                     'btn-neutral': (groupService.channel$ | async)?._id === channel._id,
                     'btn-ghost': (groupService.channel$ | async)?._id !== channel._id,
                 }">
-            <div>
-              <span>#</span><span class="ml-3">{{ channel.name }}</span>
+            <div class="flex items-center">
+              @if (!groupService.canAccessChannel(channel)) {
+                <lucide-icon name="lock" size="16"></lucide-icon>
+              }
+              @else {
+                #
+              }
+              <span class="ml-3">{{ channel.name }}</span>
             </div>
-          </div>
+          </button>
         }
       </div>
     </div>

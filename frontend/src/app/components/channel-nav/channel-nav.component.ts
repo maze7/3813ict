@@ -4,6 +4,8 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {AsyncPipe, NgClass} from "@angular/common";
 import {GroupService} from "../../services/group.service";
 import {NewChannelModalComponent} from "../new-channel-modal/new-channel-modal.component";
+import {Channel} from "../../models/channel.model";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-channel-nav',
@@ -19,5 +21,5 @@ import {NewChannelModalComponent} from "../new-channel-modal/new-channel-modal.c
   styleUrl: './channel-nav.component.css'
 })
 export class ChannelNavComponent {
-  constructor(public groupService: GroupService) {}
+  constructor(public groupService: GroupService, private auth: AuthService) {}
 }

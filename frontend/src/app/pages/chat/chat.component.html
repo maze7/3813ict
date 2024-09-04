@@ -1,4 +1,4 @@
-@if ((groups.group$ | async)?.channels?.length ?? false) {
+@if (((groups.group$ | async)?.channels?.length ?? false) && (groups.channel$ | async)) {
   <div class="h-full flex flex-col">
     <!-- Chat Panel -->
     <div class="flex-1 flex flex-col justify-end p-4 overflow-auto">
