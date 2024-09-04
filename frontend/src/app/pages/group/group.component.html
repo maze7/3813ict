@@ -12,16 +12,21 @@
             <span class="flex justify-between p-4 flex-none">
           <span class="flex gap-x-4">
             <h1 class="card-title text-2xl capitalize">
-              {{ (groupService.group$ | async)?.name }} <span class="text-accent">/</span> {{ groupService.currentChannel.value?.name }}
+              {{ (groupService.group$ | async)?.name }}
+              @if ((groupService.channel$ | async)) {
+                <span class="text-neutral">/</span> {{ groupService.currentChannel.value?.name }}
+              }
             </h1>
           </span>
           <span class="flex gap-x-4">
-            <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Video Call">
+            @if ((groupService.channel$ | async)) {
+              <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Video Call">
               <lucide-angular name="video"></lucide-angular>
-            </button>
-            <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Voice Call">
-              <lucide-angular name="phone-call"></lucide-angular>
-            </button>
+              </button>
+                <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Voice Call">
+                <lucide-angular name="phone-call"></lucide-angular>
+              </button>
+            }
             @if (auth.isSuperAdmin() || groupService.isGroupAdmin()) {
               <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Settings" (click)="showGroupSettings = true">
                 <lucide-angular name="settings"></lucide-angular>
@@ -70,8 +75,8 @@
     @else {
       <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
         <div class="flex flex-col gap-y-4">
-          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>No groups found.</h1>
-          <div class="text-neutral-content text-lg">An admin will need to create a group before you can start chatting.</div>
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>No channels.</h1>
+          <div class="text-neutral-content text-lg">An admin will need to create a channel before you can start chatting.</div>
         </div>
       </div>
     }

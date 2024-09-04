@@ -45,6 +45,8 @@ export class GroupService {
       // update the current channel if the group has channels
       if (this.currentGroup.value!.channels.length > 0) {
         this.currentChannel.next(this.currentGroup.value!.channels[0]);
+      } else {
+        this.currentChannel.next(null);
       }
     }
   }
