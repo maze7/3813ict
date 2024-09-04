@@ -74,6 +74,21 @@ export class GroupSettingsComponent {
     }
   }
 
+  acceptPending(user: User): void {
+    const group = this.groupService.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.pendingMembers, group.members);
+    }
+  }
+
+  rejectPending(user: User): void {
+    const group = this.groupService.currentGroup.value;
+
+    if (group) {
+      this.moveUser(user, group.pendingMembers, undefined);
+    }
+  }
 
   /**
    * Used to move users into different roles within the group

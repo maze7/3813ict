@@ -63,7 +63,7 @@
                 <td class="capitalize">{{ user.roles.join(', ') }}</td>
                 <th>
                   <span class="flex gap-x-2">
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Demote group admin" (click)="demoteAdmin(user)">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Demote admin" (click)="demoteAdmin(user)">
                         <lucide-icon name="shield-minus" size="22"></lucide-icon>
                       </div>
                       <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="kickUser(user)">
@@ -114,7 +114,7 @@
                 <td class="capitalize">{{ user.roles.join(', ') }}</td>
                 <th>
                   <span class="flex gap-x-2">
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Demote group admin" (click)="makeAdmin(user)">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Make admin" (click)="makeAdmin(user)">
                         <lucide-icon name="shield-plus" size="22"></lucide-icon>
                       </div>
                       <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick ser" (click)="kickUser(user)">
@@ -133,7 +133,7 @@
 
       <!-- Pending Members -->
       @if (groupService.currentGroup.value && groupService.currentGroup.value!.pendingMembers.length) {
-        <h1 class="mt-10 card-title text-2xl pl-3 mb-3">Members</h1>
+        <h1 class="mt-10 card-title text-2xl pl-3 mb-3">Group Join Requests</h1>
         <div class="overflow-x-auto">
           <table class="table">
             <!-- head -->
@@ -146,7 +146,7 @@
             </tr>
             </thead>
             <tbody>
-              @for (user of groupService.currentGroup.value?.members; track user._id) {
+              @for (user of groupService.currentGroup.value?.pendingMembers; track user._id) {
                 <tr>
                   <td>
                     <div class="flex items-center gap-3">
@@ -166,8 +166,12 @@
                   <td class="capitalize">{{ user.roles.join(', ') }}</td>
                   <th>
                     <span class="flex gap-x-2">
-                      <button class="btn btn-sm btn-neutral text-neutral-100"><lucide-angular name="user-round-x" size="22"></lucide-angular></button>
-                      <button class="btn btn-sm btn-success text-neutral-100"><lucide-angular name="user-round-check" size="22"></lucide-angular></button>
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Decline" (click)="acceptPending(user)">
+                        <lucide-icon name="user-round-x" size="22"></lucide-icon>
+                      </div>
+                      <div class="btn btn-sm btn-success text-neutral-100 tooltip py-1 px-2" data-tip="Accept" (click)="rejectPending(user)">
+                        <lucide-icon name="user-round-check" size="22"></lucide-icon>
+                      </div>
                     </span>
                   </th>
                 </tr>
