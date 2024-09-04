@@ -183,6 +183,7 @@ export class GroupService {
       userId: user._id,
       groupId: group._id,
       channelId: channel?._id,
+      ban,
     }).pipe(
       tap((res: any) => {
         this.currentGroup.next(res);
