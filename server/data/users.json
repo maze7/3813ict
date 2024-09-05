@@ -9,19 +9,6 @@
       "groupAdmin",
       "superAdmin"
     ],
-    "avatar": "billcropped.png",
-    "banned": false,
-    "flagged": false
-  },
-  {
-    "_id": "1725529501337",
-    "username": "taa",
-    "email": "taa@taa.com",
-    "password": "$2a$10$OK9vJqg10s3qnScpgUcGXu7fzol6E5BpCTBQyEQNu/svsF7Hf348a",
-    "roles": [
-      "user",
-      "groupAdmin"
-    ],
     "avatar": "sleepysally.png",
     "banned": false,
     "flagged": false
