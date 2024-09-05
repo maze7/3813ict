@@ -1,12 +1,13 @@
 const express = require('express');
 const UserModel = require('../models/user.model'); // Import the User model
 const isAuthenticated = require('../middleware/auth.middleware');
+const {hasRole} = require("../middleware/role.middleware");
 
 const router = express.Router();
 router.use(isAuthenticated);
 
 // List users
-router.get('/list', async (req, res) => {
+router.get('/list', hasRole('superAdmin'), async (req, res) => {
     try {
         const users = await UserModel.find({});
 
@@ -17,7 +18,7 @@ router.get('/list', async (req, res) => {
 });
 
 // delete user
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', hasRole('superAdmin'), async (req, res) => {
     try {
         await UserModel.deleteOne({ _id: req.params.id });
 
@@ -28,7 +29,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // ban or unban a user
-router.post('/:id/ban', async (req, res) => {
+router.post('/:id/ban', hasRole('superAdmin'), async (req, res) => {
     try {
         const { banned } = req.body;
         const user= await UserModel.findById(req.params.id);
@@ -47,7 +48,7 @@ router.post('/:id/ban', async (req, res) => {
 });
 
 // flag or unflag a user
-router.post('/:id/flag', async (req, res) => {
+router.post('/:id/flag', hasRole('superAdmin'), async (req, res) => {
     try {
         const { flagged } = req.body;
         const user= await UserModel.findById(req.params.id);

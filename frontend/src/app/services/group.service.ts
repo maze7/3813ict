@@ -26,7 +26,7 @@ export class GroupService {
    * Gets a list of all groups that exist within the server
    */
   listGroups(): Observable<Group[]> {
-    return this.http.get<Group[]>(`${this.baseUrl}`).pipe(
+    return this.http.get<Group[]>(`${this.baseUrl}/list`).pipe(
       map((res: any) => {
         return res as Group[]; // Cast the response to Group[]
       }),

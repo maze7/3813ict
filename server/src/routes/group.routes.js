@@ -3,11 +3,12 @@ const GroupModel = require('../models/group.model');
 const router = express.Router();
 const isAuthenticated = require('../middleware/auth.middleware');
 const UserModel = require("../models/user.model");
+const {hasRole, isGroupOwner} = require("../middleware/role.middleware");
 
 router.use(isAuthenticated);
 
-// TODO: Add isGroupAdmin or isSuperAdmin middleware
-router.post('/', async (req, res) => {
+// create a group
+router.post('/', hasRole('groupAdmin'), async (req, res) => {
     try {
         const { name, acronym } = req.body;
         const group = new GroupModel({
@@ -31,7 +32,7 @@ router.post('/', async (req, res) => {
 });
 
 // TODO: Add isGroupAdmin or isSuperAdmin middleware
-router.put('/:id', async (req, res) => {
+router.put('/:id', isGroupOwner, async (req, res) => {
     try {
         const groupId = req.params.id;
         const groupUpdates = req.body; // The entire group model from the request body
@@ -41,13 +42,6 @@ router.put('/:id', async (req, res) => {
 
         if (!group) {
             return res.status(404).json({ message: 'Group not found' });
-        }
-
-        // Check if the user is an admin or super admin (assuming req.user is populated by middleware)
-        const isAdmin = group.admins.includes(req.user._id.toString());
-
-        if (!isAdmin) {
-            return res.status(403).json({ message: 'Permission denied' });
         }
 
         // Only allow certain fields to be updated
@@ -74,7 +68,7 @@ router.put('/:id', async (req, res) => {
 
 
 // get all groups (list)
-router.get('/', async (req, res) => {
+router.get('/list', async (req, res) => {
     try {
         const groups = await GroupModel.find({}).populate(
             'members admins banned pendingAdmins pendingMembers channels.members',
@@ -103,12 +97,13 @@ router.get('/:id', async (req, res) => {
 });
 
 // delete a group by ID
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', isGroupOwner, async (req, res) => {
     try {
         const group = await GroupModel.findByIdAndDelete(req.params.id);
         if (!group) {
             return res.status(404).json({ message: 'Group not found' });
         }
+
         res.status(200).json({ message: 'Group deleted successfully' });
     } catch (err) {
         res.status(500).json({ message: 'Error deleting group', error: err.message });
@@ -116,7 +111,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // create a channel within a group
-router.post('/:id/channel', async (req, res) => {
+router.post('/:id/channel', isGroupOwner, async (req, res) => {
     try {
         const { name } = req.body;
         const groupId = req.params.id;
@@ -135,7 +130,7 @@ router.post('/:id/channel', async (req, res) => {
     }
 });
 
-router.delete('/:id/:channelId', async (req, res) => {
+router.delete('/:id/:channelId', isGroupOwner, async (req, res) => {
     try {
         const groupId = req.params.id
         const channelId = req.params.channelId;
@@ -157,8 +152,8 @@ router.delete('/:id/:channelId', async (req, res) => {
     }
 });
 
-// TODO: add isGroupOwner Guard
-router.post('/:id/add-user', async (req, res) => {
+// add a user to a group
+router.post('/:id/add-user', isGroupOwner, async (req, res) => {
     try {
         const { channelId, userId } = req.body;
 
@@ -213,7 +208,7 @@ router.post('/:id/join', async (req, res) => {
 });
 
 // accept or decline a user's join request
-router.post('/:id/accept', async (req, res) => {
+router.post('/:id/accept', isGroupOwner, async (req, res) => {
     try {
         const { userId, decision } = req.body;
         const query = { _id: req.params.id };
@@ -231,7 +226,7 @@ router.post('/:id/accept', async (req, res) => {
 });
 
 // kick a user from a group
-router.post('/:id/kick', async (req, res) => {
+router.post('/:id/kick', isGroupOwner, async (req, res) => {
     try {
         const { channelId, userId, ban } = req.body;
         const groupId = req.params.id;
@@ -275,7 +270,7 @@ router.post('/:id/kick', async (req, res) => {
 })
 
 // promote / demote a group admin
-router.post('/:id/admin', async (req, res) => {
+router.post('/:id/admin', isGroupOwner, async (req, res) => {
     try {
         const { userId, status } = req.body;
         const groupId = req.params.id;
