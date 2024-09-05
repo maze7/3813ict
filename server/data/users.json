@@ -19,9 +19,10 @@
     "email": "taa@taa.com",
     "password": "$2a$10$OK9vJqg10s3qnScpgUcGXu7fzol6E5BpCTBQyEQNu/svsF7Hf348a",
     "roles": [
-      "user"
+      "user",
+      "groupAdmin"
     ],
-    "avatar": "billcropped.png",
+    "avatar": "sleepysally.png",
     "banned": false,
     "flagged": false
   }

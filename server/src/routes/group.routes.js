@@ -102,7 +102,7 @@ router.delete('/:id', isGroupOwner, (req, res) => {
 });
 
 // Create a channel within a group
-router.post('/:id/channel', isGroupOwner, (req, res) => {
+router.post('/:id/channel', isGroupAdmin, (req, res) => {
     try {
         const { name } = req.body;
         const group = GroupModel.getGroupById(req.params.id);

@@ -5,11 +5,10 @@
     "acronym": "ta",
     "owner": "1725528788301",
     "admins": [
-      "1725528788301"
-    ],
-    "members": [
+      "1725528788301",
       "1725529501337"
     ],
+    "members": [],
     "pendingMembers": [],
     "banned": [],
     "channels": [
@@ -18,6 +17,13 @@
         "name": "zali",
         "members": [
           "1725528788301",
+          "1725529501337"
+        ]
+      },
+      {
+        "_id": "1725531165658",
+        "name": "asdfsadf",
+        "members": [
           "1725529501337"
         ]
       }
@@ -30,6 +36,47 @@
     "owner": "1725528788301",
     "admins": [
       "1725528788301"
+    ],
+    "members": [],
+    "pendingMembers": [],
+    "banned": [],
+    "channels": []
+  },
+  {
+    "_id": "1725530906317",
+    "name": ":)",
+    "acronym": ":)",
+    "owner": "1725529501337",
+    "admins": [
+      "1725529501337"
+    ],
+    "members": [],
+    "pendingMembers": [],
+    "banned": [],
+    "channels": [
+      {
+        "_id": "1725531100008",
+        "name": "zzzz",
+        "members": [
+          "1725529501337"
+        ]
+      },
+      {
+        "_id": "1725531101828",
+        "name": "sdsds",
+        "members": [
+          "1725529501337"
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "1725530989621",
+    "name": "Wee",
+    "acronym": "er",
+    "owner": "1725529501337",
+    "admins": [
+      "1725529501337"
     ],
     "members": [],
     "pendingMembers": [],
