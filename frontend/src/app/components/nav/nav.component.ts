@@ -41,7 +41,6 @@ export class NavComponent {
 
   getUserAvatar(): string {
     const user = this.auth.getUser();
-    console.log(user.avatar);
     return 'avatars/' + user.avatar
   }
 }

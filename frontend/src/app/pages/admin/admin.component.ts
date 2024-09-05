@@ -78,4 +78,10 @@ export class AdminComponent implements OnInit {
       user.roles = ['user'];
     }
   }
+
+  delete(user: User): void {
+    this.userService.delete(user).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.listUsers();
+    });
+  }
 }

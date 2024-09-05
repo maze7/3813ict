@@ -44,7 +44,7 @@ import {
   GlobeLock,
   Globe,
   Antenna,
-  MessageCircleDashed, LogOut,
+  MessageCircleDashed, LogOut, FlagOff, Trash, HandHelping,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -103,6 +103,9 @@ export const appConfig: ApplicationConfig = {
       Antenna,
       MessageCircleDashed,
       LogOut,
+      FlagOff,
+      Trash,
+      HandHelping,
     })),
   ]
 };

@@ -2,6 +2,7 @@ const express = require('express');
 const GroupModel = require('../models/group.model');
 const router = express.Router();
 const isAuthenticated = require('../middleware/auth.middleware');
+const UserModel = require("../models/user.model");
 
 router.use(isAuthenticated);
 
@@ -228,6 +229,9 @@ router.post('/:id/kick', async (req, res) => {
         if (ban) {
             update.$push = { banned: userId };
             update.$pull['banned'] = undefined;
+
+            // flag the user for the superAdmin
+            await UserModel.findByIdAndUpdate(userId, { flagged: true });
         } else if (channelId) {
             query['channels._id'] = channelId;
             update.$pull = { 'channels.$.members': userId }

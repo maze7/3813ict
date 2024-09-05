@@ -70,8 +70,11 @@
                         }
 
                         <!-- Banned Controls -->
-                        <button class="btn btn-sm btn-error tooltip text-neutral-200" data-tip="Ban user" (click)="ban(user, true)">
+                        <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Ban" (click)="ban(user, true)">
                           <lucide-icon name="ban" size="22"></lucide-icon>
+                        </button>
+                        <button class="btn btn-sm btn-error tooltip text-neutral-200" data-tip="Delete" (click)="delete(user)">
+                          <lucide-icon name="trash" size="22"></lucide-icon>
                         </button>
                       </div>
                     </td>
@@ -86,10 +89,10 @@
         </div>
       </div>
 
-      <!-- Flagged Members Section -->
+      <!-- Users Section -->
       <div class="space-y-12">
         <div class="border-b border-white/10 pt-8 pb-12">
-          <h1 class="card-title text-2xl pl-3 mb-3">Flagged</h1>
+          <h1 class="card-title text-2xl pl-3 mb-3">Flagged Users</h1>
           <div class="overflow-x-auto">
             <table class="table table-fixed w-full">
               <thead>
@@ -112,11 +115,20 @@
                       </div>
                     </td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.roles.join(', ') }}</td>
+                    <td class="capitalize">{{ user.roles.join(', ') }}</td>
                     <td>
-                      <div class="flex justify-end gap-x-2">
-                        <button class="btn btn-sm btn-neutral tooltip" data-tip="Unban">
-                          <lucide-icon name="lock-open" size="22"></lucide-icon>
+                      <div class="flex gap-x-2 justify-end">
+                        <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Unflag" (click)="flag(user, false)">
+                          <lucide-icon name="flag-off" size="22"></lucide-icon>
+                        </button>
+
+                        <!-- Banned Controls -->
+                        <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Ban" (click)="ban(user, true)">
+                          <lucide-icon name="ban" size="22"></lucide-icon>
+                        </button>
+
+                        <button class="btn btn-sm btn-error tooltip text-neutral-200" data-tip="Delete" (click)="delete(user)">
+                          <lucide-icon name="trash" size="22"></lucide-icon>
                         </button>
                       </div>
                     </td>
@@ -157,8 +169,11 @@
                     <td>{{ user.roles.join(', ') }}</td>
                     <td>
                       <div class="flex justify-end gap-x-2">
-                        <button class="btn btn-sm btn-neutral tooltip" data-tip="Unban" (click)="ban(user, false)">
-                          <lucide-icon name="lock-open" size="22"></lucide-icon>
+                        <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Unban" (click)="ban(user, false)">
+                          <lucide-icon name="hand-helping" size="22"></lucide-icon>
+                        </button>
+                        <button class="btn btn-sm btn-error tooltip text-neutral-200" data-tip="Delete" (click)="delete(user)">
+                          <lucide-icon name="trash" size="22"></lucide-icon>
                         </button>
                       </div>
                     </td>

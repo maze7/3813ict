@@ -26,4 +26,8 @@ export class UserService {
   flag(user: User, flagged: boolean): Observable<any> {
     return this.http.post(`${this.baseUrl}/${user._id}/flag`, { flagged });
   }
+
+  delete(user: User): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${user._id}`);
+  }
 }

@@ -5,12 +5,23 @@ const isAuthenticated = require('../middleware/auth.middleware');
 const router = express.Router();
 router.use(isAuthenticated);
 
-// Register route
+// List users
 router.get('/list', async (req, res) => {
     try {
         const users = await UserModel.find({});
 
         res.status(201).json(users);
+    } catch (err) {
+        res.status(500).json({ message: 'Error getting users.', error: err.message });
+    }
+});
+
+// delete user
+router.delete('/:id', async (req, res) => {
+    try {
+        await UserModel.deleteOne({ _id: req.params.id });
+
+        res.status(200).json({ message: 'User deleted.' });
     } catch (err) {
         res.status(500).json({ message: 'Error getting users.', error: err.message });
     }
