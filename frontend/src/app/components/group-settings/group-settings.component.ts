@@ -26,8 +26,8 @@ import {UserService} from "../../services/user.service";
 })
 export class GroupSettingsComponent implements OnInit {
 
-  protected tabs = ['General', 'Users', 'Channels'];
-  protected currentTab: string = this.tabs[1];
+  protected tabs = ['General', 'Users'];
+  protected currentTab: string = this.tabs[0];
   private destroyRef = inject(DestroyRef);
 
   @Output() closed = new EventEmitter();
