@@ -87,4 +87,17 @@ export class GroupSettingsComponent implements OnInit {
     const group = this.groupService.currentGroup.value!;
     this.groupService.setAdmin(user, group, status).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
+
+  delete(): void {
+    this.groupService.deleteGroup(this.groupService.currentGroup.value!)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.closed.emit();  // Emit only after successful deletion
+        },
+        error: (err) => {
+          console.error('Error deleting group:', err);
+        }
+      });
+  }
 }

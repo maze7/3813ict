@@ -61,7 +61,7 @@
           <!-- Action Buttons -->
           <div class="mt-6 flex justify-end gap-x-6">
             <button type="button" class="btn btn-ghost" (click)="closed.emit()">Cancel</button>
-            <button type="submit" class="btn btn-error text-neutral-200">Delete group</button>
+            <button type="submit" class="btn btn-error text-neutral-200" (click)="delete()">Delete group</button>
             <button type="submit" class="btn btn-primary text-neutral-200" (click)="saveGroup()">Save group</button>
           </div>
         </form>

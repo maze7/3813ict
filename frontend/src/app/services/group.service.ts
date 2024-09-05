@@ -53,6 +53,10 @@ export class GroupService {
     }
   }
 
+  /**
+   * Update the local group with a returned group struct from the API
+   * @param group
+   */
   updateGroup(group: Group): void {
     const groupIndex = this.groups.findIndex(g => g._id === group._id);
 
@@ -88,6 +92,28 @@ export class GroupService {
       }),
       catchError((err) => {
         console.error(err);
+        return of(null);
+      })
+    );
+  }
+
+  /**
+   * Delete a group
+   * @param group
+   */
+  deleteGroup(group: Group): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${group._id}`).pipe(
+      tap((res) => {
+        this.groups = this.groups.filter(g => g._id !== group._id);
+
+        // Optionally clear the current group if it is the one being deleted
+        if (this.currentGroup.value?._id === group._id) {
+          this.currentGroup.next(null);
+          this.currentChannel.next(null); // Clear current channel as well
+        }
+      }),
+      catchError(err => {
+        console.error('Error deleting group:', err);
         return of(null);
       })
     );
