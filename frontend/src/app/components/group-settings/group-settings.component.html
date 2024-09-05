@@ -58,13 +58,47 @@
               </div>
             </div>
           </div>
-          <!-- Action Buttons -->
-          <div class="mt-6 flex justify-end gap-x-6">
-            <button type="button" class="btn btn-ghost" (click)="closed.emit()">Cancel</button>
-            <button type="submit" class="btn btn-error text-neutral-200" (click)="delete()">Delete group</button>
-            <button type="submit" class="btn btn-primary text-neutral-200" (click)="saveGroup()">Save group</button>
+        </form>
+        <!-- Channels -->
+        <form [formGroup]="groupForm">
+          <div class="space-y-12">
+            <div class="border-b border-white/10 pb-12 pt-12">
+              <h2 class="card-title text-2xl pl-3 mb-3">Channels</h2>
+              <div class="overflow-x-auto">
+                <table class="table table-fixed w-full">
+                  <thead>
+                  <tr>
+                    <th>Channel Name</th>
+                    <th>Members</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (channel of groupService.currentGroup.value!.channels; track channel._id) {
+                      <tr>
+                        <td># {{ channel.name }}</td>
+                        <td class="capitalize">{{ channel.members.length}}</td>
+                        <td>
+                          <div class="flex gap-x-2 justify-end">
+                            <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Delete" (click)="deleteChannel(channel)">
+                              <lucide-icon name="trash" size="22"></lucide-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </form>
+        <!-- Action Buttons -->
+        <div class="mt-6 flex justify-end gap-x-6">
+          <button type="button" class="btn btn-ghost" (click)="closed.emit()">Cancel</button>
+          <button type="submit" class="btn btn-error text-neutral-200" (click)="delete()">Delete group</button>
+          <button type="submit" class="btn btn-primary text-neutral-200" (click)="saveGroup()">Save group</button>
+        </div>
       }
       @else if (currentTab === tabs[1]) {
         <!-- Admins Section -->

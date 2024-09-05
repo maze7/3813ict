@@ -147,6 +147,17 @@ export class GroupService {
   }
 
   /**
+   * delete a channel from a group
+   */
+  deleteChannel(group: Group, id: string): Observable<any> {
+    return this.http.delete<Group>(`${this.baseUrl}/${group._id}/${id}`).pipe(
+      tap((data: Group) => {
+        this.updateGroup(data);
+      })
+    );
+  }
+
+  /**
    * Navigate to a specific channel within the current group
    * @param channelId id of channel to navigate to
    */

@@ -135,6 +135,28 @@ router.post('/:id/channel', async (req, res) => {
     }
 });
 
+router.delete('/:id/:channelId', async (req, res) => {
+    try {
+        const groupId = req.params.id
+        const channelId = req.params.channelId;
+
+        // add the channel to the document
+        await GroupModel.updateOne(
+            { _id: groupId },
+            { $pull: { channels: { _id: channelId } } }  // Remove channel by its _id
+        );
+
+        // get the updated group and return
+        const group = await GroupModel.findById(groupId).populate(
+            'members admins banned pendingAdmins pendingMembers channels.members',
+        );
+
+        res.status(200).json(group);
+    } catch (err) {
+        res.status(500).json({ message: 'Error creating channel.', error: err.message });
+    }
+});
+
 // TODO: add isGroupOwner Guard
 router.post('/:id/add-user', async (req, res) => {
     try {

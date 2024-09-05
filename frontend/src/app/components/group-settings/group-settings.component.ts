@@ -10,6 +10,7 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {AddUserModalComponent} from "../add-user-modal/add-user-modal.component";
 import {UserService} from "../../services/user.service";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Channel} from "../../models/channel.model";
 
 @Component({
   selector: 'app-group-settings',
@@ -99,5 +100,10 @@ export class GroupSettingsComponent implements OnInit {
           console.error('Error deleting group:', err);
         }
       });
+  }
+
+  deleteChannel(channel: Channel): void {
+    const group = this.groupService.currentGroup.value!;
+    this.groupService.deleteChannel(group, channel._id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 }
