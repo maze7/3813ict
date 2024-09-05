@@ -8,6 +8,7 @@ import {AsyncPipe} from "@angular/common";
 import {User} from "../../models/user.model";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {CreateUserComponent} from "../../components/create-user/create-user.component";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-admin',
@@ -44,6 +45,22 @@ export class AdminComponent implements OnInit {
       this.flagged = data.filter(u => u.flagged);
       this.banned = data.filter(u => u.banned);
     });
+  }
+
+  ban(user: User, banned: boolean) {
+    this.userService.ban(user, banned).pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((data) => {
+      this.listUsers();
+    })
+  }
+
+  flag(user: User, flagged: boolean) {
+    this.userService.flag(user, flagged).pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((data) => {
+      this.listUsers();
+    })
   }
 
   promote(user: User): void {

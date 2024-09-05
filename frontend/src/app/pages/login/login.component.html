@@ -42,11 +42,8 @@
 
         @if (authError) {
           <div class="text-rose-500 mt-2 flex gap-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
-              <path fill-rule="evenodd" d="M6.5 1a.5.5 0 0 1 .5.5v7.79l2.15-2.15a.5.5 0 0 1 .7.7l-3 3a.5.5 0 0 1-.7 0l-3-3a.5.5 0 0 1 .7-.7L6 9.29V1.5a.5.5 0 0 1 .5-.5z"/>
-              <path fill-rule="evenodd" d="M1 15a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8.5a.5.5 0 0 0-1 0V15H2V8.5a.5.5 0 0 0-1 0V15z"/>
-            </svg>
-            <span>Invalid login credentials.</span>
+            <lucide-icon name="shield-x"></lucide-icon>
+            <span>{{ authError }}</span>
           </div>
         }
 

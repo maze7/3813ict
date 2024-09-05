@@ -21,7 +21,7 @@ import {catchError, of} from "rxjs";
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  authError: boolean = false;
+  authError?: string;
 
   constructor(private auth: AuthService, private router: Router,  private fb: FormBuilder) {
     this.loginForm = this.fb.group({
@@ -32,12 +32,15 @@ export class LoginComponent {
 
   login() {
     if (this.loginForm.valid) {
-      this.authError = false; // reset auth error
+      this.authError = undefined; // reset auth error
       const { username, password } = this.loginForm.value;
       this.auth.login(username, password).pipe(
         catchError((error) => {
           if (error.status === 401) {
-            this.authError = true;
+            this.authError = 'Invalid credentials.';
+            return of(null);
+          } else if (error.status === 403) {
+            this.authError = 'Banned user.';
             return of(null);
           }
 

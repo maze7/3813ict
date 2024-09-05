@@ -57,6 +57,10 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
+        if (user.banned) {
+            return res.status(403).json( { message: 'Banned user.' });
+        }
+
         // Compare the password with the stored hash
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {

@@ -12,11 +12,18 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   list(query: any): Observable<User[]> {
-    console.log('test');
     return this.http.get<any>( `${this.baseUrl}/list`, query).pipe(
       map((res: any) => {
         return res as User[];
       }),
     );
+  }
+
+  ban(user: User, banned: boolean): Observable<any> {
+    return this.http.post(`${this.baseUrl}/${user._id}/ban`, { banned });
+  }
+
+  flag(user: User, flagged: boolean): Observable<any> {
+    return this.http.post(`${this.baseUrl}/${user._id}/flag`, { flagged });
   }
 }

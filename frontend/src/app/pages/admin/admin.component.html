@@ -70,7 +70,7 @@
                         }
 
                         <!-- Banned Controls -->
-                        <button class="btn btn-sm btn-error tooltip text-neutral-200" data-tip="Ban user">
+                        <button class="btn btn-sm btn-error tooltip text-neutral-200" data-tip="Ban user" (click)="ban(user, true)">
                           <lucide-icon name="ban" size="22"></lucide-icon>
                         </button>
                       </div>
@@ -101,7 +101,7 @@
               </tr>
               </thead>
               <tbody>
-                @for (user of banned; track user._id) {
+                @for (user of flagged; track user._id) {
                   <tr>
                     <td>
                       <div class="flex items-center gap-3">
@@ -157,7 +157,7 @@
                     <td>{{ user.roles.join(', ') }}</td>
                     <td>
                       <div class="flex justify-end gap-x-2">
-                        <button class="btn btn-sm btn-neutral tooltip" data-tip="Unban">
+                        <button class="btn btn-sm btn-neutral tooltip" data-tip="Unban" (click)="ban(user, false)">
                           <lucide-icon name="lock-open" size="22"></lucide-icon>
                         </button>
                       </div>
