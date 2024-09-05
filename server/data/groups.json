@@ -1,16 +1,35 @@
 [
   {
-    "_id": "1725520550115",
-    "name": "test",
-    "acronym": "t1",
-    "owner": "1725520432154",
-    "admins": [
-      "1725520432154"
-    ],
+    "_id": "1725523495171",
+    "name": "asdf",
+    "acronym": "as",
+    "owner": "1725523382047",
+    "admins": [],
     "members": [
-      "1725520432154"
+      "1725526755693",
+      "1725523382047",
+      "1725523526995"
     ],
     "pendingMembers": [],
+    "banned": [],
+    "channels": [
+      {
+        "_id": "1725523503129",
+        "name": "asdf",
+        "members": []
+      }
+    ]
+  },
+  {
+    "_id": "1725526708154",
+    "name": "dsa",
+    "acronym": "da",
+    "owner": "1725523382047",
+    "admins": [],
+    "members": [],
+    "pendingMembers": [
+      "1725526755693"
+    ],
     "banned": [],
     "channels": []
   }

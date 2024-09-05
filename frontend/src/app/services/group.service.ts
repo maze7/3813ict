@@ -176,8 +176,9 @@ export class GroupService {
     const user = this.auth.getUser();
 
     const isMember = (group?.members.find(u => u._id == user._id) || group?.admins.find(u => u._id == user._id)) ?? false;
+    const isOwner = group?.owner._id === user._id;
 
-    return user.roles.includes('superAdmin') || isMember;
+    return user.roles.includes('superAdmin') || isMember || isOwner;
   }
 
   /**
@@ -210,8 +211,16 @@ export class GroupService {
   isGroupAdmin(): boolean {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
+    return this.auth.isSuperAdmin() || (group?.admins.findIndex(a => a._id === user._id) !== -1);
+  }
 
-    return this.auth.isSuperAdmin() || (group?.admins.includes(user._id) ?? false);
+  /**
+   * Returns true or false as to whether the current user is the owner of the current group
+   */
+  isGroupOwner(): boolean {
+    const group = this.currentGroup.value;
+    const user = this.auth.getUser();
+    return this.auth.isSuperAdmin() || (group?.owner._id === user._id);
   }
 
   /**
@@ -235,17 +244,34 @@ export class GroupService {
    * @param channel if provided, user will only be kicked from the specified channel (unless banned)
    * @param ban if true, user will be banned from server
    */
-  kick(user: User, channel?: Channel, ban: boolean = false): Observable<any> {
+  kick(user: User, channel?: Channel): Observable<any> {
     const group = this.currentGroup.value!;
 
     return this.http.post<any>(`${this.baseUrl}/${group._id}/kick`, {
       userId: user._id,
       channelId: channel?._id,
-      ban,
     }).pipe(
       tap((res: any) => {
         this.updateGroup(res);
         this.currentChannel.next(res.channels.find((c: Channel) => c._id === channel?._id));
+      })
+    );
+  }
+
+  /**
+   * Bans a user from a group.
+   * @param user user to be banned
+   * @param decision true / false depending on ban status
+   */
+  ban(user: User, decision: boolean): Observable<any> {
+    const group = this.currentGroup.value!;
+
+    return this.http.post<any>(`${this.baseUrl}/${group._id}/ban`, {
+      userId: user._id,
+      decision,
+    }).pipe(
+      tap((res: any) => {
+        this.updateGroup(res);
       })
     );
   }

@@ -6,12 +6,12 @@ const groupDataPath = path.join(__dirname, '../../data/groups.json');
 // Group operations
 const GroupModel = {
     getAllGroups: () => {
-        return loadData(groupDataPath);
+        return loadData(groupDataPath).map(g => GroupModel.populate(g));
     },
 
     getGroupById: (groupId) => {
         const groups = loadData(groupDataPath);
-        return groups.find(group => group._id === groupId);
+        return GroupModel.populate(groups.find(group => group._id === groupId));
     },
 
     createGroup: (newGroup) => {
@@ -45,20 +45,29 @@ const GroupModel = {
         group.channels.forEach(channel => {
             channel.members = channel.members.map(userId => UserModel.getUserById(userId));
         });
+        group.owner = UserModel.getUserById(group.owner);
         return group;
     },
 
     depopulate: (group) => {
         const isObject = (item) => typeof item === 'object' && item !== null;
 
+        // Helper function to depopulate and remove duplicates using a Set
+        const depopulateArray = (arr) => {
+            return Array.from(new Set(arr.map(user => isObject(user) ? user._id : user)));
+        };
+
         group.creator = isObject(group.creator) ? group.creator._id : group.creator;
-        group.members = group.members.map(user => isObject(user) ? user._id : user);
-        group.admins = group.admins.map(user => isObject(user) ? user._id : user);
-        group.pendingMembers = group.pendingMembers.map(user => isObject(user) ? user._id : user);
-        group.banned = group.banned.map(user => isObject(user) ? user._id : user);
+        group.members = depopulateArray(group.members);
+        group.admins = depopulateArray(group.admins);
+        group.pendingMembers = depopulateArray(group.pendingMembers);
+        group.banned = depopulateArray(group.banned);
+        group.owner = isObject(group.owner) ? group.owner._id : group.owner;
+
         group.channels.forEach(channel => {
-            channel.members = channel.members.map(user => isObject(user) ? user._id : user);
+            channel.members = depopulateArray(channel.members);
         });
+
         return group;
     }
 };

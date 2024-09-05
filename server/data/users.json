@@ -1,14 +1,52 @@
 [
   {
-    "_id": "1725520432154",
+    "_id": "1725523382047",
     "username": "asdf",
     "email": "asdf@asdf.com",
-    "password": "$2a$10$ASbskRXAxMN.dK92/9HL.OJ0I0HHgMyUKlXXqooJy1PS01rC/wunm",
+    "password": "$2a$10$M6TQJ/Pg9kTxARX22m3XiuSUsWc6aem3uOcl7TadmYJYIoYo0pGla",
     "roles": [
       "user",
       "groupAdmin"
     ],
-    "avatar": "wendy.png",
+    "avatar": "kitty.png",
+    "banned": false,
+    "flagged": false
+  },
+  {
+    "_id": "1725523526995",
+    "username": "super",
+    "email": "super@user.com",
+    "password": "$2a$10$0omB5d.x29ThO42q0cMFre0C8yjgFO8pEpa4AOzYqCMqeYMhRgZ.C",
+    "roles": [
+      "user",
+      "groupAdmin",
+      "superAdmin"
+    ],
+    "avatar": "frank.png",
+    "banned": false,
+    "flagged": true
+  },
+  {
+    "_id": "1725523666024",
+    "username": "callan",
+    "email": "callan@acton.com",
+    "password": "$2a$10$HEFG6Ze9Uj1rHopMk72HKeHn4roTLUWvMMw62OUPkN6GIXrMnLMdi",
+    "roles": [
+      "user"
+    ],
+    "avatar": "kitty.png",
+    "banned": false,
+    "flagged": true
+  },
+  {
+    "_id": "1725526755693",
+    "username": "test",
+    "email": "test@test.com",
+    "password": "$2a$10$bKucbJU2yUmnWklAVz56r.euKFejNa1u1OMWCwkD9/jkLETnH2mB.",
+    "roles": [
+      "user"
+    ],
+    "avatar": "sleepysally.png",
     "banned": false,
     "flagged": false
   }

@@ -37,6 +37,7 @@ router.post('/:id/ban', hasRole('superAdmin'), (req, res) => {
         }
 
         user.banned = banned;
+        user.flagged = false;
         UserModel.updateUser(user);
 
         return res.status(200).json({ status: banned });
