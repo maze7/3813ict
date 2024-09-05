@@ -1,0 +1,119 @@
+<div class="flex h-full bg-base-300">
+  <!-- Content Section -->
+  <section class="flex flex-1 h-full bg-base-200 p-4 overflow-y-auto rounded-l-3xl"> <!-- Make content section scrollable -->
+    <div class="flex-1 flex flex-col mx-auto max-w-5xl min-h-0"> <!-- Add min-h-0 -->
+      <!-- Close Button -->
+      <div class="flex justify-end">
+        <button class="btn btn-ghost rounded-full tooltip tooltip-left" (click)="router.navigate(['/'])" data-tip="Close Settings">
+          <lucide-angular name="circle-x"></lucide-angular>
+        </button>
+      </div>
+
+      <!-- Content -->
+      <!-- General Settings Form -->
+      <form>
+        <div class="space-y-12">
+          <div class="border-b border-white/10 pb-10 pl-3">
+            <h2 class="card-title font-semibold leading-7">Admin Settings</h2>
+            <p class="mt-1 text-sm text-gray-400">Configure global settings for the system.</p>
+            </div>
+        </div>
+      </form>
+
+      <!-- Users Section -->
+      <div class="space-y-12">
+        <div class="border-b border-white/10 pt-8 pb-12">
+          <h1 class="card-title text-2xl pl-3 mb-3">Users</h1>
+          <div class="overflow-x-auto">
+            <table class="table table-fixed w-full">
+              <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Global Roles</th>
+                <th>Manage</th>
+              </tr>
+              </thead>
+              <tbody>
+                @for (user of users; track user._id) {
+                  <tr>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="avatar mask mask-squircle h-12 w-12">
+                          <img src="https://img.daisyui.com/images/profile/demo/2@94.webp" alt="Avatar" />
+                        </div>
+                        <div class="font-bold">{{ user.username }}</div>
+                      </div>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td class="capitalize">{{ user.roles.join(', ') }}</td>
+                    <td>
+                      <div class="flex gap-x-2 justify-end">
+                        <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Demote admin">
+                          <lucide-icon name="shield-minus" size="22"></lucide-icon>
+                        </button>
+                        <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Kick user">
+                          <lucide-icon name="user-round-minus" size="22"></lucide-icon>
+                        </button>
+                        <button class="btn btn-sm btn-error tooltip text-neutral-200" data-tip="Ban user">
+                          <lucide-icon name="ban" size="22"></lucide-icon>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <div class="flex justify-end mt-10 pb-4">
+            <button class="btn btn-neutral max-w-md" (click)="addUserModal.open()">Add User</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Banned Members Section -->
+      <div class="space-y-12">
+        <div class="border-b border-white/10 pt-8 pb-12">
+          <h1 class="card-title text-2xl pl-3 mb-3">Banned</h1>
+          <div class="overflow-x-auto">
+            <table class="table table-fixed w-full">
+              <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Global Roles</th>
+                <th>Manage</th>
+              </tr>
+              </thead>
+              <tbody>
+                @for (user of banned; track user._id) {
+                  <tr>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="avatar mask mask-squircle h-12 w-12">
+                          <img src="https://img.daisyui.com/images/profile/demo/2@94.webp" alt="Avatar" />
+                        </div>
+                        <div class="font-bold">{{ user.username }}</div>
+                      </div>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.roles.join(', ') }}</td>
+                    <td>
+                      <div class="flex justify-end gap-x-2">
+                        <button class="btn btn-sm btn-neutral tooltip" data-tip="Unban">
+                          <lucide-icon name="lock-open" size="22"></lucide-icon>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<app-add-user-modal #addUserModal [users]="[]"></app-add-user-modal>

@@ -9,7 +9,7 @@
       <!-- Top-aligned content -->
       <div>
         <div class="p-1">
-          <a class="btn btn-primary text-white flex justify-center items-center p-2 rounded-2xl h-14">
+          <a class="btn btn-primary text-white flex justify-center items-center p-2 rounded-2xl h-14" (click)="router.navigate(['/'])">
             <i-lucide name="audio-waveform" size="30"></i-lucide>
           </a>
         </div>
@@ -36,7 +36,7 @@
       <!-- bottom-aligned content -->
       <div class="flex-col items-center">
         @if (auth.isSuperAdmin()) {
-          <div class="btn btn-ghost mb-2 w-full">
+          <div class="btn btn-ghost mb-2 w-full" (click)="router.navigate(['/admin'])">
             <lucide-icon name="shield"></lucide-icon>
           </div>
         }

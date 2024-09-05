@@ -28,7 +28,7 @@ export class NavComponent {
 
   @ViewChild(NewGroupModalComponent) newGroupModal?: NewGroupModalComponent;
 
-  constructor(public auth: AuthService, public groupService: GroupService, private router: Router) {}
+  constructor(public auth: AuthService, public groupService: GroupService, protected router: Router) {}
 
   showGroup(id: string): void {
     this.groupService.setGroup(id);

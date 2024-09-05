@@ -3,6 +3,8 @@ import {LoginComponent} from "./pages/login/login.component";
 import {RegisterComponent} from "./pages/register/register.component";
 import {GroupComponent} from "./pages/group/group.component";
 import {authGuard} from "./guards/auth.guard";
+import {AdminComponent} from "./pages/admin/admin.component";
+import {adminGuard} from "./guards/admin.guard";
 
 export const routes: Routes = [
   {
@@ -17,6 +19,11 @@ export const routes: Routes = [
     path: '',
     component: GroupComponent,
     canActivate: [authGuard],
+  },
+  {
+    path: 'admin',
+    component: AdminComponent,
+    canActivate: [authGuard, adminGuard],
   },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
