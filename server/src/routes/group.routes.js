@@ -19,7 +19,7 @@ router.post('/', hasRole('groupAdmin'), (req, res) => {
             acronym,
             owner: req.user._id,
             admins: [req.user._id],
-            members: [req.user._id],
+            members: [],
             pendingMembers: [],
             banned: [],
             channels: [],
