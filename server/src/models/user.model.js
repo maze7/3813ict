@@ -19,7 +19,10 @@ const userSchema = new mongoose.Schema({
         },
         required: true,
         default: ['user'],
-    }
+    },
+    flagged: { type: Boolean, required: true, default: false },
+    banned: { type: Boolean, required: true, default: false },
+    avatar: { type: String, required: true },
 });
 
 const UserModel = mongoose.model('User', userSchema);
