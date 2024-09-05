@@ -72,9 +72,10 @@ router.delete('/:id', async (req, res) => {
 });
 
 // create a channel within a group
-router.post('/channel', async (req, res) => {
+router.post('/:id/channel', async (req, res) => {
     try {
-        const { groupId, name } = req.body;
+        const { name } = req.body;
+        const groupId = req.params.id;
 
         // add the channel to the document
         await GroupModel.updateOne({ _id: groupId }, { $push: { channels: { name, members: [req.user._id] }}});
@@ -91,7 +92,7 @@ router.post('/channel', async (req, res) => {
 });
 
 // TODO: add isGroupOwner Guard
-router.post('/add-user/:id', async (req, res) => {
+router.post('/:id/add-user', async (req, res) => {
     try {
         const { channelId, userId } = req.body;
 
@@ -121,7 +122,7 @@ router.post('/add-user/:id', async (req, res) => {
 })
 
 // request to join a group
-router.post('/join/:id', async (req, res) => {
+router.post('/:id/join', async (req, res) => {
     try {
         const group = await GroupModel.findById(req.params.id).populate(
             'members admins banned pendingAdmins pendingMembers channels.members',
@@ -164,9 +165,10 @@ router.post('/:id/accept', async (req, res) => {
 });
 
 // kick a user from a group
-router.post('/kick', async (req, res) => {
+router.post('/:id/kick', async (req, res) => {
     try {
-        const { groupId, channelId, userId, ban } = req.body;
+        const { channelId, userId, ban } = req.body;
+        const groupId = req.params.id;
 
         const query = { _id: groupId };
         const update = {
@@ -190,6 +192,36 @@ router.post('/kick', async (req, res) => {
 
         // perform the DB update
         await GroupModel.updateOne(query, update);
+
+        // get updated group to return to client
+        const group = await GroupModel.findById(groupId).populate(
+            'members admins banned pendingAdmins pendingMembers channels.members',
+        );
+
+        res.status(200).json(group);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error kicking user from group.', error: err.message });
+    }
+})
+
+// promote / demote a group admin
+router.post('/:id/admin', async (req, res) => {
+    try {
+        const { userId, status } = req.body;
+        const groupId = req.params.id;
+
+        if (status) { // set user to admin
+            await GroupModel.findByIdAndUpdate(groupId, {
+                $pull: { 'members': userId },
+                $addToSet: { 'admins': userId },
+            });
+        } else {
+            await GroupModel.findByIdAndUpdate(groupId, {
+                $pull: { 'admins': userId },
+                $addToSet: { 'members': userId },
+            });
+        }
 
         // get updated group to return to client
         const group = await GroupModel.findById(groupId).populate(

@@ -82,7 +82,7 @@ export class GroupService {
 
     // if there is a currently selected group, add the channel & update behaviour subject
     if (group) {
-      return this.http.post<any>(`${this.baseUrl}/channel`, {groupId: group._id, name}).pipe(tap((data) => {
+      return this.http.post<any>(`${this.baseUrl}/${group._id}/channel`, { name }).pipe(tap((data) => {
         // Find the index of the group in this.groups array
         const index = this.groups.findIndex(g => g._id === data._id);
 
@@ -136,7 +136,7 @@ export class GroupService {
     const group = this.currentGroup.value!;
     const user = this.auth.getUser();
 
-    return this.http.post<any>(`${this.baseUrl}/join/${group._id}`, {}).pipe(
+    return this.http.post<any>(`${this.baseUrl}/${group._id}/join`, {}).pipe(
       tap((res: any) => {
         if (res.status) {
           group.pendingMembers.push(user);
@@ -179,9 +179,8 @@ export class GroupService {
   kick(user: User, channel?: Channel, ban: boolean = false): Observable<any> {
     const group = this.currentGroup.value!;
 
-    return this.http.post<any>(`${this.baseUrl}/kick`, {
+    return this.http.post<any>(`${this.baseUrl}/${group._id}/kick`, {
       userId: user._id,
-      groupId: group._id,
       channelId: channel?._id,
       ban,
     }).pipe(
@@ -217,7 +216,7 @@ export class GroupService {
    * @returns An observable of the updated group data
    */
   addUser(groupId: string, userId: string, channelId?: string): Observable<Group> {
-    const url = `${this.baseUrl}/add-user/${groupId}`;
+    const url = `${this.baseUrl}/${groupId}/add-user`;
 
     // Define the payload to send with the request
     const payload = { userId, channelId };
