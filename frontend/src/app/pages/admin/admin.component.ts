@@ -40,6 +40,19 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  promote(user: User): void {}
-  demote(user: User): void {}
+  promote(user: User): void {
+    if (user.roles.includes('groupAdmin') && !user.roles.includes('superAdmin')) {
+      user.roles.push('superAdmin');
+    } else if (!user.roles.includes('groupAdmin')) {
+      user.roles.push('groupAdmin');
+    }
+  }
+
+  demote(user: User): void {
+    if (user.roles.includes('superAdmin')) {
+      user.roles = ['user', 'groupAdmin'];
+    } else if (user.roles.includes('groupAdmin') && !user.roles.includes('superAdmin')) {
+      user.roles = ['user'];
+    }
+  }
 }
