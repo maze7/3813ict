@@ -24,6 +24,7 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 export class AdminComponent implements OnInit {
   public users: User[] = [];
   public banned: User[] = [];
+  public flagged: User[] = [];
 
   private destroyRef = inject(DestroyRef);
 
@@ -33,8 +34,9 @@ export class AdminComponent implements OnInit {
     this.userService.list({}).pipe(
       takeUntilDestroyed(this.destroyRef),
     ).subscribe((data) => {
-      this.users = data;
-      this.banned = data;
+      this.users = data.filter(u => !u.flagged && !u.banned);
+      this.flagged = data.filter(u => u.flagged);
+      this.banned = data.filter(u => u.banned);
     });
   }
 
