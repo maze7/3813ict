@@ -1,0 +1,15 @@
+[
+  {
+    "_id": "1725520432154",
+    "username": "asdf",
+    "email": "asdf@asdf.com",
+    "password": "$2a$10$ASbskRXAxMN.dK92/9HL.OJ0I0HHgMyUKlXXqooJy1PS01rC/wunm",
+    "roles": [
+      "user",
+      "groupAdmin"
+    ],
+    "avatar": "wendy.png",
+    "banned": false,
+    "flagged": false
+  }
+]

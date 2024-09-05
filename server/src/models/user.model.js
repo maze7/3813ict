@@ -1,30 +1,59 @@
-const mongoose = require('mongoose');
+const path = require('path');
+const {loadData, saveData} = require("../util/db");
 
+// File path for user data
+const userDataPath = path.join(__dirname, '../../data/users.json');
+
+// Valid roles for the user
 const validRoles = ['superAdmin', 'groupAdmin', 'user'];
 
-const userSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true, select: false },
-    roles: {
-        type: [String],
-        validate: {
-            validator: function(roles) {
-                // Ensure the array contains only "admin" or "user"
-                const isValid = roles.every(role => validRoles.includes(role));
-                // Ensure the array has at least one and at most two items
-                return isValid && roles.length > 0 && roles.length <= 2;
-            },
-            message: props => `${props.value} is not a valid role array!`
-        },
-        required: true,
-        default: ['user'],
-    },
-    flagged: { type: Boolean, required: true, default: false },
-    banned: { type: Boolean, required: true, default: false },
-    avatar: { type: String, required: true },
-});
+// Helper function to validate roles
+const validateRoles = (roles) => {
+    const isValid = roles.every(role => validRoles.includes(role));
+    return isValid && roles.length > 0 && roles.length <= 2;
+};
 
-const UserModel = mongoose.model('User', userSchema);
+// User operations
+const UserModel = {
+    getAllUsers: () => {
+        return loadData(userDataPath);
+    },
+
+    getUserById: (userId) => {
+        const users = loadData(userDataPath);
+        return users.find(user => user._id === userId);
+    },
+
+    createUser: (newUser) => {
+        const users = loadData(userDataPath);
+
+        if (!validateRoles(newUser.roles)) {
+            throw new Error('Invalid roles');
+        }
+
+        users.push(newUser);
+        saveData(userDataPath, users);
+        return newUser;
+    },
+
+    updateUser: (updatedUser) => {
+        const users = loadData(userDataPath);
+        const userIndex = users.findIndex(user => user._id === updatedUser._id);
+
+        if (userIndex !== -1) {
+            if (!validateRoles(updatedUser.roles)) {
+                throw new Error('Invalid roles');
+            }
+            users[userIndex] = updatedUser;
+            saveData(userDataPath, users);
+        }
+    },
+
+    deleteUser: (userId) => {
+        const users = loadData(userDataPath);
+        const updatedUsers = users.filter(user => user._id !== userId);
+        saveData(userDataPath, updatedUsers);
+    },
+};
 
 module.exports = UserModel;

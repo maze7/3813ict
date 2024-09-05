@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "1725520550115",
+    "name": "test",
+    "acronym": "t1",
+    "owner": "1725520432154",
+    "admins": [
+      "1725520432154"
+    ],
+    "members": [
+      "1725520432154"
+    ],
+    "pendingMembers": [],
+    "banned": [],
+    "channels": []
+  }
+]
