@@ -215,9 +215,11 @@ export class GroupService {
     const group = this.currentGroup.value!;
     const user = this.auth.getUser();
 
-    console.log(this.isGroupOwner());
+    if (user) {
+      return this.auth.isSuperAdmin() || this.isGroupOwner() || (group?.admins.findIndex(a => a._id === user._id) !== -1);
+    }
 
-    return this.auth.isSuperAdmin() || this.isGroupOwner() || (group?.admins.findIndex(a => a._id === user._id) !== -1);
+    return false;
   }
 
   /**
