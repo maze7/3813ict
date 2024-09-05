@@ -9,6 +9,7 @@ import {Group} from "../../models/group.model";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {AddUserModalComponent} from "../add-user-modal/add-user-modal.component";
 import {UserService} from "../../services/user.service";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-group-settings',
@@ -19,7 +20,8 @@ import {UserService} from "../../services/user.service";
     ChatComponent,
     PeopleComponent,
     NgClass,
-    AddUserModalComponent
+    AddUserModalComponent,
+    ReactiveFormsModule
   ],
   templateUrl: './group-settings.component.html',
   styleUrl: './group-settings.component.css'
@@ -29,17 +31,43 @@ export class GroupSettingsComponent implements OnInit {
   protected tabs = ['General', 'Users'];
   protected currentTab: string = this.tabs[0];
   private destroyRef = inject(DestroyRef);
+  groupForm: FormGroup;
+
 
   @Output() closed = new EventEmitter();
 
   protected users: User[] = [];
 
-  constructor(protected groupService: GroupService, private userService: UserService) {}
+  constructor(protected groupService: GroupService, private userService: UserService, private fb: FormBuilder) {
+    this.groupForm = this.fb.group({
+      name: ['', Validators.required],
+      acronym: ['', Validators.required],
+    });
+  }
 
   ngOnInit() {
     this.userService.list({}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => {
       this.users = data;
     });
+
+    // Load current group data and populate form
+    this.groupService.currentGroup.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(group => {
+      if (group) {
+        this.groupForm.patchValue({
+          name: group.name,
+          acronym: group.acronym
+        });
+      }
+    });
+  }
+
+  saveGroup(): void {
+    if (this.groupForm.valid) {
+      const group = this.groupService.currentGroup.value!;
+      group.name = this.groupForm.get('name')!.value;
+      group.acronym = this.groupForm.get('acronym')!.value;
+      this.groupService.saveGroup(group).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+    }
   }
 
   setTab(tab: string) {

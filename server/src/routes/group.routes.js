@@ -29,6 +29,50 @@ router.post('/', async (req, res) => {
     }
 });
 
+// TODO: Add isGroupAdmin or isSuperAdmin middleware
+router.put('/:id', async (req, res) => {
+    try {
+        const groupId = req.params.id;
+        const groupUpdates = req.body; // The entire group model from the request body
+
+        // Check if the group exists
+        const group = await GroupModel.findById(groupId);
+
+        if (!group) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+
+        // Check if the user is an admin or super admin (assuming req.user is populated by middleware)
+        const isAdmin = group.admins.includes(req.user._id.toString());
+        //const isOwner = group.owner.equals(req.user._id);
+
+        if (!isAdmin && !isOwner) {
+            return res.status(403).json({ message: 'Permission denied' });
+        }
+
+        // Only allow certain fields to be updated
+        const allowedFields = ['name', 'acronym'];
+        allowedFields.forEach(field => {
+            if (groupUpdates[field] !== undefined) {
+                group[field] = groupUpdates[field];
+            }
+        });
+
+        // Save the updated group
+        await group.save();
+
+        const updatedGroup = await GroupModel.findById(group._id).populate(
+            'members admins banned pendingAdmins pendingMembers channels.members'
+        );
+
+        res.status(200).json(updatedGroup);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error updating group', error: err.message });
+    }
+});
+
+
 // get all groups (list)
 router.get('/', async (req, res) => {
     try {

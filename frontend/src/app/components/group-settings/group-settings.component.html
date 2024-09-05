@@ -36,7 +36,7 @@
       <!-- Content -->
       @if (currentTab === tabs[0]) {
         <!-- General Settings Form -->
-        <form>
+        <form [formGroup]="groupForm">
           <div class="space-y-12">
             <div class="border-b border-white/10 pb-12">
               <h2 class="card-title font-semibold leading-7">General Settings</h2>
@@ -46,13 +46,13 @@
                 <div class="sm:col-span-2">
                   <label for="group-acronym" class="block text-sm font-medium text-white">Group Acronym</label>
                   <div class="mt-2">
-                    <input type="text" id="group-acronym" autocomplete="family-name" class="input input-bordered w-full">
+                    <input maxlength="2" formControlName="acronym" type="text" id="group-acronym" autocomplete="family-name" class="input input-bordered w-full">
                   </div>
                 </div>
                 <div class="sm:col-span-4">
                   <label for="group-name" class="block text-sm font-medium text-white">Group Name</label>
                   <div class="mt-2">
-                    <input type="text" id="group-name" autocomplete="given-name" class="input input-bordered w-full">
+                    <input formControlName="name" type="text" id="group-name" autocomplete="given-name" class="input input-bordered w-full">
                   </div>
                 </div>
               </div>
@@ -60,9 +60,9 @@
           </div>
           <!-- Action Buttons -->
           <div class="mt-6 flex justify-end gap-x-6">
-            <button type="button" class="btn btn-ghost">Cancel</button>
+            <button type="button" class="btn btn-ghost" (click)="closed.emit()">Cancel</button>
             <button type="submit" class="btn btn-error text-neutral-200">Delete group</button>
-            <button type="submit" class="btn btn-primary text-neutral-200">Save group</button>
+            <button type="submit" class="btn btn-primary text-neutral-200" (click)="saveGroup()">Save group</button>
           </div>
         </form>
       }

@@ -67,6 +67,14 @@ export class GroupService {
   }
 
   /**
+   * Save a group on the backend
+   * @param group the group to be saved
+   */
+  saveGroup(group: Group): Observable<any> {
+    return this.http.put(`${this.baseUrl}/${group._id}`, group);
+  }
+
+  /**
    * Creates a group (if the user has the correct permissions)
    * @param name
    * @param acronym
