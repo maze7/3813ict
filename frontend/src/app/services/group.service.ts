@@ -178,7 +178,7 @@ export class GroupService {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
 
-    const isMember = (group?.members.find(u => u._id == user._id) || group?.admins.find(u => u._id == user._id)) ?? false;
+    const isMember = (group?.members.findIndex(u => u._id == user._id) !== -1) || (group?.admins.find(u => u._id == user._id) ?? false);
     const isOwner = group?.owner._id === user._id;
 
     return user.roles.includes('superAdmin') || isMember || isOwner;

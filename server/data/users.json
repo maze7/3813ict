@@ -13,32 +13,6 @@
     "flagged": false
   },
   {
-    "_id": "1725523526995",
-    "username": "super",
-    "email": "super@user.com",
-    "password": "$2a$10$0omB5d.x29ThO42q0cMFre0C8yjgFO8pEpa4AOzYqCMqeYMhRgZ.C",
-    "roles": [
-      "user",
-      "groupAdmin",
-      "superAdmin"
-    ],
-    "avatar": "frank.png",
-    "banned": false,
-    "flagged": true
-  },
-  {
-    "_id": "1725523666024",
-    "username": "callan",
-    "email": "callan@acton.com",
-    "password": "$2a$10$HEFG6Ze9Uj1rHopMk72HKeHn4roTLUWvMMw62OUPkN6GIXrMnLMdi",
-    "roles": [
-      "user"
-    ],
-    "avatar": "kitty.png",
-    "banned": false,
-    "flagged": true
-  },
-  {
     "_id": "1725526755693",
     "username": "test",
     "email": "test@test.com",
@@ -48,6 +22,44 @@
     ],
     "avatar": "sleepysally.png",
     "banned": false,
+    "flagged": false
+  },
+  {
+    "_id": "1725528788301",
+    "username": "super",
+    "email": "super@user.com",
+    "password": "$2a$10$q9el12OzfPECFD3I1/kBaeXXabvKmzWwslGw.s287uCk2t4ZSemQe",
+    "roles": [
+      "user",
+      "groupAdmin",
+      "superAdmin"
+    ],
+    "avatar": "billcropped.png",
+    "banned": false,
+    "flagged": false
+  },
+  {
+    "_id": "1725529139693",
+    "username": "help",
+    "email": "help@help.com",
+    "password": "$2a$10$YP3h3LwYn54ENS9gjedWG..lNiwbWgvqYoncGXw7NB5OA3u5IuNmi",
+    "roles": [
+      "user"
+    ],
+    "avatar": "ben.png",
+    "banned": false,
+    "flagged": true
+  },
+  {
+    "_id": "1725529152841",
+    "username": "ded",
+    "email": "ded@ded.com",
+    "password": "$2a$10$tSpwNo9CvFvwpxeJNsSC.ezhgN0AbyXnvt080V/mZWOAoRLHMTNRa",
+    "roles": [
+      "user"
+    ],
+    "avatar": "max.png",
+    "banned": true,
     "flagged": false
   }
 ]
