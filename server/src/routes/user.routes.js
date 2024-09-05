@@ -6,39 +6,37 @@ const router = express.Router();
 router.use(isAuthenticated);
 
 // List users
-router.get('/list', async (req, res) => {
+router.get('/list', (req, res) => {
     try {
-        const users = await UserModel.find({});
-
-        res.status(201).json(users);
+        const users = UserModel.getAllUsers();
+        res.status(200).json(users);
     } catch (err) {
         res.status(500).json({ message: 'Error getting users.', error: err.message });
     }
 });
 
-// delete user
-router.delete('/:id', async (req, res) => {
+// Delete user
+router.delete('/:id', (req, res) => {
     try {
-        await UserModel.deleteOne({ _id: req.params.id });
-
+        UserModel.deleteUser(req.params.id);
         res.status(200).json({ message: 'User deleted.' });
     } catch (err) {
-        res.status(500).json({ message: 'Error getting users.', error: err.message });
+        res.status(500).json({ message: 'Error deleting user.', error: err.message });
     }
 });
 
-// ban or unban a user
-router.post('/:id/ban', async (req, res) => {
+// Ban or unban a user
+router.post('/:id/ban', (req, res) => {
     try {
         const { banned } = req.body;
-        const user= await UserModel.findById(req.params.id);
+        const user = UserModel.getUserById(req.params.id);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
         user.banned = banned;
-        await user.save();
+        UserModel.updateUser(user);
 
         return res.status(200).json({ status: banned });
     } catch (err) {
@@ -46,18 +44,18 @@ router.post('/:id/ban', async (req, res) => {
     }
 });
 
-// flag or unflag a user
-router.post('/:id/flag', async (req, res) => {
+// Flag or unflag a user
+router.post('/:id/flag', (req, res) => {
     try {
         const { flagged } = req.body;
-        const user= await UserModel.findById(req.params.id);
+        const user = UserModel.getUserById(req.params.id);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
         user.flagged = flagged;
-        await user.save();
+        UserModel.updateUser(user);
 
         return res.status(200).json({ status: flagged });
     } catch (err) {

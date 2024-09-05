@@ -22,7 +22,8 @@ router.post('/register', async (req, res) => {
         const { username, email, password } = req.body;
 
         // Check if the username or email is already in use
-        const existingUser = await UserModel.findOne({ $or: [{ username: email }, { email }] }).select('+password');
+        const users = UserModel.getAllUsers();
+        const existingUser = users.find(user => user.username === username || user.email === email);
         if (existingUser) {
             return res.status(400).json({ message: 'Username or email already in use.' });
         }
@@ -31,14 +32,18 @@ router.post('/register', async (req, res) => {
         const passwordHash = await bcrypt.hash(password, 10);
 
         // Create and save the new user
-        const newUser = new UserModel({
+        const newUser = {
+            _id: Date.now().toString(), // Using timestamp as a unique ID
             username,
             email,
             password: passwordHash,
             avatar: defaultAvatars[Math.floor(Math.random() * defaultAvatars.length)],
-        });
+            roles: ['user'],
+            banned: false,
+            flagged: false,
+        };
 
-        await newUser.save();
+        UserModel.createUser(newUser);
 
         res.status(201).json({ message: 'User registered successfully.' });
     } catch (err) {
@@ -52,13 +57,13 @@ router.post('/login', async (req, res) => {
         const { username, password } = req.body;
 
         // Find the user by username
-        const user = await UserModel.findOne({ username }).select('+password');
+        const user = UserModel.getAllUsers().find(user => user.username === username);
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         if (user.banned) {
-            return res.status(403).json( { message: 'Banned user.' });
+            return res.status(403).json({ message: 'Banned user.' });
         }
 
         // Compare the password with the stored hash

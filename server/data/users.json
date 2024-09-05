@@ -1,0 +1,28 @@
+[
+  {
+    "_id": "1725514555257",
+    "username": "asdf",
+    "email": "asdf@asdf.com",
+    "password": "$2a$10$R5cqpFa8i6cvwue4/3tdFeFJxq.0EJT8EhLHctsBg0g1KskhinuSq",
+    "avatar": "frank.png",
+    "roles": [
+      "user",
+      "superAdmin",
+      "groupAdmin"
+    ],
+    "banned": false,
+    "flagged": false
+  },
+  {
+    "_id": "1725515174898",
+    "username": "asdf2",
+    "email": "asdf2@asdf2.com",
+    "password": "$2a$10$huyKZjh2GlBaHRNxmN2UluB.w2YHm4gQbyKqgfFiH3y/4/62A2xYy",
+    "avatar": "billcropped.png",
+    "roles": [
+      "user"
+    ],
+    "banned": false,
+    "flagged": false
+  }
+]

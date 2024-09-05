@@ -1,22 +1,76 @@
-const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
-const channelSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-});
+// File path for group data
+const groupDataPath = path.join(__dirname, '../../data/groups.json');
 
-const groupSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    acronym: { type: String, required: true },
-    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    admins: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    pendingMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    pendingAdmins: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    banned: [{type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    channels: [channelSchema],
-});
+// Load data from JSON file
+const loadData = (filePath) => {
+    try {
+        const data = fs.readFileSync(filePath, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        console.error('Error reading data file:', error);
+        return [];
+    }
+};
 
-const GroupModel = mongoose.model('Group', groupSchema);
+const depopulate = (group) => {
+    const isObject = (item) => typeof item === 'object' && item !== null;
+
+    group.members = group.members.map(user => isObject(user) ? user._id : user);  // Only depopulate if it's an object
+    group.admins = group.admins.map(user => isObject(user) ? user._id : user);    // Same for admins
+    group.pendingMembers = group.pendingMembers.map(user => isObject(user) ? user._id : user);  // Same for pending members
+    group.banned = group.banned.map(user => isObject(user) ? user._id : user);    // Same for banned users
+
+    group.channels.forEach(channel => {
+        channel.members = channel.members.map(user => isObject(user) ? user._id : user);  // Same for channel members
+    });
+
+    return group;
+};
+
+// Save data to JSON file
+const saveData = (filePath, data) => {
+    try {
+        fs.writeFileSync(filePath, JSON.stringify(data.map(g => depopulate(g)), null, 2), 'utf8');
+    } catch (error) {
+        console.error('Error writing data to file:', error);
+    }
+};
+
+// Group operations
+const GroupModel = {
+    getAllGroups: () => {
+        return loadData(groupDataPath);
+    },
+
+    getGroupById: (groupId) => {
+        const groups = loadData(groupDataPath);
+        return groups.find(group => group._id === groupId);
+    },
+
+    createGroup: (newGroup) => {
+        const groups = loadData(groupDataPath);
+        groups.push(newGroup);
+        saveData(groupDataPath, groups);
+        return newGroup;
+    },
+
+    updateGroup: (updatedGroup) => {
+        const groups = loadData(groupDataPath);
+        const groupIndex = groups.findIndex(group => group._id === updatedGroup._id);
+        if (groupIndex !== -1) {
+            groups[groupIndex] = updatedGroup;
+            saveData(groupDataPath, groups);
+        }
+    },
+
+    deleteGroup: (groupId) => {
+        const groups = loadData(groupDataPath);
+        const updatedGroups = groups.filter(group => group._id !== groupId);
+        saveData(groupDataPath, updatedGroups);
+    }
+};
 
 module.exports = GroupModel;
