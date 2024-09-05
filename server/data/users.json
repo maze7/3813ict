@@ -12,5 +12,66 @@
     "avatar": "sleepysally.png",
     "banned": false,
     "flagged": false
+  },
+  {
+    "_id": "1725533017557",
+    "username": "Ronald",
+    "email": "ronald@email.com",
+    "password": "$2a$10$uxYH2tEi4dnsYBJmOKuEwuGO4S7xNJQAv2X9LvDFTMVOyAvlPYUhG",
+    "roles": [
+      "user",
+      "groupAdmin"
+    ],
+    "avatar": "ronald.png",
+    "banned": false,
+    "flagged": false
+  },
+  {
+    "_id": "1725533053786",
+    "username": "Frank",
+    "email": "frank@email.com",
+    "password": "$2a$10$kKwjY8fzfZgFBfDOVsqf7eUrT4I9u9b.rMMzwbOOaLS6wjiRWQRQa",
+    "roles": [
+      "user"
+    ],
+    "avatar": "frank.png",
+    "banned": false,
+    "flagged": false
+  },
+  {
+    "_id": "1725533061394",
+    "username": "Ben",
+    "email": "ben@email.com",
+    "password": "$2a$10$9iB5FB52kvS5nm0piQxyL.TZ3Fa7BaNBgEE6gGJH45eS09shH/Mae",
+    "roles": [
+      "user"
+    ],
+    "avatar": "ben.png",
+    "banned": false,
+    "flagged": false
+  },
+  {
+    "_id": "1725533117331",
+    "username": "Zeus",
+    "email": "zeus@cat.com",
+    "password": "$2a$10$JadFNlMJAMABW3o6q5Da.uenLxYatMNH5XNqdOg9V.H2Iq7AoKrwK",
+    "roles": [
+      "user"
+    ],
+    "avatar": "kitty.png",
+    "banned": true,
+    "flagged": true
+  },
+  {
+    "_id": "1725533135729",
+    "username": "Tara",
+    "email": "tara@human.com",
+    "password": "$2a$10$wpgFwu/2G8Ydw3U8aScVKuXwU.vV0NStMlPqgdz/3bHObq8RyWX2O",
+    "roles": [
+      "user"
+    ],
+    "avatar": "wendy.png",
+    "banned": false,
+    "flagged": true
   }
 ]

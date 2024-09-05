@@ -178,11 +178,16 @@ export class GroupService {
     const group = this.currentGroup.value;
     const user = this.auth.getUser();
 
-    const isMember = (group?.members.findIndex(u => u._id == user._id) !== -1) || (group?.admins.find(u => u._id == user._id) ?? false);
-    const isOwner = group?.owner._id === user._id;
+    if (!group || !user) {
+      return false;
+    }
+
+    const isMember = group.members?.some(u => u?._id === user._id) || group.admins?.some(u => u?._id === user._id);
+    const isOwner = group.owner && group.owner._id === user._id;
 
     return user.roles.includes('superAdmin') || isMember || isOwner;
   }
+
 
   /**
    * Utility method to determine if a user has requested to join a group
