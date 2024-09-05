@@ -64,7 +64,7 @@
                   <td class="capitalize">{{ user.roles.join(', ') }}</td>
                   <th>
                   <span class="flex gap-x-2">
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Demote admin">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Demote admin" (click)="setAdmin(user, false)">
                         <lucide-icon name="shield-minus" size="22"></lucide-icon>
                       </div>
                       <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="kick(user, false)">
@@ -115,7 +115,7 @@
                   <td class="capitalize">{{ user.roles.join(', ') }}</td>
                   <th>
                   <span class="flex gap-x-2">
-                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Make admin">
+                      <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Make admin" (click)="setAdmin(user, true)">
                         <lucide-icon name="shield-plus" size="22"></lucide-icon>
                       </div>
                       <div class="btn btn-sm btn-neutral text-neutral-100 tooltip py-1 px-2" data-tip="Kick user" (click)="kick(user, false)">

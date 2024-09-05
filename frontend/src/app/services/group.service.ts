@@ -53,6 +53,19 @@ export class GroupService {
     }
   }
 
+  updateGroup(group: Group): void {
+    const groupIndex = this.groups.findIndex(g => g._id === group._id);
+
+    // delete existing group from groups array
+    if (groupIndex !== -1) {
+      this.groups.splice(groupIndex, 1);
+    }
+
+    // update group in groups array
+    this.groups.push(group);
+    this.currentGroup.next(group);
+  }
+
   /**
    * Creates a group (if the user has the correct permissions)
    * @param name
@@ -92,7 +105,7 @@ export class GroupService {
         }
 
         // update the current group behaviour subject
-        this.currentGroup.next(data);
+        this.updateGroup(data);
       }));
     }
 
@@ -140,6 +153,7 @@ export class GroupService {
       tap((res: any) => {
         if (res.status) {
           group.pendingMembers.push(user);
+          this.updateGroup(group);
         }
       })
     );
@@ -185,7 +199,7 @@ export class GroupService {
       ban,
     }).pipe(
       tap((res: any) => {
-        this.currentGroup.next(res);
+        this.updateGroup(res);
         this.currentChannel.next(res.channels.find((c: Channel) => c._id === channel?._id));
       })
     );
@@ -204,6 +218,8 @@ export class GroupService {
         if (res.status) {
           group.members.push(user);
         }
+
+        this.updateGroup(group);
       })
     )
   }
@@ -217,19 +233,35 @@ export class GroupService {
    */
   addUser(groupId: string, userId: string, channelId?: string): Observable<Group> {
     const url = `${this.baseUrl}/${groupId}/add-user`;
-
-    // Define the payload to send with the request
     const payload = { userId, channelId };
 
     return this.http.post<Group>(url, payload).pipe(
       tap((updatedGroup) => {
-        this.currentGroup.next(updatedGroup);
+        this.updateGroup(updatedGroup);
 
         // Update the current channel if the user was added to a specific channel
         if (channelId) {
           const channel = updatedGroup.channels.find((c: Channel) => c._id === channelId);
           this.currentChannel.next(channel || null);
         }
+      })
+    );
+  }
+
+  /**
+   * Promote or Demote a user to Group Admin within the group
+   * @param user the user to be promoted / demoted
+   * @param group the group
+   * @param status the admin status of the user
+   * @returns An observable of the updated group data
+   */
+  setAdmin(user: User, group: Group, status: boolean): Observable<Group> {
+    const url = `${this.baseUrl}/${group._id}/admin`;
+    const payload = { userId: user._id, status };
+
+    return this.http.post<Group>(url, payload).pipe(
+      tap((updatedGroup) => {
+        this.updateGroup(updatedGroup);
       })
     );
   }

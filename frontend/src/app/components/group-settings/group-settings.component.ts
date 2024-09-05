@@ -54,4 +54,9 @@ export class GroupSettingsComponent implements OnInit {
     const group = this.groupService.currentGroup.value!;
     this.groupService.accept(user, group, decision).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
+
+  setAdmin(user: User, status: boolean): void {
+    const group = this.groupService.currentGroup.value!;
+    this.groupService.setAdmin(user, group, status).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  }
 }
