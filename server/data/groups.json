@@ -4,13 +4,12 @@
     "name": "weeee",
     "acronym": "we",
     "creator": "1725514555257",
-    "admins": [
-      "1725514555257",
-      "1725514555257"
-    ],
-    "members": [],
-    "pendingMembers": [
+    "admins": [],
+    "members": [
       "1725515174898"
+    ],
+    "pendingMembers": [
+      "1725516047147"
     ],
     "pendingAdmins": [],
     "banned": [],
@@ -18,13 +17,35 @@
       {
         "_id": "1725515136757",
         "name": "weeee",
+        "members": []
+      }
+    ]
+  },
+  {
+    "_id": "1725515942668",
+    "name": "asdf",
+    "acronym": "as",
+    "creator": "1725514555257",
+    "admins": [
+      "1725514555257"
+    ],
+    "members": [],
+    "pendingMembers": [
+      "1725516047147"
+    ],
+    "pendingAdmins": [],
+    "banned": [],
+    "channels": [
+      {
+        "_id": "1725515948005",
+        "name": "weeeee",
         "members": [
           "1725514555257"
         ]
       },
       {
-        "_id": "1725515153906",
-        "name": "asdf3",
+        "_id": "1725515951221",
+        "name": "fsdfasdfasdfsdf",
         "members": [
           "1725514555257"
         ]

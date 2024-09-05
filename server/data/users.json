@@ -24,5 +24,17 @@
     ],
     "banned": false,
     "flagged": false
+  },
+  {
+    "_id": "1725516047147",
+    "username": "123",
+    "email": "123@123.com",
+    "password": "$2a$10$A5B6eJC1g/wvP/P.hbwkW.6Rf7yLyq5GdurL0I.SUjILKDU0Jtwue",
+    "avatar": "kitty.png",
+    "roles": [
+      "user"
+    ],
+    "banned": false,
+    "flagged": false
   }
 ]

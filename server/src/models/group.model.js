@@ -18,13 +18,16 @@ const loadData = (filePath) => {
 const depopulate = (group) => {
     const isObject = (item) => typeof item === 'object' && item !== null;
 
-    group.members = group.members.map(user => isObject(user) ? user._id : user);  // Only depopulate if it's an object
-    group.admins = group.admins.map(user => isObject(user) ? user._id : user);    // Same for admins
-    group.pendingMembers = group.pendingMembers.map(user => isObject(user) ? user._id : user);  // Same for pending members
-    group.banned = group.banned.map(user => isObject(user) ? user._id : user);    // Same for banned users
+    // Helper function to remove duplicates
+    const removeDuplicates = (array) => [...new Set(array)];
+
+    group.members = removeDuplicates(group.members.map(user => isObject(user) ? user._id : user));
+    group.admins = removeDuplicates(group.admins.map(user => isObject(user) ? user._id : user));
+    group.pendingMembers = removeDuplicates(group.pendingMembers.map(user => isObject(user) ? user._id : user));
+    group.banned = removeDuplicates(group.banned.map(user => isObject(user) ? user._id : user));
 
     group.channels.forEach(channel => {
-        channel.members = channel.members.map(user => isObject(user) ? user._id : user);  // Same for channel members
+        channel.members = removeDuplicates(channel.members.map(user => isObject(user) ? user._id : user));
     });
 
     return group;
