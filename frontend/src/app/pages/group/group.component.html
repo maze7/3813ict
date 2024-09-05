@@ -1,4 +1,4 @@
-@if (showGroupSettings) {
+@if (showGroupSettings && (groupService.isGroupAdmin())) {
   <div class="z-50 fixed left-20 top-0 right-0 bottom-0 bg-base-100 rounded-l-3xl">
     <app-group-settings (closed)="showGroupSettings = false"></app-group-settings>
   </div>

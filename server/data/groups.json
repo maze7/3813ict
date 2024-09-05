@@ -4,45 +4,56 @@
     "name": "asdf",
     "acronym": "as",
     "owner": "1725523382047",
-    "admins": [],
+    "admins": [
+      "1725523382047"
+    ],
     "members": [
-      "1725526755693",
-      "1725523382047",
       "1725523526995"
     ],
-    "pendingMembers": [],
+    "pendingMembers": [
+      "1725526755693"
+    ],
     "banned": [],
     "channels": [
       {
-        "_id": "1725523503129",
+        "_id": "1725528556372",
         "name": "asdf",
-        "members": []
+        "members": [
+          "1725523382047"
+        ]
       }
     ]
   },
   {
     "_id": "1725526708154",
-    "name": "dsa",
-    "acronym": "da",
+    "name": "asd",
+    "acronym": "ad",
     "owner": "1725523382047",
     "admins": [],
-    "members": [],
-    "pendingMembers": [
+    "members": [
       "1725526755693"
     ],
+    "pendingMembers": [],
     "banned": [],
-    "channels": []
+    "channels": [
+      {
+        "_id": "1725528500196",
+        "name": "asdfasdfsdf",
+        "members": [
+          "1725523382047"
+        ]
+      }
+    ]
   },
   {
     "_id": "1725528141588",
     "name": "weeee",
     "acronym": "we",
     "owner": "1725523382047",
-    "admins": [
-      "1725523382047"
-    ],
+    "admins": [],
     "members": [
-      "1725523382047"
+      "1725523382047",
+      "1725526755693"
     ],
     "pendingMembers": [],
     "banned": [],

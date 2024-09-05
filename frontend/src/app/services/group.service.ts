@@ -153,6 +153,9 @@ export class GroupService {
     return this.http.delete<Group>(`${this.baseUrl}/${group._id}/${id}`).pipe(
       tap((data: Group) => {
         this.updateGroup(data);
+        if (this.currentChannel.value?._id === id) {
+          this.currentChannel.next(null);
+        }
       })
     );
   }
@@ -209,18 +212,26 @@ export class GroupService {
    * Returns true or false as to whether the current user is an admin for the current group
    */
   isGroupAdmin(): boolean {
-    const group = this.currentGroup.value;
+    const group = this.currentGroup.value!;
     const user = this.auth.getUser();
-    return this.auth.isSuperAdmin() || (group?.admins.findIndex(a => a._id === user._id) !== -1);
+
+    console.log(this.isGroupOwner());
+
+    return this.auth.isSuperAdmin() || this.isGroupOwner() || (group?.admins.findIndex(a => a._id === user._id) !== -1);
   }
 
   /**
    * Returns true or false as to whether the current user is the owner of the current group
    */
   isGroupOwner(): boolean {
-    const group = this.currentGroup.value;
+    const group = this.currentGroup.value!;
     const user = this.auth.getUser();
-    return this.auth.isSuperAdmin() || (group?.owner._id === user._id);
+
+    if (user._id) {
+      return this.auth.isSuperAdmin() || (group?.owner._id === user._id);
+    }
+
+    return false;
   }
 
   /**
