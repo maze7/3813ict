@@ -26,6 +26,17 @@ router.delete('/:id', hasRole('superAdmin'), (req, res) => {
     }
 });
 
+router.put('/:id', hasRole('superAdmin'), (req, res) => {
+    try {
+        const { user } = req.body;
+
+        UserModel.updateUser(user);
+        res.status(200).json( { message: 'User updated.' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error updating user.', error: err.message });
+    }
+})
+
 // Ban or unban a user
 router.post('/:id/ban', hasRole('superAdmin'), (req, res) => {
     try {

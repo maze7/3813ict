@@ -1,2 +1,39 @@
 [
+  {
+    "_id": "1725529990136",
+    "name": "taa",
+    "acronym": "ta",
+    "owner": "1725528788301",
+    "admins": [
+      "1725528788301"
+    ],
+    "members": [
+      "1725529501337"
+    ],
+    "pendingMembers": [],
+    "banned": [],
+    "channels": [
+      {
+        "_id": "1725530008250",
+        "name": "zali",
+        "members": [
+          "1725528788301",
+          "1725529501337"
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "1725530036211",
+    "name": "cal",
+    "acronym": "CA",
+    "owner": "1725528788301",
+    "admins": [
+      "1725528788301"
+    ],
+    "members": [],
+    "pendingMembers": [],
+    "banned": [],
+    "channels": []
+  }
 ]
