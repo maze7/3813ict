@@ -252,7 +252,7 @@ ___
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@cal_acton](https://twitter.com/cal_acton) - callan@mosaik.au
+Callan Acton (s5283721)
 
 Project Link: [https://github.com/mvze7/3813ict](https://github.com/mvze7/3813ict)
 
