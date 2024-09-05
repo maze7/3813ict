@@ -5,4 +5,6 @@ export interface User {
   id: string;
   avatar?: string;
   roles: string[];
+  banned: boolean;
+  flagged: boolean;
 }

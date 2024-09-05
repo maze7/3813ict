@@ -38,4 +38,10 @@ export class NavComponent {
     this.auth.logout();
     this.router.navigate(['/login']);
   }
+
+  getUserAvatar(): string {
+    const user = this.auth.getUser();
+    console.log(user.avatar);
+    return 'avatars/' + user.avatar
+  }
 }

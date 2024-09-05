@@ -5,6 +5,17 @@ const UserModel = require('../models/user.model'); // Import the User model
 
 const router = express.Router();
 
+const defaultAvatars = [
+    'ben.png',
+    'billcropped.png',
+    'frank.png',
+    'kitty.png',
+    'max.png',
+    'ronald.png',
+    'sleepysally.png',
+    'wendy.png',
+];
+
 // Register route
 router.post('/register', async (req, res) => {
     try {
@@ -24,6 +35,7 @@ router.post('/register', async (req, res) => {
             username,
             email,
             password: passwordHash,
+            avatar: defaultAvatars[Math.floor(Math.random() * defaultAvatars.length)],
         });
 
         await newUser.save();
@@ -53,7 +65,7 @@ router.post('/login', async (req, res) => {
 
         // Generate a JWT token
         const token = jwt.sign(
-            { _id: user._id, username: user.username, roles: user.roles },
+            { _id: user._id, username: user.username, roles: user.roles, banned: user.banned, flagged: user.flagged, avatar: user.avatar },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );

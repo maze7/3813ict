@@ -37,4 +37,7 @@ export class AdminComponent implements OnInit {
       this.banned = data;
     });
   }
+
+  promote(user: User): void {}
+  demote(user: User): void {}
 }
