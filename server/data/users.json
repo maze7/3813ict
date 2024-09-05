@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "1725528788301",
+    "username": "super",
+    "email": "super@user.com",
+    "password": "$2a$10$q9el12OzfPECFD3I1/kBaeXXabvKmzWwslGw.s287uCk2t4ZSemQe",
+    "roles": [
+      "user",
+      "groupAdmin",
+      "superAdmin"
+    ],
+    "avatar": "sleepysally.png",
+    "banned": false,
+    "flagged": false
+  }
+]

@@ -69,6 +69,10 @@ export class AdminComponent implements OnInit {
     } else if (!user.roles.includes('groupAdmin')) {
       user.roles.push('groupAdmin');
     }
+
+    this.userService.update(user).pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe();
   }
 
   demote(user: User): void {
@@ -77,6 +81,11 @@ export class AdminComponent implements OnInit {
     } else if (user.roles.includes('groupAdmin') && !user.roles.includes('superAdmin')) {
       user.roles = ['user'];
     }
+
+    // save the change
+    this.userService.update(user).pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe();
   }
 
   delete(user: User): void {

@@ -5,7 +5,7 @@ export interface Group {
   _id?: string;
   name: string;
   acronym: string;
-  creator?: User;
+  owner: User;
   members: User[];
   admins: User[];
   pendingAdmins: User[];

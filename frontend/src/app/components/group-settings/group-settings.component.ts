@@ -11,6 +11,7 @@ import {AddUserModalComponent} from "../add-user-modal/add-user-modal.component"
 import {UserService} from "../../services/user.service";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Channel} from "../../models/channel.model";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-group-settings',
@@ -39,7 +40,7 @@ export class GroupSettingsComponent implements OnInit {
 
   protected users: User[] = [];
 
-  constructor(protected groupService: GroupService, private userService: UserService, private fb: FormBuilder) {
+  constructor(protected groupService: GroupService, private userService: UserService, protected auth: AuthService, private fb: FormBuilder) {
     this.groupForm = this.fb.group({
       name: ['', Validators.required],
       acronym: ['', Validators.required],
@@ -71,12 +72,16 @@ export class GroupSettingsComponent implements OnInit {
     }
   }
 
-  setTab(tab: string) {
+  setTab(tab: string): void  {
     this.currentTab = tab;
   }
 
-  kick(user: User, ban: boolean) {
-    this.groupService.kick(user, undefined, ban).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  kick(user: User): void {
+    this.groupService.kick(user, undefined).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  }
+
+  ban(user: User, decision: boolean): void {
+    this.groupService.ban(user, decision).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   accept(user: User, decision: boolean): void {

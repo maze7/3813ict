@@ -127,16 +127,18 @@
                         </div>
                       </td>
                       <td>{{ user.email }}</td>
-                      <td class="capitalize">{{ user.roles.join(', ') }}</td>
+                      <td class="capitalize">{{ user.roles?.join(', ') ?? 'No roles.' }}</td>
                       <td>
                         <div class="flex gap-x-2 justify-end">
-                          <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Demote admin" (click)="setAdmin(user, false)">
-                            <lucide-icon name="shield-minus" size="22"></lucide-icon>
-                          </button>
-                          <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Kick user" (click)="kick(user, false)">
+                          @if (groupService.isGroupOwner()) {
+                            <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Demote admin" (click)="setAdmin(user, false)">
+                              <lucide-icon name="shield-minus" size="22"></lucide-icon>
+                            </button>
+                          }
+                          <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Kick user" (click)="kick(user)">
                             <lucide-icon name="user-round-minus" size="22"></lucide-icon>
                           </button>
-                          <button class="btn btn-sm btn-error tooltip text-neutral-200" data-tip="Ban user" (click)="kick(user, true)">
+                          <button class="btn btn-sm btn-error tooltip text-neutral-200" data-tip="Ban user" (click)="kick(user)">
                             <lucide-icon name="ban" size="22"></lucide-icon>
                           </button>
                         </div>
@@ -178,13 +180,16 @@
                       <td class="capitalize">{{ user.roles.join(', ') }}</td>
                       <td>
                         <div class="flex gap-x-2 justify-end">
-                          <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Make admin" (click)="setAdmin(user, true)">
-                            <lucide-icon name="shield-plus" size="22"></lucide-icon>
-                          </button>
-                          <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Kick user" (click)="kick(user, false)">
+                          <!-- Only groupAdmins can be promoted to admins on a group -->
+                          @if (user.roles!.includes('groupAdmin')) {
+                            <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Make admin" (click)="setAdmin(user, true)">
+                              <lucide-icon name="shield-plus" size="22"></lucide-icon>
+                            </button>
+                          }
+                          <button class="btn btn-sm btn-neutral tooltip text-neutral-200" data-tip="Kick user" (click)="kick(user)">
                             <lucide-icon name="user-round-minus" size="22"></lucide-icon>
                           </button>
-                          <button class="btn btn-sm btn-error tooltip text-neutral-200" data-tip="Ban user" (click)="kick(user, true)">
+                          <button class="btn btn-sm btn-error tooltip text-neutral-200" data-tip="Ban user" (click)="ban(user, true)">
                             <lucide-icon name="ban" size="22"></lucide-icon>
                           </button>
                         </div>
@@ -271,7 +276,7 @@
                       <td>{{ user.roles.join(', ') }}</td>
                       <td>
                         <div class="flex justify-end gap-x-2">
-                          <button class="btn btn-sm btn-neutral tooltip" data-tip="Unban" (click)="kick(user, false)">
+                          <button class="btn btn-sm btn-neutral tooltip" data-tip="Unban" (click)="ban(user, false)">
                             <lucide-icon name="lock-open" size="22"></lucide-icon>
                           </button>
                         </div>
@@ -284,9 +289,11 @@
           </div>
         </div>
 
-        <div class="flex justify-end mt-10 pb-4">
-          <button class="btn btn-neutral max-w-md" (click)="addUserModal.open()">Add Member</button>
-        </div>
+        @if (auth.isSuperAdmin()) {
+          <div class="flex justify-end mt-10 pb-4">
+            <button class="btn btn-neutral max-w-md" (click)="addUserModal.open()">Add Member</button>
+          </div>
+        }
       }
     </div>
   </section>

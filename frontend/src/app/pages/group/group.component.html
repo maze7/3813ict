@@ -1,11 +1,11 @@
-@if (showGroupSettings) {
+@if (showGroupSettings && (groupService.isGroupAdmin())) {
   <div class="z-50 fixed left-20 top-0 right-0 bottom-0 bg-base-100 rounded-l-3xl">
     <app-group-settings (closed)="showGroupSettings = false"></app-group-settings>
   </div>
 }
 @else {
   <main class="flex h-full bg-base-300">
-    @if (groupService.currentGroup.value) {
+    @if (groupService.currentGroup.value && groupService.groups.length) {
       @if (groupService.hasAccess()) {
         <app-channel-nav></app-channel-nav>
         <!-- main content -->
@@ -69,7 +69,7 @@
     }
     @else {
       <!-- No Groups View -->
-      @if (groupService.isGroupAdmin()) {
+      @if (auth.isGroupAdmin()) {
         <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
           <div class="flex flex-col gap-y-4">
             <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>Create a group</h1>
@@ -82,7 +82,7 @@
         <div class="flex w-full h-full justify-center items-center bg-base-100 rounded-l-3xl">
           <div class="flex flex-col gap-y-4">
             <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="users-round" size="30"></lucide-angular>No channels.</h1>
-            <div class="text-neutral-content text-lg">An admin will need to create a channel before you can start chatting.</div>
+            <div class="text-neutral-content text-lg">An admin will need to create a group for you to join.</div>
           </div>
         </div>
       }
