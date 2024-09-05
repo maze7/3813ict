@@ -44,9 +44,8 @@ router.put('/:id', async (req, res) => {
 
         // Check if the user is an admin or super admin (assuming req.user is populated by middleware)
         const isAdmin = group.admins.includes(req.user._id.toString());
-        //const isOwner = group.owner.equals(req.user._id);
 
-        if (!isAdmin && !isOwner) {
+        if (!isAdmin) {
             return res.status(403).json({ message: 'Permission denied' });
         }
 

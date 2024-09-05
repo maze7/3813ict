@@ -23,9 +23,9 @@ import {Channel} from "../../models/channel.model";
 export class AddUserModalComponent {
   @Input() users: User[] = [];
   @Input() channel?: Channel;
+
   @ViewChild('addUserModal', { static: true }) addUserModal?: ElementRef<HTMLDialogElement>;
   addUserForm: FormGroup;
-
   private destroyRef = inject(DestroyRef);
 
   constructor(private fb: FormBuilder, public groupService: GroupService) {

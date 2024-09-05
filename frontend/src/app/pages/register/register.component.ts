@@ -11,7 +11,7 @@ import {NgClass} from "@angular/common";
  * @param a input 1
  * @param b input 2
  */
-function inputMatchValidator(a: string, b:string): ValidatorFn {
+export function inputMatchValidator(a: string, b:string): ValidatorFn {
   return (formGroup: AbstractControl): {[key: string]: boolean} | null => {
     const controlA = formGroup.get(a);
     const controlB = formGroup.get(b);

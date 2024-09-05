@@ -81,7 +81,7 @@
             </table>
           </div>
           <div class="flex justify-end mt-10 pb-4">
-            <button class="btn btn-neutral max-w-md" (click)="addUserModal.open()">Create User</button>
+            <button class="btn btn-neutral max-w-md" (click)="createUserModal.open()">Create User</button>
           </div>
         </div>
       </div>
@@ -173,4 +173,4 @@
   </section>
 </div>
 
-<app-add-user-modal #addUserModal [users]="[]"></app-add-user-modal>
+<app-create-user #createUserModal (userCreated)="listUsers()"></app-create-user>

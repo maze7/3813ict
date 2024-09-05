@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {AsyncPipe} from "@angular/common";
 import {User} from "../../models/user.model";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {CreateUserComponent} from "../../components/create-user/create-user.component";
 
 @Component({
   selector: 'app-admin',
@@ -16,7 +17,8 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
     FormsModule,
     LucideAngularModule,
     ReactiveFormsModule,
-    AsyncPipe
+    AsyncPipe,
+    CreateUserComponent
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -31,6 +33,10 @@ export class AdminComponent implements OnInit {
   constructor(protected router: Router, protected userService: UserService) {}
 
   ngOnInit() {
+    this.listUsers();
+  }
+
+  listUsers(): void {
     this.userService.list({}).pipe(
       takeUntilDestroyed(this.destroyRef),
     ).subscribe((data) => {
