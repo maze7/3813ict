@@ -16,6 +16,8 @@ The project is broken into two parts; `frontend/` and `backend/`. Each project h
 
 Git has been used during the development of this project for version control & data backups. As this project has a solo developer, a strict branching strategy such as feature branching is not required. The branching strategy on the project is to create a new branch when a major change is required that might not be merged to `main`.
 
+Project Link: [https://github.com/maze7/3813ict](https://github.com/maze7/3813ict)
+
 ## Project Structure
 
 ### Frontend
