@@ -4,13 +4,6 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-// Connect to MongoDB
-// mongoose.connect(process.env.MONGODB_URI).then(() => {
-//     console.log('Connected to MongoDB');
-// }).catch((err) => {
-//     console.error('Could not connect to MongoDB:', err);
-// })
-
 // create webserver
 const app = express();
 app.use(cors());
