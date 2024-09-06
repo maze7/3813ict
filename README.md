@@ -254,6 +254,6 @@ ___
 
 Callan Acton (s5283721)
 
-Project Link: [https://github.com/mvze7/3813ict](https://github.com/mvze7/3813ict)
+Project Link: [https://github.com/maze7/3813ict](https://github.com/maze7/3813ict)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
