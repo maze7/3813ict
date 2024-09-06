@@ -1,9 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
 // Connect to MongoDB
