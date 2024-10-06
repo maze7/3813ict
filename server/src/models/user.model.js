@@ -8,15 +8,6 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     roles: {
         type: [String],
-        validate: {
-            validator: function(roles) {
-                // Ensure the array contains only "admin" or "user"
-                const isValid = roles.every(role => validRoles.includes(role));
-                // Ensure the array has at least one and at most two items
-                return isValid && roles.length > 0 && roles.length <= 2;
-            },
-            message: props => `${props.value} is not a valid role array!`
-        },
         required: true,
         default: ['user'],
     },

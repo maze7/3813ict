@@ -47,8 +47,6 @@ module.exports = {
 
             // Listen for incoming messages from the client
             socket.on('message', async (message) => {
-                console.log(message);
-
                 let msg = await MessageModel.create({
                     user: socket.user._id,
                     group: message.group,

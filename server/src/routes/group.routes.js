@@ -302,8 +302,6 @@ router.post('/:id/ban', isGroupOwner, async (req, res) => {
             return res.status(404).json({ message: 'Group not found' });
         }
 
-        console.log(updatedGroup);
-
         res.status(200).json(updatedGroup);
     } catch (err) {
         console.error(err);
