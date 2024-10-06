@@ -1,29 +1,28 @@
 @if (((groups.group$ | async)?.channels?.length ?? false) && (groups.channel$ | async)) {
-  <div class="h-full max-h-fit flex flex-col">
+  <div class="h-full flex flex-col">
     <!-- Chat Panel -->
-    <div class="p-4 overflow-y-auto" #chat>
-        @for (msg of messages; track msg) {
-          <div class="chat chat-start" [ngClass]="{
-            'chat-start': msg.user.username !== auth.getUser().username,
-            'chat-end': msg.user.username == auth.getUser().username,
-          }">
-              <div class="chat-image avatar">
-                <div class="w-10 rounded-full">
-                  <img
-                    alt="Tailwind CSS chat bubble component"
-                    src="avatars/{{msg.user.avatar}}" />
-                </div>
-              </div>
-              <div class="chat-header">
-                {{ msg.user.username }}
-                <time class="text-xs opacity-50">{{ msg.createdAt }}</time>
-              </div>
-              <div class="chat-bubble">{{ msg.message }}</div>
+    <div class="flex-1 p-4 overflow-y-auto" #chat>
+      @for (msg of messages; track msg) {
+        <div class="chat chat-start" [ngClass]="{
+          'chat-start': msg.user.username !== auth.getUser().username,
+          'chat-end': msg.user.username == auth.getUser().username,
+        }">
+          <div class="chat-image avatar">
+            <div class="w-10 rounded-full">
+              <img alt="Tailwind CSS chat bubble component" src="avatars/{{msg.user.avatar}}" />
             </div>
-        }
+          </div>
+          <div class="chat-header">
+            {{ msg.user.username }}
+            <time class="text-xs opacity-50">{{ msg.createdAt | date: 'short' }}</time>
+          </div>
+          <div class="chat-bubble">{{ msg.message }}</div>
+        </div>
+      }
     </div>
-    <!-- Message input panel -->
-    <div class="h-20 p-4">
+
+    <!-- Message input panel (fixed at bottom) -->
+    <div class="h-20 p-4 bg-base-200 flex-none">
       <label class="input input-bordered flex items-center gap-2 pr-0">
         <input type="text" class="grow" placeholder="Message the channel"
                [(ngModel)]="message"

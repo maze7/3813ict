@@ -2,7 +2,7 @@ import {AfterViewChecked, Component, DestroyRef, ElementRef, inject, OnInit, Vie
 import {LucideAngularModule} from "lucide-angular";
 import {GroupService} from "../../services/group.service";
 import {AuthService} from "../../services/auth.service";
-import {AsyncPipe, NgClass} from "@angular/common";
+import {AsyncPipe, DatePipe, NgClass} from "@angular/common";
 import {NewChannelModalComponent} from "../../components/new-channel-modal/new-channel-modal.component";
 import {FormsModule} from "@angular/forms";
 import {ChatService} from "../../services/chat.service";
@@ -18,7 +18,8 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
     AsyncPipe,
     NewChannelModalComponent,
     NgClass,
-    FormsModule
+    FormsModule,
+    DatePipe
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
