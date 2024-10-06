@@ -1,11 +1,11 @@
 @if (((groups.group$ | async)?.channels?.length ?? false) && (groups.channel$ | async)) {
-  <div class="h-full flex flex-col">
+  <div class="h-full max-h-fit flex flex-col">
     <!-- Chat Panel -->
-    <div class="flex-1 flex flex-col justify-end p-4 overflow-x-auto overflow-y-scroll">
+    <div class="p-4 overflow-y-auto" #chat>
         @for (msg of messages; track msg) {
           <div class="chat chat-start" [ngClass]="{
-            'chat-start': msg.name !== 'Sally',
-            'chat-end': msg.name == 'Sally',
+            'chat-start': msg.name !== auth.getUser().username,
+            'chat-end': msg.name == auth.getUser().username,
           }">
               <div class="chat-image avatar">
                 <div class="w-10 rounded-full">

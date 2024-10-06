@@ -4,46 +4,47 @@
   </div>
 }
 @else {
-  <main class="flex h-full bg-base-300">
+  <main class="flex h-screen bg-base-300">
     @if (groupService.currentGroup.value && groupService.groups.length) {
       @if (groupService.hasAccess()) {
         <app-channel-nav></app-channel-nav>
-        <!-- main content -->
-        <section class="flex-1 flex flex-col h-full bg-base-300">
-          <!-- split pane -->
-          <div class="flex flex-1">
-            <!-- chat view -->
-            <div class="flex-1 lg:col-span-2 flex flex-col h-full bg-base-200 rounded-r-3xl overflow-hidden">
-              <!-- chat header -->
+        <!-- Main content -->
+        <section class="flex-1 flex flex-col h-screen bg-base-300">
+          <!-- Split pane -->
+          <div class="flex flex-1 overflow-hidden">
+            <!-- Chat view -->
+            <div class="flex-1 lg:col-span-2 flex flex-col h-full bg-base-200 rounded-r-3xl">
+              <!-- Chat header -->
               <span class="flex justify-between p-4 flex-none">
-          <span class="flex gap-x-4">
-            <h1 class="card-title text-2xl capitalize">
-              {{ (groupService.group$ | async)?.name }}
-              @if ((groupService.channel$ | async)) {
-                <span class="text-neutral">/</span> {{ groupService.currentChannel.value?.name }}
-              }
-            </h1>
-          </span>
-          <span class="flex gap-x-4">
-            @if ((groupService.channel$ | async)) {
-              <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Video Call">
-              <lucide-angular name="video"></lucide-angular>
-              </button>
-              <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Voice Call">
-                <lucide-angular name="phone-call"></lucide-angular>
-              </button>
-            }
-            @if ( groupService.isGroupAdmin()) {
-              <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Settings" (click)="showGroupSettings = true">
-                <lucide-angular name="settings"></lucide-angular>
-              </button>
-            }
-          </span>
-        </span>
-              <app-chat class="flex-1 overflow-auto"></app-chat>
+                <span class="flex gap-x-4">
+                  <h1 class="card-title text-2xl capitalize">
+                    {{ (groupService.group$ | async)?.name }}
+                    @if ((groupService.channel$ | async)) {
+                      <span class="text-neutral">/</span> {{ groupService.currentChannel.value?.name }}
+                    }
+                  </h1>
+                </span>
+                <span class="flex gap-x-4">
+                  @if ((groupService.channel$ | async)) {
+                    <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Video Call">
+                      <lucide-angular name="video"></lucide-angular>
+                    </button>
+                    <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Voice Call">
+                      <lucide-angular name="phone-call"></lucide-angular>
+                    </button>
+                  }
+                  @if (groupService.isGroupAdmin()) {
+                    <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Settings" (click)="showGroupSettings = true">
+                      <lucide-angular name="settings"></lucide-angular>
+                    </button>
+                  }
+                </span>
+              </span>
+              <!-- Chat content (scrollable) -->
+              <app-chat class="flex-1 overflow-y-auto"></app-chat>
             </div>
-            <!-- settings / information -->
-            <div class="hidden lg:block p-4 min-w-96 flex-none bg-base-300">
+            <!-- Settings / Information -->
+            <div class="hidden lg:block h-screen p-4 min-w-96 flex-none bg-base-300">
               <app-people></app-people>
             </div>
           </div>
