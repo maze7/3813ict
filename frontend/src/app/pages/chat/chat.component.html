@@ -1,7 +1,7 @@
 @if (((groups.group$ | async)?.channels?.length ?? false) && (groups.channel$ | async)) {
   <div class="h-full flex flex-col">
     <!-- Chat Panel -->
-    <div class="flex-1 flex flex-col justify-end p-4 overflow-auto">
+    <div class="flex-1 flex flex-col justify-end p-4 overflow-x-auto overflow-y-scroll">
         @for (msg of messages; track msg) {
           <div class="chat chat-start" [ngClass]="{
             'chat-start': msg.name !== 'Sally',
@@ -11,7 +11,7 @@
                 <div class="w-10 rounded-full">
                   <img
                     alt="Tailwind CSS chat bubble component"
-                    src="avatars/{{msg.img}}" />
+                    src="{{msg.img}}" />
                 </div>
               </div>
               <div class="chat-header">
@@ -25,8 +25,10 @@
     <!-- Message input panel -->
     <div class="h-20 p-4">
       <label class="input input-bordered flex items-center gap-2 pr-0">
-        <input type="text" class="grow" placeholder="Message the channel" />
-        <button class="btn btn-ghost">
+        <input type="text" class="grow" placeholder="Message the channel"
+               [(ngModel)]="message"
+               (keypress)="handleKeyPress($event)" />
+        <button class="btn btn-ghost" (click)="send()">
           <lucide-angular name="send-horizontal" size="20"></lucide-angular>
         </button>
       </label>
