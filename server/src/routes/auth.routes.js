@@ -20,9 +20,11 @@ router.post('/register', async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        // Check if the username or email is already in use
-        const users = UserModel.getAllUsers();
-        const existingUser = users.find(user => user.username === username || user.email === email);
+        // Check if the user with the same username or email already exists
+        const existingUser = await UserModel.findOne({
+            $or: [{ username }, { email }]
+        });
+
         if (existingUser) {
             return res.status(400).json({ message: 'Username or email already in use.' });
         }
@@ -31,8 +33,7 @@ router.post('/register', async (req, res) => {
         const passwordHash = await bcrypt.hash(password, 10);
 
         // Create and save the new user
-        const newUser = {
-            _id: Date.now().toString(), // Using timestamp as a unique ID
+        const newUser = await UserModel.create({
             username,
             email,
             password: passwordHash,
@@ -40,11 +41,9 @@ router.post('/register', async (req, res) => {
             avatar: defaultAvatars[Math.floor(Math.random() * defaultAvatars.length)],
             banned: false,
             flagged: false,
-        };
+        });
 
-        UserModel.createUser(newUser);
-
-        res.status(201).json({ message: 'User registered successfully.' });
+        res.status(201).json({ message: 'User registered successfully.', userId: newUser._id });
     } catch (err) {
         res.status(500).json({ message: 'Error registering user.', error: err.message });
     }
@@ -55,9 +54,7 @@ router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        // Find the user by username
-        const users = UserModel.getAllUsers();
-        const user = users.find(user => user.username === username);
+        const user = await UserModel.findOne({ username: username });
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }

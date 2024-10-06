@@ -20,10 +20,10 @@ function hasRole(role) {
 }
 
 // Middleware to check if the user is the group owner or super admin
-const isGroupOwner = (req, res, next) => {
+const isGroupOwner = async (req, res, next) => {
     try {
         const groupId = req.params.id;
-        const group = GroupModel.getGroupById(groupId);
+        const group = await GroupModel.findById(groupId);
 
         // Check if the group exists
         if (!group) {
@@ -46,10 +46,10 @@ const isGroupOwner = (req, res, next) => {
 };
 
 // Middleware to check if the user is an admin of the provided group (or superAdmin)
-const isGroupAdmin = (req, res, next) => {
+const isGroupAdmin = async (req, res, next) => {
     try {
         const groupId = req.params.id;
-        const group = GroupModel.getGroupById(groupId);
+        const group = await GroupModel.findById(groupId);
 
         // Check if the group exists
         if (!group) {

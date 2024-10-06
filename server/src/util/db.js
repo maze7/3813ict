@@ -1,23 +1,13 @@
-const {writeFileSync, readFileSync} = require("node:fs");
+const mongoose = require('mongoose');
 
-// Load data from JSON file
-const loadData = (filePath) => {
+const db = async () => {
     try {
-        const data = readFileSync(filePath, 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        console.error('Error reading data file:', error);
-        return [];
+        await mongoose.connect(process.env.MONGODB_URI);
+        console.log('MongoDB connected successfully');
+    } catch (err) {
+        console.error('Error connecting to MongoDB:', err.message);
+        process.exit(1);
     }
 };
 
-// Save data to JSON file
-const saveData = (filePath, data) => {
-    try {
-        writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
-    } catch (error) {
-        console.error('Error writing data to file:', error);
-    }
-};
-
-module.exports = { loadData, saveData };
+module.exports = db;

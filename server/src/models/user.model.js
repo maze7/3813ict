@@ -1,43 +1,29 @@
-const path = require('path');
-const {loadData, saveData} = require("../util/db");
+const mongoose = require('mongoose');
 
-// File path for user data
-const userDataPath = path.join(__dirname, '../../data/users.json');
+const validRoles = ['superAdmin', 'groupAdmin', 'user'];
 
-// User operations
-const UserModel = {
-    getAllUsers: () => {
-        return loadData(userDataPath);
+const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    roles: {
+        type: [String],
+        validate: {
+            validator: function(roles) {
+                // Ensure the array contains only "admin" or "user"
+                const isValid = roles.every(role => validRoles.includes(role));
+                // Ensure the array has at least one and at most two items
+                return isValid && roles.length > 0 && roles.length <= 2;
+            },
+            message: props => `${props.value} is not a valid role array!`
+        },
+        required: true,
+        default: ['user'],
     },
+    avatar: { type: String, required: true },
+    flagged: { type: Boolean, default: false },
+    banned: { type: Boolean, default: false },
+}, { timestamps: true });
 
-    getUserById: (userId) => {
-        const users = loadData(userDataPath);
-        return users.find(user => user._id === userId);
-    },
-
-    createUser: (newUser) => {
-        const users = loadData(userDataPath);
-
-        users.push(newUser);
-        saveData(userDataPath, users);
-        return newUser;
-    },
-
-    updateUser: (updatedUser) => {
-        const users = loadData(userDataPath);
-        const userIndex = users.findIndex(user => user._id === updatedUser._id);
-
-        if (userIndex !== -1) {
-            users[userIndex] = updatedUser;
-            saveData(userDataPath, users);
-        }
-    },
-
-    deleteUser: (userId) => {
-        const users = loadData(userDataPath);
-        const updatedUsers = users.filter(user => user._id !== userId);
-        saveData(userDataPath, updatedUsers);
-    },
-};
-
+const UserModel = mongoose.model('User', userSchema);
 module.exports = UserModel;

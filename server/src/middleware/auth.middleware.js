@@ -7,12 +7,12 @@ async function authenticateToken(req, res, next) {
 
     if (token == null) return res.sendStatus(401); // If no token is present, return Unauthorized
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, async (err, user) => {
         if (err) return res.sendStatus(403); // If token is invalid, return Forbidden
 
         try {
             // Fetch the user from the UserModel using the user ID from the token
-            const foundUser = UserModel.getUserById(user._id);
+            const foundUser = await UserModel.findById(user._id)
             if (!foundUser) return res.sendStatus(403); // If user is not found, return Forbidden
 
             // Attach the found user to the request object

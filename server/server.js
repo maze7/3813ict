@@ -2,6 +2,9 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const db = require('./src/util/db');
+
+db();
 
 // create webserver
 const app = express();
