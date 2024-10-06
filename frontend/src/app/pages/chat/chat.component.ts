@@ -1,10 +1,14 @@
-import {AfterViewChecked, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {LucideAngularModule} from "lucide-angular";
 import {GroupService} from "../../services/group.service";
 import {AuthService} from "../../services/auth.service";
 import {AsyncPipe, NgClass} from "@angular/common";
 import {NewChannelModalComponent} from "../../components/new-channel-modal/new-channel-modal.component";
 import {FormsModule} from "@angular/forms";
+import {ChatService} from "../../services/chat.service";
+import {tap} from "rxjs";
+import {Message} from "../../models/message.model";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-chat',
@@ -19,33 +23,36 @@ import {FormsModule} from "@angular/forms";
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent implements AfterViewChecked {
+export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('chat') private chat!: ElementRef;
 
   protected message: string = '';
-  protected messages = [
-    { name: 'Ronald', img: 'avatars/ronald.png', time: '12:45', msg: 'I feel like noodles!' },
-    { name: 'Frank', img: 'avatars/frank.png', time: '12:45', msg: 'What type of noodles?'},
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'ramen!' },
-    { name: 'Ronald', img: 'avatars/ronald.png', time: '12:45', msg: 'They get stuck in my beard..!' },
-    { name: 'Ben', img: 'avatars/ben.png', time: '12:32', msg: `That's how you save them for later.` },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-    { name: 'Sally', img: 'avatars/sleepysally.png', time: '12:46', msg: 'infinite noodles!' },
-  ]
+  public messages: Message[] = [];
+  private destroyRef = inject(DestroyRef);
 
-  constructor(protected groups: GroupService, protected auth: AuthService) {}
+  constructor(protected groups: GroupService, protected auth: AuthService, protected chatService: ChatService) {}
+
+  ngOnInit() {
+    this.groups.currentChannel.asObservable().pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(channel => {
+      const group = this.groups.currentGroup.value!;
+
+      // load initial messages
+      this.chatService.getChannelMessages(group._id!, channel!._id!).pipe(
+        takeUntilDestroyed(this.destroyRef),
+      ).subscribe(data => {
+        this.messages = data;
+      });
+    });
+
+    // open socket connection
+    this.chatService.connect();
+    this.chatService.messages().pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap((m) => this.messages.push(m)),
+    ).subscribe();
+  }
 
   ngAfterViewChecked() {
     this.scrollToBottom();
@@ -53,18 +60,8 @@ export class ChatComponent implements AfterViewChecked {
 
   send() {
     if (this.message.trim()) {
-      const user = this.auth.getUser();
-      const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      this.chatService.send(this.message);
 
-      // Add the new message to the messages array
-      this.messages.push({
-        name: user.username,
-        img: `avatars/${user.avatar}`,
-        time: currentTime,
-        msg: this.message
-      });
-
-      // scroll to the bottom of the chat
       // Scroll to the bottom after the new message is added
       setTimeout(() => this.scrollToBottom(), 0);
 

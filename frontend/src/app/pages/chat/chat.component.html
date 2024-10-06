@@ -4,21 +4,21 @@
     <div class="p-4 overflow-y-auto" #chat>
         @for (msg of messages; track msg) {
           <div class="chat chat-start" [ngClass]="{
-            'chat-start': msg.name !== auth.getUser().username,
-            'chat-end': msg.name == auth.getUser().username,
+            'chat-start': msg.user.username !== auth.getUser().username,
+            'chat-end': msg.user.username == auth.getUser().username,
           }">
               <div class="chat-image avatar">
                 <div class="w-10 rounded-full">
                   <img
                     alt="Tailwind CSS chat bubble component"
-                    src="{{msg.img}}" />
+                    src="avatars/{{msg.user.avatar}}" />
                 </div>
               </div>
               <div class="chat-header">
-                {{ msg.name }}
-                <time class="text-xs opacity-50">{{ msg.time }}</time>
+                {{ msg.user.username }}
+                <time class="text-xs opacity-50">{{ msg.createdAt }}</time>
               </div>
-              <div class="chat-bubble">{{ msg.msg }}</div>
+              <div class="chat-bubble">{{ msg.message }}</div>
             </div>
         }
     </div>

@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
     avatar: { type: String, required: true },
     flagged: { type: Boolean, default: false },
     banned: { type: Boolean, default: false },
+    socket: { type: String },
 }, { timestamps: true });
 
 const UserModel = mongoose.model('User', userSchema);
