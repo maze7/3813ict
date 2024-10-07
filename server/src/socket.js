@@ -7,7 +7,7 @@ module.exports = {
         console.log('Listening for socket connections.');
 
         // Authentication middleware for socket
-        io.use(async (socket, next) => {
+        const authMiddleware = async (socket, next) => {
             const token = socket.handshake.query.token;
 
             if (!token) {
@@ -30,11 +30,13 @@ module.exports = {
                     return next(new Error('Authentication error: Database failure'));
                 }
             });
-        });
+        };
 
-        // Handle authenticated socket connection
-        io.on('connection', async (socket) => {
-            console.log(`User connected: ${socket.user.username} (Socket ID: ${socket.id})`);
+        // Listen for connections to each channel
+        const namespace = io.of(/^\/channel\/.+$/).on('connection', async (socket) => {
+            const namespace = socket.nsp;
+            console.log(`User connected to ${namespace.name} - ${socket.user.username} (Socket ID: ${socket.id})`);
+
 
             // Store the socket ID in the user's document
             try {
@@ -58,12 +60,12 @@ module.exports = {
                 console.log(`[${msg.channel}] ${msg.user.username}: ${msg.message}`);
 
                 // Broadcast message to all connected clients
-                io.emit('message', msg);
+                namespace.emit('message', msg);
             });
 
             // Handle disconnection
             socket.on('disconnect', async () => {
-                console.log(`User disconnected: ${socket.user.username}`);
+                console.log(`User disconnected from ${namespace.name}: ${socket.user.username}`);
 
                 // Remove the socket ID from the user document on disconnect
                 try {
@@ -75,5 +77,7 @@ module.exports = {
                 }
             });
         });
+
+        namespace.use(authMiddleware);
     }
 }

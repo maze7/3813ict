@@ -14,14 +14,20 @@ export class ChatService {
 
   constructor(private auth: AuthService, private group: GroupService, private http: HttpClient) {}
 
-  connect() {
-    console.log('connecting to chat...');
-    this.socket = io('http://localhost:3000', {
+  connect(channelId: string) {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+
+    this.socket = io(`http://localhost:3000/channel/${channelId}`, {
       query: {
         token: this.auth.getToken()
       }
     });
-    return () => { this.socket.disconnect(); }
+
+    this.socket.on('disconnect', () => {
+      console.log('Disconnected from chat channel');
+    });
   }
 
   messages(): Observable<Message> {

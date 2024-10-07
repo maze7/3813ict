@@ -47,8 +47,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       });
     });
 
+    const channel = this.groups.currentChannel.value!;
+    console.log(channel);
     // open socket connection
-    this.chatService.connect();
+    this.chatService.connect(channel._id);
     this.chatService.messages().pipe(
       takeUntilDestroyed(this.destroyRef),
       tap((m) => this.messages.push(m)),
