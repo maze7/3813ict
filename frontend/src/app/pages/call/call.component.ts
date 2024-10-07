@@ -3,129 +3,114 @@ import { Peer } from 'peerjs';
 import { WebSocketService } from '../../services/websocket.service';
 import { AuthService } from '../../services/auth.service';
 import { ActivatedRoute } from "@angular/router";
+import {NgClass} from "@angular/common";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+
+interface PeerUser {
+  muted: boolean;
+  stream: MediaStream;
+  id: string;
+}
 
 @Component({
   selector: 'app-call',
   templateUrl: './call.component.html',
   styleUrls: ['./call.component.css'],
   standalone: true,
+  imports: [
+    NgClass
+  ]
 })
 export class CallComponent implements OnInit, OnDestroy {
-  private peer!: Peer;
-  private myVideoStream!: MediaStream;
-  private videoGrid!: HTMLElement;
-  private peers: { [id: string]: any } = {};
+  private peer?: Peer;
+  protected peers: { [key: string]: PeerUser } = {};
+  protected localStream?: MediaStream;
 
   constructor(private auth: AuthService, private webSocketService: WebSocketService, private route: ActivatedRoute) {
-    // Join the channel namespace directly
     this.webSocketService.joinChannel(this.route.snapshot.params['channelId']);
+
+    this.initializePeer();
+
+    // Handle incoming calls
+    this.peer!.on('call', (call) => {
+      call.answer(this.localStream);
+      call.on('stream', (stream) => {
+        this.peers[call.peer] = { muted: false, stream, id: call.peer };
+      });
+    });
+
+    // Handle peer connections
+    this.webSocketService.listen('join-call').pipe(takeUntilDestroyed()).subscribe((peer) => {
+      this.addPeer(peer);
+    });
+
+    // Handle peer leaving
+    this.webSocketService.listen('leave-call').pipe(takeUntilDestroyed()).subscribe((peerId) => {
+      if (this.peers[peerId]) {
+        this.peers[peerId].stream.getTracks().forEach(track => track.stop()); // Stop the stream
+        delete this.peers[peerId]; // Remove peer from peers object
+      }
+    });
   }
 
-  userId!: string;
-
   ngOnInit() {
-    this.videoGrid = document.getElementById('video-grid')!;
-    this.peer = new Peer(this.auth.getUser()._id, {
-      path: '/peerjs',
-      host: '/',
-      port: 3000,
-    });
-
-    // Get media streams
+    // Access user's media
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-      this.myVideoStream = stream;
-      this.addVideoStream(this.createVideoElement(this.peer.id), stream);
+      this.localStream = stream;
+      this.peers[this.peer!.id] = { muted: true, stream, id: this.peer!.id };
 
-      // Handle incoming calls
-      this.peer.on('call', (call) => {
-        call.answer(stream);
-        call.on('stream', (userVideoStream) => {
-          if (!document.getElementById(call.peer)) {
-            this.addVideoStream(this.createVideoElement(call.peer), userVideoStream);
-          }
-        });
-      });
-
-      // Listen for other users joining or disconnecting
-      this.webSocketService.listen('join-call').subscribe((peerId) => {
-        console.log(`new peer: ${peerId}`)
-        this.connectToNewPeer(peerId, stream);
-      });
-
-      this.webSocketService.listen('user-disconnected').subscribe((userId: string) => {
-        if (this.peers[userId]) {
-          this.peers[userId].close();
-          delete this.peers[userId];
-        }
-        this.removeVideoElement(userId);
-      });
-    });
-
-    this.peer.on('open', (id) => {
-      this.userId = id;
-      this.webSocketService.emit('join-call', this.peer.id);
+      // Notify other peers about joining
+      this.webSocketService.emit('join-call', this.peer!.id);
     });
   }
 
   ngOnDestroy() {
-    // Clean up the PeerJS and WebSocket connections
     if (this.peer) {
-      this.peer.destroy();
+      this.peer.disconnect(); // Disconnect from the peer network
+      this.peer.destroy();    // Clean up the PeerJS instance
+      this.webSocketService.emit('leave-call', this.peer!.id); // Notify other peers
     }
-
-    Object.keys(this.peers).forEach((userId) => {
-      if (this.peers[userId]) {
-        this.peers[userId].close();
-      }
-    });
-
-    this.webSocketService.disconnect();
+    this.webSocketService.disconnect(); // Disconnect the WebSocket
   }
 
-  private connectToNewPeer(peerId: string, stream: MediaStream) {
-    if (this.peers[peerId]) return;
-
-    const call = this.peer.call(peerId, stream);
-    call.on('stream', (userVideoStream) => {
-      if (!document.getElementById(peerId)) {
-        this.addVideoStream(this.createVideoElement(peerId), userVideoStream);
-      }
+  // Initialize Peer
+  initializePeer() {
+    this.peer = new Peer(this.auth.getUser()._id, {
+      path: '/peerjs',
+      host: 'localhost',
+      port: 3000,
     });
+  }
+
+  // Add peer and handle incoming calls
+  addPeer(peerId: string) {
+    if (this.peers[peerId]) return; // Ignore existing peers
+
+    const call = this.peer!.call(peerId, this.localStream!);
+    call.on('stream', (stream) => {
+      this.peers[peerId] = { muted: false, stream, id: peerId };
+    });
+
     call.on('close', () => {
-      this.removeVideoElement(peerId);
-    });
-
-    this.peers[peerId] = call;
-  }
-
-  private createVideoElement(userId: string): HTMLVideoElement {
-    const video = document.createElement('video');
-    video.id = userId;
-    video.muted = userId === this.userId;
-    video.autoplay = true;
-    this.videoGrid.append(video);
-    return video;
-  }
-
-  private addVideoStream(video: HTMLVideoElement, stream: MediaStream) {
-    video.srcObject = stream;
-    video.addEventListener('loadedmetadata', () => {
-      video.play();
-    });
-  }
-
-  private stopMediaStream(stream: MediaStream) {
-    stream.getTracks().forEach(track => track.stop());
-  }
-
-  private removeVideoElement(userId: string) {
-    const videoElement = document.getElementById(userId) as HTMLVideoElement;
-    if (videoElement) {
-      const stream = videoElement.srcObject as MediaStream;
-      if (stream) {
-        this.stopMediaStream(stream);  // Stop the media stream before removing the element
+      if (this.peers[peerId]) {
+        this.peers[peerId].stream.getTracks().forEach(track => track.stop());
+        delete this.peers[peerId]; // Remove peer after closing connection
       }
-      videoElement.remove();
+    });
+
+    call.on('error', (error) => {
+      console.error(`Call error with peer ${peerId}:`, error);
+    });
+  }
+
+  // Toggle mute/unmute for local video
+  toggleMute() {
+    if (this.localStream) {
+      const audioTrack = this.localStream.getAudioTracks()[0];
+      audioTrack.enabled = !audioTrack.enabled;
+      this.peers[this.peer!.id].muted = !audioTrack.enabled;
     }
   }
+
+  protected readonly Object = Object;
 }

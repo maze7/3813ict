@@ -71,9 +71,16 @@ module.exports = {
                 socket.broadcast.emit('join-call', peer);
             });
 
+            socket.on('leave-call', async (peer) => {
+                socket.broadcast.emit('leave-call', peer);
+            })
+
             // Handle user disconnection
             socket.on('disconnect', async () => {
                 console.log(`User disconnected from ${namespace.name}: ${socket.user.username}`);
+
+                // Notify others in the namespace that a user has disconnected
+                socket.broadcast.emit('leave-call', socket.user._id);
 
                 // Remove the socket ID from the user document on disconnect
                 try {
