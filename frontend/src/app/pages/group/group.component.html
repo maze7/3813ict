@@ -26,12 +26,13 @@
                 </span>
                 <span class="flex gap-x-4">
                   @if ((groupService.channel$ | async)) {
-                    <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Video Call">
+                    <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Video Call" (click)="joinCall()">
                       <lucide-angular name="video"></lucide-angular>
                     </button>
+                    <!--
                     <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Start Voice Call">
                       <lucide-angular name="phone-call"></lucide-angular>
-                    </button>
+                    </button>-->
                   }
                   @if (groupService.isGroupAdmin()) {
                     <button class="btn btn-neutral rounded-full tooltip tooltip-bottom" data-tip="Settings" (click)="showGroupSettings = true">

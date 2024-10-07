@@ -7,6 +7,7 @@ const sockets = require('./src/socket');
 const cors = require('cors');
 const db = require('./src/util/db');
 const winston = require('winston');
+const { ExpressPeerServer } = require('peer');
 
 // Initialize database
 db();
@@ -39,7 +40,7 @@ const logger = winston.createLogger({
 });
 
 // Set up WebSocket server
-sockets.connect(io);
+sockets.connect(io, app, server);
 
 // Start Server
 server.listen(process.env.PORT, () => {

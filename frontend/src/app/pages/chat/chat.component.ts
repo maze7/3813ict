@@ -1,14 +1,15 @@
-import {AfterViewChecked, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, DestroyRef, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {LucideAngularModule} from "lucide-angular";
 import {GroupService} from "../../services/group.service";
 import {AuthService} from "../../services/auth.service";
 import {AsyncPipe, DatePipe, NgClass} from "@angular/common";
 import {NewChannelModalComponent} from "../../components/new-channel-modal/new-channel-modal.component";
 import {FormsModule} from "@angular/forms";
-import {ChatService} from "../../services/chat.service";
 import {tap} from "rxjs";
 import {Message} from "../../models/message.model";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {HttpClient} from "@angular/common/http";
+import {WebSocketService} from "../../services/websocket.service";
 
 @Component({
   selector: 'app-chat',
@@ -31,7 +32,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   public messages: Message[] = [];
   private destroyRef = inject(DestroyRef);
 
-  constructor(protected groups: GroupService, protected auth: AuthService, protected chatService: ChatService) {}
+  constructor(protected groups: GroupService, protected auth: AuthService, private websocketService: WebSocketService, private http: HttpClient) {}
 
   ngOnInit() {
     this.groups.currentChannel.asObservable().pipe(
@@ -39,21 +40,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     ).subscribe(channel => {
       const group = this.groups.currentGroup.value!;
 
-      // load initial messages
-      this.chatService.getChannelMessages(group._id!, channel!._id!).pipe(
-        takeUntilDestroyed(this.destroyRef),
-      ).subscribe(data => {
-        this.messages = data;
-      });
+      if (group && channel) {
+        this.getChannelMessages(group._id!, channel._id)
+      }
     });
 
-    const channel = this.groups.currentChannel.value!;
-    console.log(channel);
-    // open socket connection
-    this.chatService.connect(channel._id);
-    this.chatService.messages().pipe(
+    this.websocketService.listen('message').pipe(
       takeUntilDestroyed(this.destroyRef),
-      tap((m) => this.messages.push(m)),
+      tap((message) => this.messages.push(message))
     ).subscribe();
   }
 
@@ -61,9 +55,28 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.scrollToBottom();
   }
 
+  // Fetch messages for a specific channel
+  getChannelMessages(groupId: string, channelId: string): void {
+    this.http.get(`http://localhost:3000/messages/${groupId}/${channelId}`).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap((res) => {
+        this.messages = res as Message[];
+      })
+    ).subscribe();
+  }
+
+  // Send a message via WebSocket
   send() {
     if (this.message.trim()) {
-      this.chatService.send(this.message);
+      const group = this.groups.currentGroup.value!;
+      const channel = this.groups.currentChannel.value!;
+
+      // Emit message to the server
+      this.websocketService.emit('message', {
+        message: this.message,
+        channel: channel._id,
+        group: group._id,
+      });
 
       // Scroll to the bottom after the new message is added
       setTimeout(() => this.scrollToBottom(), 0);

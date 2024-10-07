@@ -1,6 +1,6 @@
 import {Component, DestroyRef, ElementRef, inject, Input, OnInit, ViewChild} from '@angular/core';
 import {LucideAngularModule} from "lucide-angular";
-import {ActivatedRoute, RouterOutlet} from "@angular/router";
+import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AsyncPipe, NgClass} from "@angular/common";
 import {ChannelNavComponent} from "../../components/channel-nav/channel-nav.component";
@@ -39,7 +39,7 @@ export class GroupComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   protected showGroupSettings: boolean = false;
 
-  constructor(protected auth: AuthService, protected groupService: GroupService, private fb: FormBuilder) {
+  constructor(protected auth: AuthService, protected groupService: GroupService, private fb: FormBuilder, private router: Router) {
     this.channelForm = this.fb.group({
       name: ['', Validators.required],
     });
@@ -61,5 +61,9 @@ export class GroupComponent implements OnInit {
 
   join(): void {
     this.groupService.join().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  }
+
+  joinCall(): void {
+    this.router.navigate(['/call', this.groupService.currentChannel.value!._id]);
   }
 }
