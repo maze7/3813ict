@@ -52,6 +52,7 @@ module.exports = {
 
             // Handle incoming messages from the client (for chat)
             socket.on('message', async (message) => {
+                console.log(message);
                 let msg = await MessageModel.create({
                     user: socket.user._id,
                     group: message.group,
@@ -68,7 +69,7 @@ module.exports = {
 
             // Handle user joining the call, notify others
             socket.on('join-call', async (peer) => {
-                socket.broadcast.emit('join-call', peer);
+                socket.broadcast.emit('join-call', { peer, user: socket.user });
             });
 
             socket.on('leave-call', async (peer) => {

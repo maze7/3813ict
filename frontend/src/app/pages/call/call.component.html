@@ -1,8 +1,14 @@
 <div class="container mx-auto p-4">
-  <div class="grid gap-4 gr" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-    @for (video of Object.values(peers); track video) {
-      <video [srcObject]="video.stream" autoplay [muted]="video.muted" class="w-full rounded-md"></video>
+  <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <!-- Iterate over all peers and show video and username -->
+    @for (peer of Object.values(peers); track peer.id) {
+      <div class="relative group">
+        <video [srcObject]="peer.stream" autoplay [muted]="peer.muted" class="w-full rounded-md"></video>
+        <!-- Overlay with username -->
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-2">
+          <p class="text-white text-lg font-bold">{{ peer.user.username }}</p>
+        </div>
+      </div>
     }
   </div>
-  <button (click)="toggleMute()">Toggle Mute</button>
 </div>

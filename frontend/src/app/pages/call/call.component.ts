@@ -5,11 +5,13 @@ import { AuthService } from '../../services/auth.service';
 import { ActivatedRoute } from "@angular/router";
 import {NgClass} from "@angular/common";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {User} from "../../models/user.model";
 
 interface PeerUser {
   muted: boolean;
   stream: MediaStream;
   id: string;
+  user: User;
 }
 
 @Component({
@@ -35,13 +37,27 @@ export class CallComponent implements OnInit, OnDestroy {
     this.peer!.on('call', (call) => {
       call.answer(this.localStream);
       call.on('stream', (stream) => {
-        this.peers[call.peer] = { muted: false, stream, id: call.peer };
+        const user = this.peers[call.peer]?.user;
+
+        // Store the incoming peer stream and user info in the peers object
+        this.peers[call.peer] = { muted: false, stream, id: call.peer, user };
+      });
+
+      call.on('close', () => {
+        if (this.peers[call.peer]) {
+          this.peers[call.peer].stream.getTracks().forEach(track => track.stop());
+          delete this.peers[call.peer];
+        }
+      });
+
+      call.on('error', (error) => {
+        console.error(`Call error with peer ${call.peer}:`, error);
       });
     });
 
     // Handle peer connections
-    this.webSocketService.listen('join-call').pipe(takeUntilDestroyed()).subscribe((peer) => {
-      this.addPeer(peer);
+    this.webSocketService.listen('join-call').pipe(takeUntilDestroyed()).subscribe((data) => {
+      this.addPeer(data.peer, data.user);
     });
 
     // Handle peer leaving
@@ -57,7 +73,7 @@ export class CallComponent implements OnInit, OnDestroy {
     // Access user's media
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
       this.localStream = stream;
-      this.peers[this.peer!.id] = { muted: true, stream, id: this.peer!.id };
+      this.peers[this.peer!.id] = { muted: true, stream, id: this.peer!.id, user: this.auth.getUser() };
 
       // Notify other peers about joining
       this.webSocketService.emit('join-call', this.peer!.id);
@@ -83,12 +99,12 @@ export class CallComponent implements OnInit, OnDestroy {
   }
 
   // Add peer and handle incoming calls
-  addPeer(peerId: string) {
+  addPeer(peerId: string, user: User) {
     if (this.peers[peerId]) return; // Ignore existing peers
 
     const call = this.peer!.call(peerId, this.localStream!);
     call.on('stream', (stream) => {
-      this.peers[peerId] = { muted: false, stream, id: peerId };
+      this.peers[peerId] = { muted: false, stream, id: peerId, user };
     });
 
     call.on('close', () => {

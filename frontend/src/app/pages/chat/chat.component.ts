@@ -25,7 +25,7 @@ import {WebSocketService} from "../../services/websocket.service";
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent implements OnInit, AfterViewChecked {
+export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('chat') private chat!: ElementRef;
 
   protected message: string = '';
@@ -43,16 +43,20 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       if (group && channel) {
         this.getChannelMessages(group._id!, channel._id)
       }
-    });
 
-    this.websocketService.listen('message').pipe(
-      takeUntilDestroyed(this.destroyRef),
-      tap((message) => this.messages.push(message))
-    ).subscribe();
+      this.websocketService.listen('message').pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((message) => this.messages.push(message))
+      ).subscribe();
+    });
   }
 
   ngAfterViewChecked() {
     this.scrollToBottom();
+  }
+
+  ngOnDestroy() {
+    this.websocketService.disconnect();
   }
 
   // Fetch messages for a specific channel

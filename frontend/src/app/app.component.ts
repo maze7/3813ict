@@ -26,9 +26,9 @@ export class AppComponent {
           this.webSocketService.joinChannel(channel._id);
         }
       }),
-      finalize(() => {
-        this.webSocketService.disconnect();
-      })
+      // finalize(() => {
+      //   this.webSocketService.disconnect();
+      // })
     ).subscribe();
   }
 }
