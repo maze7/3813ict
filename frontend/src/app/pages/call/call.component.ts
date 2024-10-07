@@ -2,10 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Peer } from 'peerjs';
 import { WebSocketService } from '../../services/websocket.service';
 import { AuthService } from '../../services/auth.service';
-import { ActivatedRoute } from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {NgClass} from "@angular/common";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {User} from "../../models/user.model";
+import {LucideAngularModule} from "lucide-angular";
 
 interface PeerUser {
   muted: boolean;
@@ -20,15 +21,18 @@ interface PeerUser {
   styleUrls: ['./call.component.css'],
   standalone: true,
   imports: [
-    NgClass
+    NgClass,
+    LucideAngularModule
   ]
 })
 export class CallComponent implements OnInit, OnDestroy {
   private peer?: Peer;
   protected peers: { [key: string]: PeerUser } = {};
   protected localStream?: MediaStream;
+  protected muted: boolean = false;
+  protected cameraOff: boolean = false;
 
-  constructor(private auth: AuthService, private webSocketService: WebSocketService, private route: ActivatedRoute) {
+  constructor(private auth: AuthService, private webSocketService: WebSocketService, private route: ActivatedRoute, private router: Router) {
     this.webSocketService.joinChannel(this.route.snapshot.params['channelId']);
 
     this.initializePeer();
@@ -124,8 +128,25 @@ export class CallComponent implements OnInit, OnDestroy {
     if (this.localStream) {
       const audioTrack = this.localStream.getAudioTracks()[0];
       audioTrack.enabled = !audioTrack.enabled;
-      this.peers[this.peer!.id].muted = !audioTrack.enabled;
+      this.muted = !this.muted;
+      this.peers[this.peer!.id].muted = this.muted;
     }
+  }
+
+  // Toggle video on/off for local stream
+  toggleVideo() {
+    this.cameraOff = !this.cameraOff;
+    if (this.localStream) {
+      const videoTrack = this.localStream.getVideoTracks()[0];
+      videoTrack.enabled = !videoTrack.enabled;
+    }
+  }
+
+  // Leave the call
+  leaveCall() {
+    this.peer?.disconnect();
+    this.webSocketService.emit('leave-call', this.peer!.id);
+    this.router.navigate(['/']);
   }
 
   protected readonly Object = Object;
