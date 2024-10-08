@@ -32,6 +32,8 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   public messages: Message[] = [];
   private destroyRef = inject(DestroyRef);
   private messageListenerSub: Subscription | null = null;
+  public previewImageUrl: string | null = null;
+  protected images: string[] = [];
 
   constructor(protected groups: GroupService, protected auth: AuthService, private websocketService: WebSocketService, private http: HttpClient) {}
 
@@ -83,7 +85,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   // Send a message via WebSocket
   send() {
-    if (this.message.trim()) {
+    if (this.message.trim() || this.images.length) {
       const group = this.groups.currentGroup.value!;
       const channel = this.groups.currentChannel.value!;
 
@@ -92,13 +94,15 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
         message: this.message,
         channel: channel._id,
         group: group._id,
+        images: this.images,
       });
 
       // Scroll to the bottom after the new message is added
       setTimeout(() => this.scrollToBottom(), 0);
 
-      // Clear the input field
+      // Clear the input fields
       this.message = '';
+      this.images = [];
     }
   }
 
@@ -115,5 +119,36 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     } catch (err) {
       console.error('Scroll to bottom error', err);
     }
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      const file = input.files[0];
+      this.uploadImage(file);
+    }
+  }
+
+  uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.http.post('http://localhost:3000/upload', formData).subscribe((res: any) => {
+      this.images.push(res.imageUrl);
+    });
+  }
+
+  removeImage(index: number): void {
+    this.images.splice(index, 1);
+  }
+
+  // Open the image preview
+  openImagePreview(imageUrl: string) {
+    this.previewImageUrl = imageUrl;
+  }
+
+  // Close the image preview
+  closeImagePreview() {
+    this.previewImageUrl = null;
   }
 }

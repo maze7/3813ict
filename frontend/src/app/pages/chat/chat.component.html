@@ -16,24 +16,56 @@
             {{ msg.user.username }}
             <time class="text-xs opacity-50">{{ msg.createdAt | date: 'short' }}</time>
           </div>
-          <div class="chat-bubble">{{ msg.message }}</div>
+          <div class="chat-bubble">
+            @if (msg.images) {
+              <div class="grid gap-2" style="grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));">
+                @for (img of msg.images; track img) {
+                  <div class="w-full h-24">
+                    <img (click)="openImagePreview(img)"
+                         src="http://localhost:3000{{img}}" alt="uploaded chat image" class="object-cover w-full h-full rounded-md"/>
+                  </div>
+                }
+              </div>
+            }
+            {{ msg.message }}
+          </div>
         </div>
       }
     </div>
 
-    <!-- Message input panel (fixed at bottom) -->
-    <div class="h-20 p-4 bg-base-200 flex gap-x-2">
-      <button class="btn btn-neutral" (click)="send()">
-        <lucide-angular name="image" size="20"></lucide-angular>
-      </button>
-      <label class="flex-1 input input-bordered flex items-center gap-2 pr-0">
-        <input type="text" class="grow" placeholder="Message the channel"
-               [(ngModel)]="message"
-               (keypress)="handleKeyPress($event)" />
-        <button class="btn btn-ghost" (click)="send()">
-          <lucide-angular name="send-horizontal" size="20"></lucide-angular>
+    <!-- Message input panel with image previews -->
+    <div class="p-4 bg-base-200 flex flex-col gap-2">
+      <!-- Image Previews -->
+      @if (images.length > 0) {
+        <div class="flex gap-2 overflow-x-auto bg-base-100 rounded-lg p-2">
+          @for (img of images; track img; let i = $index) {
+            <div class="relative w-20 h-20 flex-shrink-0">
+              <img src="http://localhost:3000{{img}}" alt="Image preview" class="object-cover rounded w-full h-full"/>
+              <button (click)="removeImage(i)"
+                class="absolute top-1 right-1 bg-neutral hover:bg-base-100 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                ✕
+              </button>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Message input and file upload button -->
+      <div class="flex gap-x-2 items-center">
+        <input type="file" (change)="onFileSelected($event)" class="hidden" #fileInput multiple />
+        <button class="btn btn-neutral" (click)="fileInput.click()">
+          <lucide-angular name="image" size="20"></lucide-angular>
         </button>
-      </label>
+
+        <label class="flex-1 input input-bordered flex items-center pr-0">
+          <input type="text" class="grow p-2" placeholder="Message the channel"
+                 [(ngModel)]="message"
+                 (keypress)="handleKeyPress($event)" />
+          <button class="btn btn-ghost" (click)="send()">
+            <lucide-angular name="send-horizontal" size="20"></lucide-angular>
+          </button>
+        </label>
+      </div>
     </div>
   </div>
 } @else {
@@ -64,3 +96,234 @@
 }
 
 <app-new-channel-modal #newChannelModal></app-new-channel-modal>
+
+<!-- Image Preview Modal -->
+@if (((groups.group$ | async)?.channels?.length ?? false) && (groups.channel$ | async)) {
+  <div class="h-full flex flex-col">
+    <!-- Chat Panel -->
+    <div class="flex-1 p-4 overflow-y-auto" #chat>
+      @for (msg of messages; track msg) {
+        <div class="chat chat-start" [ngClass]="{
+          'chat-start': msg.user.username !== auth.getUser().username,
+          'chat-end': msg.user.username == auth.getUser().username,
+        }">
+          <div class="chat-image avatar">
+            <div class="w-10 rounded-full">
+              <img alt="Tailwind CSS chat bubble component" src="avatars/{{msg.user.avatar}}" />
+            </div>
+          </div>
+          <div class="chat-header">
+            {{ msg.user.username }}
+            <time class="text-xs opacity-50">{{ msg.createdAt | date: 'short' }}</time>
+          </div>
+          <div class="chat-bubble">
+            @if (msg.images) {
+              <div class="grid gap-2" style="grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));">
+                @for (img of msg.images; track img) {
+                  <div class="w-full h-24">
+                    <img (click)="openImagePreview(img)"
+                         src="http://localhost:3000{{img}}" alt="uploaded chat image" class="object-cover w-full h-full rounded-md"/>
+                  </div>
+                }
+              </div>
+            }
+            {{ msg.message }}
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Message input panel with image previews -->
+    <div class="p-4 bg-base-200 flex flex-col gap-2">
+      <!-- Image Previews -->
+      @if (images.length > 0) {
+        <div class="flex gap-2 overflow-x-auto bg-base-100 rounded-lg p-2">
+          @for (img of images; track img; let i = $index) {
+            <div class="relative w-20 h-20 flex-shrink-0">
+              <img src="http://localhost:3000{{img}}" alt="Image preview" class="object-cover rounded w-full h-full"/>
+              <button (click)="removeImage(i)"
+                      class="absolute top-1 right-1 bg-neutral hover:bg-base-100 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                ✕
+              </button>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Message input and file upload button -->
+      <div class="flex gap-x-2 items-center">
+        <input type="file" (change)="onFileSelected($event)" class="hidden" #fileInput multiple />
+        <button class="btn btn-neutral" (click)="fileInput.click()">
+          <lucide-angular name="image" size="20"></lucide-angular>
+        </button>
+
+        <label class="flex-1 input input-bordered flex items-center pr-0">
+          <input type="text" class="grow p-2" placeholder="Message the channel"
+                 [(ngModel)]="message"
+                 (keypress)="handleKeyPress($event)" />
+          <button class="btn btn-ghost" (click)="send()">
+            <lucide-angular name="send-horizontal" size="20"></lucide-angular>
+          </button>
+        </label>
+      </div>
+    </div>
+  </div>
+} @else {
+  <!-- No Channels View -->
+  <div class="h-full flex flex-col items-center">
+    @if (groups.isGroupAdmin()) {
+      <div class="flex flex-col gap-y-4 mx-auto my-auto max-w-xs">
+        <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="rss" size="30"></lucide-angular>Create a channel</h1>
+        <div class="text-neutral-content text-lg">Click below to start your first channel.</div>
+        <button class="btn btn-primary" (click)="newChannelModal.open()">Create Channel</button>
+      </div>
+    }
+    @else {
+      @if (groups.currentGroup.value!.channels.length) {
+        <div class="flex flex-col mx-auto my-auto max-w-md gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="rss" size="30"></lucide-angular>Uh oh!</h1>
+          <div class="text-neutral-content text-lg">You do not have access to any channels in this group.</div>
+        </div>
+      }
+      @else {
+        <div class="flex flex-col mx-auto my-auto max-w-md gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="rss" size="30"></lucide-angular>Hmm..</h1>
+          <div class="text-neutral-content text-lg">This group does not yet have any channels. Ask an admin to create one.</div>
+        </div>
+      }
+    }
+  </div>
+}
+
+<app-new-channel-modal #newChannelModal></app-new-channel-modal>
+
+<!-- Image Preview Modal -->
+@if (previewImageUrl) {
+  <div class="fixed m-32 rounded-3xl inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" (click)="closeImagePreview()">
+    <div class="relative">
+      <img src="http://localhost:3000{{previewImageUrl}}" alt="Full preview image" class="max-w-full max-h-screen rounded-lg"/>
+      <!-- Close button -->
+      <button (click)="closeImagePreview()"
+              class="absolute top-1 right-1 bg-neutral hover:bg-base-100 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+        ✕
+      </button>
+    </div>
+  </div>
+}
+@if (((groups.group$ | async)?.channels?.length ?? false) && (groups.channel$ | async)) {
+  <div class="h-full flex flex-col">
+    <!-- Chat Panel -->
+    <div class="flex-1 p-4 overflow-y-auto" #chat>
+      @for (msg of messages; track msg) {
+        <div class="chat chat-start" [ngClass]="{
+          'chat-start': msg.user.username !== auth.getUser().username,
+          'chat-end': msg.user.username == auth.getUser().username,
+        }">
+          <div class="chat-image avatar">
+            <div class="w-10 rounded-full">
+              <img alt="Tailwind CSS chat bubble component" src="avatars/{{msg.user.avatar}}" />
+            </div>
+          </div>
+          <div class="chat-header">
+            {{ msg.user.username }}
+            <time class="text-xs opacity-50">{{ msg.createdAt | date: 'short' }}</time>
+          </div>
+          <div class="chat-bubble">
+            @if (msg.images) {
+              <div class="grid gap-2" style="grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));">
+                @for (img of msg.images; track img) {
+                  <div class="w-full h-24">
+                    <img (click)="openImagePreview(img)"
+                         src="http://localhost:3000{{img}}" alt="uploaded chat image" class="object-cover w-full h-full rounded-md"/>
+                  </div>
+                }
+              </div>
+            }
+            {{ msg.message }}
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Message input panel with image previews -->
+    <div class="p-4 bg-base-200 flex flex-col gap-2">
+      <!-- Image Previews -->
+      @if (images.length > 0) {
+        <div class="flex gap-2 overflow-x-auto bg-base-100 rounded-lg p-2">
+          @for (img of images; track img; let i = $index) {
+            <div class="relative w-20 h-20 flex-shrink-0">
+              <img src="http://localhost:3000{{img}}" alt="Image preview" class="object-cover rounded w-full h-full"/>
+              <button (click)="removeImage(i)"
+                      class="absolute top-1 right-1 bg-neutral hover:bg-base-100 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                ✕
+              </button>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Message input and file upload button -->
+      <div class="flex gap-x-2 items-center">
+        <input type="file" (change)="onFileSelected($event)" class="hidden" #fileInput multiple />
+        <button class="btn btn-neutral" (click)="fileInput.click()">
+          <lucide-angular name="image" size="20"></lucide-angular>
+        </button>
+
+        <label class="flex-1 input input-bordered flex items-center pr-0">
+          <input type="text" class="grow p-2" placeholder="Message the channel"
+                 [(ngModel)]="message"
+                 (keypress)="handleKeyPress($event)" />
+          <button class="btn btn-ghost" (click)="send()">
+            <lucide-angular name="send-horizontal" size="20"></lucide-angular>
+          </button>
+        </label>
+      </div>
+    </div>
+  </div>
+} @else {
+  <!-- No Channels View -->
+  <div class="h-full flex flex-col items-center">
+    @if (groups.isGroupAdmin()) {
+      <div class="flex flex-col gap-y-4 mx-auto my-auto max-w-xs">
+        <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="rss" size="30"></lucide-angular>Create a channel</h1>
+        <div class="text-neutral-content text-lg">Click below to start your first channel.</div>
+        <button class="btn btn-primary" (click)="newChannelModal.open()">Create Channel</button>
+      </div>
+    }
+    @else {
+      @if (groups.currentGroup.value!.channels.length) {
+        <div class="flex flex-col mx-auto my-auto max-w-md gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="rss" size="30"></lucide-angular>Uh oh!</h1>
+          <div class="text-neutral-content text-lg">You do not have access to any channels in this group.</div>
+        </div>
+      }
+      @else {
+        <div class="flex flex-col mx-auto my-auto max-w-md gap-y-4">
+          <h1 class="card-title text-3xl text-neutral-300"><lucide-angular class="text-primary" name="rss" size="30"></lucide-angular>Hmm..</h1>
+          <div class="text-neutral-content text-lg">This group does not yet have any channels. Ask an admin to create one.</div>
+        </div>
+      }
+    }
+  </div>
+}
+
+<app-new-channel-modal #newChannelModal></app-new-channel-modal>
+
+<!-- Image Preview Modal -->
+@if (previewImageUrl) {
+  <!-- Semi-transparent background -->
+  <div class="fixed inset-0 bg-black bg-opacity-80 z-40" (click)="closeImagePreview()"></div>
+
+  <!-- Image Preview Modal -->
+  <div class="fixed m-32 rounded-3xl inset-0 flex items-center justify-center z-50">
+    <div class="relative">
+      <img src="http://localhost:3000{{previewImageUrl}}" alt="Full preview image" class="max-w-full max-h-screen rounded-lg"/>
+      <!-- Close button -->
+      <button (click)="closeImagePreview()"
+              class="absolute top-1 right-1 bg-neutral hover:bg-base-100 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+        ✕
+      </button>
+    </div>
+  </div>
+}
+

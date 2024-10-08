@@ -19,7 +19,7 @@ router.get('/list', hasRole('superAdmin'), async (req, res) => {
 // Delete user
 router.delete('/:id', hasRole('superAdmin'), async (req, res) => {
     try {
-        await UserModel.findByIdAndDelete(req.params.id); // Delete user by ID
+        await UserModel.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: 'User deleted.' });
     } catch (err) {
         res.status(500).json({ message: 'Error deleting user.', error: err.message });
@@ -53,8 +53,8 @@ router.post('/:id/ban', hasRole('superAdmin'), async (req, res) => {
         }
 
         user.banned = banned;
-        user.flagged = false; // Optionally reset the flagged status when banning/unbanning
-        await user.save(); // Save changes to the user
+        user.flagged = false;
+        await user.save();
 
         res.status(200).json({ status: banned });
     } catch (err) {

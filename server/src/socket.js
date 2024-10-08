@@ -58,6 +58,7 @@ module.exports = {
                     group: message.group,
                     channel: message.channel,
                     message: message.message,
+                    images: message.images,
                 });
 
                 msg = await msg.populate('user group');

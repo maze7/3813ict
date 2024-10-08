@@ -6,6 +6,7 @@ const { Server } = require('socket.io');
 const sockets = require('./src/socket');
 const cors = require('cors');
 const db = require('./src/util/db');
+const path = require('path');
 const winston = require('winston');
 const { ExpressPeerServer } = require('peer');
 
@@ -29,6 +30,8 @@ app.use('/auth', require('./src/routes/auth.routes'));
 app.use('/group', require('./src/routes/group.routes'));
 app.use('/user', require('./src/routes/user.routes'));
 app.use('/messages', require('./src/routes/message.routes'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/', require('./src/routes/upload.routes'));
 
 // Create logger
 const logger = winston.createLogger({

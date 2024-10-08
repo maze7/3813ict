@@ -7,4 +7,5 @@ export interface Message {
   channel: string;
   group: string;
   createdAt: Date;
+  images: string[];
 }
