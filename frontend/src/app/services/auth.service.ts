@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
+import * as url from "node:url";
 
 @Injectable({
   providedIn: 'root',
@@ -54,5 +55,16 @@ export class AuthService {
   isGroupAdmin(): boolean {
     const user = this.getUser();
     return user && user.roles.includes('groupAdmin');
+  }
+
+  setAvatar(url: string): Observable<any> {
+    return this.http.post<{ token: string }>(`${this.baseUrl}/avatar`, { url }).pipe(
+      tap((res) => {
+        if (res.token) {
+          console.log(res.token);
+          localStorage.setItem(this.tokenKey, res.token);
+        }
+      })
+    );
   }
 }

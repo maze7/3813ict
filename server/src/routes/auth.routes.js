@@ -5,14 +5,14 @@ const UserModel = require('../models/user.model'); // Import the User model
 const router = express.Router();
 
 const defaultAvatars = [
-    'ben.png',
-    'billcropped.png',
-    'frank.png',
-    'kitty.png',
-    'max.png',
-    'ronald.png',
-    'sleepysally.png',
-    'wendy.png',
+    '/uploads/ben.png',
+    '/uploads/billcropped.png',
+    '/uploads/frank.png',
+    '/uploads/kitty.png',
+    '/uploads/max.png',
+    '/uploads/ronald.png',
+    '/uploads/sleepysally.png',
+    '/uploads/wendy.png',
 ];
 
 // Register route
@@ -73,7 +73,7 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign(
             { _id: user._id, username: user.username, roles: user.roles, banned: user.banned, flagged: user.flagged, avatar: user.avatar },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '24h' }
         );
 
         res.json({ token });
@@ -81,5 +81,34 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Error logging in.', error: err.message });
     }
 });
+
+const isAuthenticated = require('../middleware/auth.middleware');
+router.post('/avatar', isAuthenticated, async (req, res) => {
+    try {
+        const { url } = req.body;
+
+        const user = await UserModel.findByIdAndUpdate(
+            req.user._id,
+            { avatar: url },
+            { new: true }
+        );
+
+        console.log(user);
+
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid user.' });
+        }
+
+        const token = jwt.sign(
+            { _id: user._id, username: user.username, roles: user.roles, banned: user.banned, flagged: user.flagged, avatar: user.avatar },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+
+        res.json({ token });
+    } catch (err) {
+        res.status(500).json({ message: 'Error updating avatar', error: err.message });
+    }
+})
 
 module.exports = router;

@@ -41,16 +41,14 @@
           </div>
         }
         <div class="btn btn-ghost mb-2 w-full">
-          <lucide-icon name="settings"></lucide-icon>
-        </div>
-        <div class="btn btn-ghost mb-2 w-full">
           <lucide-icon name="log-out" (click)="logout()"></lucide-icon>
         </div>
         <div class="avatar online p-2">
+          <input type="file" (change)="onFileSelected($event)" class="hidden" #fileInput multiple />
           <!-- user avatar -->
-          <img
+          <img (click)="fileInput.click()"
             class="ring ring-offset-2 ring-primary ring-offset-base-100 rounded-full cursor-pointer"
-            alt="Tailwind CSS Navbar component"
+            alt="User Avatar"
             src="{{getUserAvatar()}}" />
         </div>
       </div>
