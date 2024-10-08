@@ -144,6 +144,7 @@ export class CallComponent implements OnInit, OnDestroy {
 
   // Leave the call
   leaveCall() {
+    this.localStream?.getTracks().forEach(track => track.stop());
     this.peer?.disconnect();
     this.webSocketService.emit('leave-call', this.peer!.id);
     this.router.navigate(['/']);

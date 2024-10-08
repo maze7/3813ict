@@ -44,7 +44,7 @@ import {
   GlobeLock,
   Globe,
   Antenna,
-  MessageCircleDashed, LogOut, FlagOff, Trash, HandHelping, MicOff, Mic, Camera, CameraOff, PhoneOff,
+  MessageCircleDashed, LogOut, FlagOff, Trash, HandHelping, MicOff, Mic, Camera, CameraOff, PhoneOff, Image,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -111,6 +111,7 @@ export const appConfig: ApplicationConfig = {
       MicOff,
       Mic,
       PhoneOff,
+      Image,
     })),
   ]
 };

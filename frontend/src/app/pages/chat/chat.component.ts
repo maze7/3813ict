@@ -5,7 +5,7 @@ import {AuthService} from "../../services/auth.service";
 import {AsyncPipe, DatePipe, NgClass} from "@angular/common";
 import {NewChannelModalComponent} from "../../components/new-channel-modal/new-channel-modal.component";
 import {FormsModule} from "@angular/forms";
-import {tap} from "rxjs";
+import {Subscription, tap} from "rxjs";
 import {Message} from "../../models/message.model";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {HttpClient} from "@angular/common/http";
@@ -31,6 +31,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   protected message: string = '';
   public messages: Message[] = [];
   private destroyRef = inject(DestroyRef);
+  private messageListenerSub: Subscription | null = null;
 
   constructor(protected groups: GroupService, protected auth: AuthService, private websocketService: WebSocketService, private http: HttpClient) {}
 
@@ -41,13 +42,9 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
       const group = this.groups.currentGroup.value!;
 
       if (group && channel) {
-        this.getChannelMessages(group._id!, channel._id)
+        this.getChannelMessages(group._id!, channel._id);
+        this.setupWebSocketListener();
       }
-
-      this.websocketService.listen('message').pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((message) => this.messages.push(message))
-      ).subscribe();
     });
   }
 
@@ -57,6 +54,21 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   ngOnDestroy() {
     this.websocketService.disconnect();
+    if (this.messageListenerSub) {
+      this.messageListenerSub.unsubscribe(); // Unsubscribe when the component is destroyed
+    }
+  }
+
+  setupWebSocketListener() {
+    if (this.messageListenerSub) {
+      this.messageListenerSub.unsubscribe();
+    }
+
+    // Add a new WebSocket listener
+    this.messageListenerSub = this.websocketService.listen('message').pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap((message: Message) => this.messages.push(message))
+    ).subscribe();
   }
 
   // Fetch messages for a specific channel

@@ -22,8 +22,11 @@
     </div>
 
     <!-- Message input panel (fixed at bottom) -->
-    <div class="h-20 p-4 bg-base-200 flex-none">
-      <label class="input input-bordered flex items-center gap-2 pr-0">
+    <div class="h-20 p-4 bg-base-200 flex gap-x-2">
+      <button class="btn btn-neutral" (click)="send()">
+        <lucide-angular name="image" size="20"></lucide-angular>
+      </button>
+      <label class="flex-1 input input-bordered flex items-center gap-2 pr-0">
         <input type="text" class="grow" placeholder="Message the channel"
                [(ngModel)]="message"
                (keypress)="handleKeyPress($event)" />
