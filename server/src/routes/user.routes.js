@@ -47,17 +47,19 @@ router.post('/:id/ban', hasRole('superAdmin'), async (req, res) => {
     try {
         const { banned } = req.body;
 
-        const user = await UserModel.findById(req.params.id);
-        if (!user) {
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            req.params.id,
+            { banned, flagged: false },  // Update both banned and flagged fields
+            { new: true }  // Return the updated document
+        );
+
+        if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        user.banned = banned;
-        user.flagged = false;
-        await user.save();
-
-        res.status(200).json({ status: banned });
+        res.status(200).json({ status: updatedUser.banned });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: 'Error banning user', error: err.message });
     }
 });
@@ -67,16 +69,19 @@ router.post('/:id/flag', hasRole('superAdmin'), async (req, res) => {
     try {
         const { flagged } = req.body;
 
-        const user = await UserModel.findById(req.params.id);
-        if (!user) {
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            req.params.id,
+            { flagged },  // Update the flagged field
+            { new: true }  // Return the updated document
+        );
+
+        if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        user.flagged = flagged;
-        await user.save();
-
-        res.status(200).json({ status: flagged });
+        res.status(200).json({ status: updatedUser.flagged });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: 'Error flagging user', error: err.message });
     }
 });
