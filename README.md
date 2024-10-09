@@ -104,6 +104,7 @@ The `components` directory contains reusable UI elements and specific applicatio
 - **add-user-modal**: Component for the modal interface to add a new user.
 - **channel-nav**: Navigation component for switching between different channels.
 - **chat**: Component handling the chat functionality, including messages and interactions.
+- **call**: Component for handling video calls with other users.
 - **create-user**: Component for creating a new user.
 - **group-settings**: Component to configure group settings, including managing members and admins.
 - **nav**: Component for the main navigation of the application.
@@ -129,12 +130,14 @@ Models define the data structures used throughout the application.
 - **channel.model.ts**: Represents a channel, including properties like ID, name, and members.
 - **group.model.ts**: Represents a group entity, including properties like name, acronym, owner, members, and channels.
 - **user.model.ts**: Represents a user entity with properties like username, email, roles, and status (banned or flagged).
+- **message.model.ts**: Represents a single chat message, with properties like user, message, images and date.
 
 ### 5. **Pages**
 The `pages` directory contains components responsible for specific views or routes of the application.
 
 - **admin**: Page for managing users and groups with administrative privileges.
 - **chat**: Page for viewing and interacting in chat channels.
+- **call**: Page for handling video calls with other users.
 - **dashboard**: The main dashboard page of the application.
 - **group**: Page for displaying group-specific information and managing group settings.
 - **login**: Page for user authentication (login form).
@@ -147,6 +150,7 @@ Services handle the business logic and communication with the backend API.
 - **auth.service.ts**: Handles authentication-related operations such as login, logout, token management, and user registration.
 - **group.service.ts**: Manages group-related operations like creating groups, fetching groups, and updating group data.
 - **user.service.ts**: Handles user-related operations such as fetching user data, updating user information, and managing user roles.
+- **websocket.service.ts**: Handles socket management for real-time communication with the server.
 
 ### 7. **Routes**
 The `app.routes.ts` file defines the routing structure of the application, mapping URL paths to specific components or pages, such as login, chat, and group views.
@@ -191,6 +195,18 @@ The `Channel` interface represents a communication channel within a group.
    - `name` (`string`): The name of the channel.
    - `members` (`User[]`): An array of users who are members of the channel.
 
+### 3. **Message Interface**
+The `Message` interface represents a chat message within a Channel.
+
+- **Fields**:
+    - `_id` (`string`): Unique identifier for the message.
+    - `user` (`User`): The user that sent the message (populated struct).
+    - `message` (`string`): The chat message that was sent.
+    - `channel` (`string`): The identifier of the channel the message was sent to.
+    - `group` (`string`): The identifier of the group the message was sent to.
+    - `createdAt` (`Date`): The date / time the message was sent.
+    - `images` (`string[]`): An optional array of image urls for uploaded images.
+
 ___
 
 ## API Routes
@@ -233,6 +249,25 @@ ___
 | `/groups/:id/kick`       | POST       | `id` (group ID), `userId`, `channelId` (optional)    | `200`: User kicked, `500`: Error kicking user        | Kicks a user from a group or channel.         |
 | `/groups/:id/ban`        | POST       | `id` (group ID), `userId`, `decision` (true/false)   | `200`: User banned/unbanned, `500`: Error banning user | Bans or unbans a user from a group.           |
 | `/groups/:id/admin`      | POST       | `id` (group ID), `userId`, `status` (true/false)     | `200`: Admin status updated, `500`: Error updating admin status | Promotes or demotes a group admin.            |
+
+## Message Routes
+
+| **Route**                        | **Method** | **Parameters** | **Response**                                             | **Purpose**                           |
+|----------------------------------|------------|----------------|----------------------------------------------------------|---------------------------------------|
+| `/messages/:groupId/:channelId`  | GET        | None           | `201`: List of messages, `500`: Error returning messages | Retrieves all messages for a channel. |
+
+## Upload Routes
+
+| **Route**      | **Method** | **Parameters**               | **Response**                                                                 | **Purpose**                                         |
+|----------------|------------|-----------------------------|------------------------------------------------------------------------------|-----------------------------------------------------|
+| `/upload`      | POST       | `file` (form-data)           | `200`: Image uploaded successfully (`imageUrl`), `400`: No file uploaded, `400`: File too large, `400`: Invalid file format, `500`: Server error | Uploads an image file (PNG, JPG, JPEG, WEBP). Limits file size to 5MB. |
+
+### Notes:
+- **File size limit**: 5MB.
+- **Supported formats**: PNG, JPG, JPEG, and WEBP.
+- **Error Handling**:
+    - `400`: Returned when no file is uploaded, file size exceeds the limit, or the file format is invalid.
+    - `500`: Returned in case of server-related errors.
 
 ---
 
