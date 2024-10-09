@@ -15,6 +15,7 @@ router.get('/:groupId/:channelId', async (req, res) => {
         }).populate('group user').sort({ createdAt: 1 });
         res.status(200).json(messages);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: 'Error getting messages', error: err.message });
     }
 });
