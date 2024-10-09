@@ -19,7 +19,8 @@ async function authenticateToken(req, res, next) {
             req.user = foundUser;
             next(); // Proceed to the next middleware or route handler
         } catch (error) {
-            return res.status(500).json({ message: 'Error fetching user', error: error.message });
+            console.error(error);
+            return res.status(401).json({ message: 'Invalid token', error: error.message });
         }
     });
 }

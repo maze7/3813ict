@@ -25,22 +25,22 @@ const isGroupOwner = async (req, res, next) => {
         const groupId = req.params.id;
         const group = await GroupModel.findById(groupId);
 
-        // Check if the group exists
         if (!group) {
             return res.status(404).json({ message: 'Group not found.' });
         }
 
-        // Check if the user is either a super admin or the group owner (groupAdmin)
         const superAdmin = req.user.roles.includes('superAdmin');
-        const groupOwner = req.user._id === group.owner._id;
+        const ownerId = group.owner?._id ? group.owner._id : group.owner;
+        const groupOwner = req.user._id === ownerId;
 
         if (superAdmin || groupOwner) {
-            req.group = group; // Attach the group to the request object
-            return next();     // Proceed to the next middleware or route handler
+            req.group = group;
+            return next();
         }
 
         return res.status(401).json({ message: 'You do not have permission to modify this group.' });
     } catch (err) {
+        console.err(err);
         return res.status(500).json({ message: 'Error checking group ownership', error: err.message });
     }
 };
@@ -51,27 +51,31 @@ const isGroupAdmin = async (req, res, next) => {
         const groupId = req.params.id;
         const group = await GroupModel.findById(groupId);
 
-        // Check if the group exists
         if (!group) {
             return res.status(404).json({ message: 'Group not found.' });
         }
 
-        // Check if the user is either a super admin or the group owner (groupAdmin)
         const superAdmin = req.user.roles.includes('superAdmin');
-        const groupAdmin = req.user.roles.includes('groupAdmin') && group.admins.findIndex(admin => admin._id === req.user._id);
-        const groupOwner = req.user._id === group.owner._id;
 
-        console.log(superAdmin, groupAdmin, groupOwner);
+        // Extract ownerId
+        const ownerId = group.owner?._id ? group.owner._id.toString() : group.owner.toString();
+        const groupOwner = req.user._id.toString() === ownerId;
 
-        if (superAdmin || groupAdmin || groupOwner) {
-            req.group = group; // Attach the group to the request object
-            return next();     // Proceed to the next middleware or route handler
+        // Check if the user is a group admin
+        const isAdmin = group.admins.some(admin => {
+            const adminId = admin?._id ? admin._id.toString() : admin.toString();
+            return adminId === req.user._id.toString();
+        });
+
+        if (superAdmin || isAdmin || groupOwner) {
+            req.group = group;
+            return next();
         }
 
         return res.status(401).json({ message: 'You do not have permission to modify this group.' });
     } catch (err) {
-        return res.status(500).json({ message: 'Error checking group ownership', error: err.message });
+        console.error(`Error in isGroupAdmin middleware: ${err}`);
+        return res.status(500).json({ message: 'Error checking group admin status', error: err.message });
     }
 };
-
 module.exports = { isGroupOwner, hasRole, isGroupAdmin };

@@ -28,6 +28,7 @@ router.post('/', hasRole('groupAdmin'), async (req, res) => {
         const group = await GroupModel.findById(newGroup._id).populate('members admins pendingMembers pendingAdmins banned channels.members');
         res.status(201).json(group);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: 'Error creating group', error: err.message });
     }
 });
@@ -60,6 +61,7 @@ router.put('/:id', isGroupOwner, async (req, res) => {
 
         res.status(200).json(updatedGroup);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: 'Error updating group', error: err.message });
     }
 });
@@ -98,7 +100,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Delete a group
-router.delete('/:id', isGroupOwner, async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         await GroupModel.deleteOne({ _id: req.params.id });
         res.status(200).json({ message: 'Group deleted successfully' });

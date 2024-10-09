@@ -6,7 +6,6 @@ const UserModel = require('../src/models/user.model');
 const jwt = require('jsonwebtoken');
 const { expect } = chai;
 const bcrypt = require('bcryptjs');
-const mongoose = require("mongoose");
 
 chai.use(chaiHttp);
 
