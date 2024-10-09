@@ -12,7 +12,6 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 describe('File Upload Routes', () => {
-    // Test data for the valid test cases
     const validImagePath = path.join(__dirname, 'test-files', 'test-image.png');
     const invalidImagePath = path.join(__dirname, 'test-files', 'test-image.txt');
 

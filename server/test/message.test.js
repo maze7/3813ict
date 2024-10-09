@@ -16,18 +16,18 @@ describe('Message Routes', () => {
     let UserModelStub = {};
 
     const testUser = {
-        _id: new mongoose.Types.ObjectId(), // Generate valid ObjectId
+        _id: new mongoose.Types.ObjectId(),
         username: 'testuser',
         email: 'testuser@test.com',
         roles: ['user', 'groupAdmin'],
     };
 
     const testMessage = {
-        _id: new mongoose.Types.ObjectId(), // Generate valid ObjectId for message
+        _id: new mongoose.Types.ObjectId(),
         content: 'This is a test message',
         user: testUser._id,
-        group: new mongoose.Types.ObjectId(), // Generate valid ObjectId for group
-        channel: new mongoose.Types.ObjectId(), // Generate valid ObjectId for channel
+        group: new mongoose.Types.ObjectId(),
+        channel: new mongoose.Types.ObjectId(),
         createdAt: new Date(),
     };
 

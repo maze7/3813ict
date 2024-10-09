@@ -180,7 +180,7 @@ describe('User Routes', () => {
 
             chai.request(app)
                 .post(`/user/${testUser._id}/flag`)
-                .set('Authorization', `Bearer ${token}`)  // Token with 'superAdmin' role
+                .set('Authorization', `Bearer ${token}`)
                 .send({ flagged: true })
                 .end((err, res) => {
                     expect(res).to.have.status(404);

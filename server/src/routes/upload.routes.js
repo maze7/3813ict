@@ -31,7 +31,17 @@ const upload = multer({
     },
 });
 
-router.post('/upload', upload.single('file'), async (req, res) => {
+// Error handling middleware for multer
+function multerErrorHandler(err, req, res, next) {
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({ message: err.message });
+    } else if (err) {
+        return res.status(400).json({ message: err.message });
+    }
+    next();
+}
+
+router.post('/upload', upload.single('file'), multerErrorHandler, async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).send({ message: 'No file uploaded' });
@@ -42,8 +52,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
             message: 'Image uploaded successfully!',
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).send({ message: 'Server error', error });
+        res.status(500).send({ message: 'Server error', error: error.message });
     }
 });
 
